@@ -1,4 +1,7 @@
-import { connectDB } from "../../db";
+import { connectDB } from "../../server";
+import jwt from 'jsonwebtoken';
+
+const secret_key = "1606";
 
 export async function POST(req) {
     try {
@@ -19,7 +22,9 @@ export async function POST(req) {
             return new Response(JSON.stringify({ message: "Wrong password!" }), { status: 401 });
         }
 
-        return new Response(JSON.stringify({ message: "Login completed!", user: rows[0] }), { status: 200 });
+        const token = jwt.sign({ id: rows[0].id, email: rows[0].email, role: rows[0].role }, secret_key)
+
+        return new Response(JSON.stringify({ message: "Login completed!", user: rows[0], token }), { status: 200 });
     }
     catch (error) {
         console.log('API error: ', error);
