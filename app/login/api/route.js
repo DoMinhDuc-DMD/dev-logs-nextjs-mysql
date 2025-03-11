@@ -1,33 +1,43 @@
-import { connectDB } from "../../server";
-import jwt from 'jsonwebtoken';
+import { NextResponse } from "next/server";
+import mysql from "mysql2/promise";
 
-const secret_key = "1606";
+const db = mysql.createPool({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "devlog_manage",
+});
 
 export async function POST(req) {
-    try {
-        const { email, password } = await req.json();
+  try {
+    const { email, password } = await req.json();
 
-        if (!email || !password) {
-            return new Response(JSON.stringify({ message: 'Fill in email and password' }), { status: 400 });
-        }
+    const [rows] = await db.query("SELECT * FROM account WHERE email = ?", [
+      email,
+    ]);
 
-        const db = await connectDB();
-        const [rows] = await db.execute('SELECT * FROM account WHERE email = ? ', [email]);
-
-        if ([rows].length === 0) {
-            return new Response(JSON.stringify({ message: "Can't found account!" }), { status: 404 });
-        }
-
-        if (password !== rows[0].password) {
-            return new Response(JSON.stringify({ message: "Wrong password!" }), { status: 401 });
-        }
-
-        const token = jwt.sign({ id: rows[0].id, email: rows[0].email, role: rows[0].role }, secret_key)
-
-        return new Response(JSON.stringify({ message: "Login completed!", user: rows[0], token }), { status: 200 });
+    if (!rows || rows.length === 0) {
+      return NextResponse.json(
+        { message: "Email không tồn tại" },
+        { status: 401 }
+      );
     }
-    catch (error) {
-        console.log('API error: ', error);
-        return new Response(JSON.stringify({ message: 'Server error' }), { status: 500 });
+
+    const user = rows[0];
+
+    if (password !== rows[0].password) {
+      return NextResponse(JSON.stringify({ message: "Wrong password!" }), {
+        status: 401,
+      });
     }
+
+    return NextResponse.json({
+      message: "Đăng nhập thành công",
+      userId: user.id,
+      isLogin: true,
+      role: user.role,
+    });
+  } catch (error) {
+    return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
+  }
 }

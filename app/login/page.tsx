@@ -22,17 +22,17 @@ export default function AccountForm() {
 
     try {
       const data = await res.json();
-      setMessage(data.message);
-
-      sessionStorage.setItem("authToken", data.token);
-      sessionStorage.setItem("userRole", data.user.role);
-
       if (!res.ok) {
         setMessage(data.message || "Login Failed!");
         return;
       }
+      setMessage(data.message);
 
-      router.push("/main");
+      sessionStorage.setItem("userId", data.userId);
+      sessionStorage.setItem("isLogin", "true");
+      sessionStorage.setItem("userRole", data.role);
+
+      window.location.href = "/main";
     } catch (error) {
       setMessage("Error processing request.");
     }

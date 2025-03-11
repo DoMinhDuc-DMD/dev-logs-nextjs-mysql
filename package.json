@@ -15,6 +15,7 @@
     "chartjs": "^0.3.24",
     "chartjs-2": "^0.0.1-security",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
@@ -23,7 +24,9 @@
     "next": "15.2.1",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
+    "react-calendar": "^5.1.0",
     "react-chartjs-2": "^5.3.0",
+    "react-datepicker": "^8.2.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {

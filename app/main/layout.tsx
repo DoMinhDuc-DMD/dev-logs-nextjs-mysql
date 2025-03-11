@@ -1,10 +1,20 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const role = sessionStorage.getItem("userRole");
+    setUserRole(role);
+  }, []);
+
   return (
     <div className="flex">
       <div className="w-[15%] h-[100vh] bg-white">
@@ -16,6 +26,12 @@ export default function MainLayout({
             <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
               <Link href="/main/formdevlogs">Nhập Devlogs</Link>
             </li>
+            {/* Leader only */}
+            {userRole === "leader" && (
+              <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
+                <Link href="/main/formaddproject">Tạo mới project</Link>
+              </li>
+            )}
             <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
               <Link href="/main/devloglist">Devlogs list</Link>
             </li>
