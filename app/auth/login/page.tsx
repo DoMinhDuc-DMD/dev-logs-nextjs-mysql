@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
-export default function AccountForm() {
+export default function LoginForm() {
   const router = useRouter();
   const [message, setMessage] = useState("");
 
@@ -14,7 +14,7 @@ export default function AccountForm() {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    const res = await fetch("/login/api", {
+    const res = await fetch("/auth/api", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -32,7 +32,7 @@ export default function AccountForm() {
       sessionStorage.setItem("isLogin", "true");
       sessionStorage.setItem("userRole", data.role);
 
-      window.location.href = "/main";
+      router.replace("/main");
     } catch (error) {
       setMessage("Error processing request.");
     }
@@ -40,7 +40,7 @@ export default function AccountForm() {
 
   return (
     <form
-      className="w-130 my-5 mx-auto rounded bg-white p-5 shadow-lg w-[400px]"
+      className="w-130 my-10 mx-auto rounded bg-white p-5 shadow-lg w-[400px]"
       onSubmit={handleSubmit}
     >
       <h2 className="text-center text-xl font-semibold mb-5">Login Form</h2>

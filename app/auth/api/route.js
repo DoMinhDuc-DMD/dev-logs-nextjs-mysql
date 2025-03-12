@@ -26,7 +26,7 @@ export async function POST(req) {
     const user = rows[0];
 
     if (password !== rows[0].password) {
-      return NextResponse(JSON.stringify({ message: "Wrong password!" }), {
+      return NextResponse(JSON.stringify({ message: "Sai mật khẩu" }), {
         status: 401,
       });
     }

@@ -50,7 +50,6 @@ export default function Form() {
 
     const data = await res.json();
     alert(data.message);
-    // window.location.reload();
   };
 
   return (
