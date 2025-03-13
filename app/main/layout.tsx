@@ -58,40 +58,50 @@ export default function MainLayout({
               </Link>
             )}
 
-            <Link href="/main/formdevlogs">
-              <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
-                Nhập Devlogs
-              </li>
-            </Link>
+            {role !== "admin" && (
+              <>
+                <Link href="/main/formdevlogs">
+                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
+                    Nhập Devlogs
+                  </li>
+                </Link>
 
-            <Link href="/main/devloglist">
-              <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
-                Devlogs list
-              </li>
-            </Link>
+                <Link href="/main/devloglist">
+                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
+                    Devlogs list
+                  </li>
+                </Link>
+              </>
+            )}
 
+            {/* Admin only */}
+            {role === "admin" && (
+              <>
+                <Link href="">
+                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
+                    Employee log list
+                  </li>
+                </Link>
+                <Link href="/main/createaccount">
+                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
+                    Tạo tài khoản
+                  </li>
+                </Link>
+              </>
+            )}
+
+            {(role === "admin" || role === "hcns") && (
+              <Link href="/main/accountlist">
+                <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
+                  Danh sách tài khoản
+                </li>
+              </Link>
+            )}
             <Link href="/main/connect">
               <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
                 Connect
               </li>
             </Link>
-            {/* Admin only */}
-            {role === "admin" && (
-              <Link href="/main/createaccount">
-                <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
-                  Tạo tài khoản
-                </li>
-              </Link>
-            )}
-
-            {role === "admin" ||
-              (role === "hcns" && (
-                <Link href="/main/accountlist">
-                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
-                    Danh sách tài khoản
-                  </li>
-                </Link>
-              ))}
           </ul>
         </div>
       </div>

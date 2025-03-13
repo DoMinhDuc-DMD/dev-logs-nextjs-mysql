@@ -10,8 +10,18 @@ const db = mysql.createPool({
 
 export async function GET() {
     try {
-        const [accounts] = await db.query("SELECT id, email, password, role FROM account WHERE role != 'admin'");
+        const [accounts] = await db.query("SELECT * FROM account WHERE role != 'admin'");
         return NextResponse.json(accounts);
+    } catch (error) {
+        return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
+    }
+}
+
+export async function PUT(req) {
+    try {
+        const { id, email, password, role } = await req.json();
+        await db.query("UPDATE account SET employee_work_email = ?, employee_work_password = ?, role = ? WHERE id = ?", [email, password, role, id]);
+        return NextResponse.json({ message: "Cập nhật thành công" }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
     }

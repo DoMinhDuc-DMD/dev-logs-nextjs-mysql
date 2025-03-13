@@ -16,12 +16,12 @@ export async function POST(req) {
             return NextResponse.json({ message: "Vui lòng nhập đầy đủ thông tin" }, { status: 400 });
         }
 
-        const [existingUser] = await db.query("SELECT * FROM account WHERE email = ?", [email]);
+        const [existingUser] = await db.query("SELECT * FROM account WHERE employee_work_email = ?", [email]);
         if (existingUser.length > 0) {
             return NextResponse.json({ message: "Email đã tồn tại" });
         }
 
-        await db.query("INSERT INTO account (email,password,role) VALUES (?,?,?)", [email, password, role])
+        await db.query("INSERT INTO account (employee_work_email,employee_work_password,role) VALUES (?,?,?)", [email, password, role])
 
         return NextResponse.json({ message: "Đăng ký thành công" }, { status: 201 });
     } catch (error) {

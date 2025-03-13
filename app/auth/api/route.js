@@ -12,7 +12,7 @@ export async function POST(req) {
   try {
     const { email, password } = await req.json();
 
-    const [rows] = await db.query("SELECT * FROM account WHERE email = ?", [
+    const [rows] = await db.query("SELECT * FROM account WHERE employee_work_email = ?", [
       email,
     ]);
 
@@ -25,7 +25,7 @@ export async function POST(req) {
 
     const user = rows[0];
 
-    if (password !== rows[0].password) {
+    if (password !== rows[0].employee_work_password) {
       return NextResponse(JSON.stringify({ message: "Sai mật khẩu" }), {
         status: 401,
       });

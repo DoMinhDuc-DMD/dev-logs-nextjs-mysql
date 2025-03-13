@@ -2,12 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
-import Select from "react-select";
 
 interface Account {
   id: number;
-  email: string;
-  password: string;
+  employee_work_email: string;
+  employee_work_password: string;
   role: string;
 }
 
@@ -16,8 +15,8 @@ export default function AccountList() {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedData, setEditedData] = useState<{
-    email: string;
-    password: string;
+    employee_work_email: string;
+    employee_work_password: string;
     role: string;
   } | null>(null);
 
@@ -57,17 +56,11 @@ export default function AccountList() {
     fetchAccount();
   }, []);
 
-  const roleOptions = [
-    { value: "hcns", label: "Hành chính nhân sự" },
-    { value: "leader", label: "Trưởng nhóm" },
-    { value: "dev", label: "Developer" },
-  ];
-
   const handleAdjust = (account: Account) => {
     setEditingId(account.id);
     setEditedData({
-      email: account.email,
-      password: account.password,
+      employee_work_email: account.employee_work_email,
+      employee_work_password: account.employee_work_password,
       role: account.role,
     });
   };
@@ -75,10 +68,29 @@ export default function AccountList() {
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    setEditedData((prev) => ({ ...prev!, [e.target.value]: e.target.value }));
+    setEditedData((prev) => ({ ...prev!, [e.target.name]: e.target.value }));
   };
 
-  const handleSave = () => {};
+  const handleSave = async () => {
+    if (!editingId || !editedData) return;
+    try {
+      await fetch("/main/accountlist/api", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: editingId,
+          email: editedData?.employee_work_email,
+          password: editedData?.employee_work_password,
+          role: editedData?.role,
+        }),
+      });
+
+      setEditingId(null);
+      setEditedData(null);
+    } catch (error) {
+      console.log("Lỗi lưu thông tin tài khoản: ", error);
+    }
+  };
 
   return (
     <div className="p-5">
@@ -115,21 +127,23 @@ export default function AccountList() {
                       <td className="border p-2">
                         {editingId === account.id ? (
                           <input
+                            name="employee_work_email"
                             className="border rounded w-full p-1"
                             type="email"
-                            value={editedData?.email || ""}
+                            value={editedData?.employee_work_email || ""}
                             onChange={handleChange}
                           />
                         ) : (
-                          account.email
+                          account.employee_work_email
                         )}
                       </td>
                       <td className="border p-2">
                         {editingId === account.id ? (
                           <input
+                            name="employee_work_password"
                             className="border rounded w-full p-1"
                             type="text"
-                            value={editedData?.password || ""}
+                            value={editedData?.employee_work_password || ""}
                             onChange={handleChange}
                           />
                         ) : (
@@ -162,12 +176,24 @@ export default function AccountList() {
                               Save
                             </button>
                           ) : (
-                            <button
-                              onClick={() => handleAdjust(account)}
-                              className="bg-green-400 px-3 py-1 rounded cursor-pointer hover:bg-green-600 hover:text-white"
-                            >
-                              Adjust
-                            </button>
+                            <>
+                              <button
+                                onClick={() =>
+                                  router.push(
+                                    `/main/accountlist/accountdetail?id=${account.id}`
+                                  )
+                                }
+                                className="bg-blue-400 px-3 py-1 rounded cursor-pointer hover:bg-blue-600 hover:text-white"
+                              >
+                                Detail
+                              </button>
+                              <button
+                                onClick={() => handleAdjust(account)}
+                                className="bg-green-400 px-3 py-1 rounded cursor-pointer hover:bg-green-600 hover:text-white"
+                              >
+                                Adjust
+                              </button>
+                            </>
                           )}
                         </td>
                       )}
