@@ -22,6 +22,24 @@ export default function AccountList() {
 
   const [role, setRole] = useState<string | null>(null);
 
+  const fetchAccount = async () => {
+    try {
+      const res = await fetch("/main/accountlist/api", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) {
+        throw new Error("Không thể lấy danh sách tài khoản");
+      }
+
+      const data = await res.json();
+      setAccounts(data);
+    } catch (error) {
+      console.log("Lỗi lấy danh sách tài khoản: ", error);
+    }
+  };
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const userRole = sessionStorage.getItem("userRole");
@@ -29,30 +47,13 @@ export default function AccountList() {
 
       setRole(userRole);
 
-      if (userRole !== "admin" && userRole !== "hcns") {
-        router.replace("/main");
+      if (userRole !== "Admin" && userRole !== "HCNS") {
+        router.replace("/main/notyourright");
       } else if (!loggedIn) {
-        router.replace("/auth/login");
+        router.replace("/auth");
       }
     }
 
-    async function fetchAccount() {
-      try {
-        const res = await fetch("/main/accountlist/api", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
-
-        if (!res.ok) {
-          throw new Error("Không thể lấy danh sách tài khoản");
-        }
-
-        const data = await res.json();
-        setAccounts(data);
-      } catch (error) {
-        console.log("Lỗi lấy danh sách tài khoản: ", error);
-      }
-    }
     fetchAccount();
   }, []);
 
@@ -85,6 +86,7 @@ export default function AccountList() {
         }),
       });
 
+      fetchAccount();
       setEditingId(null);
       setEditedData(null);
     } catch (error) {
@@ -99,7 +101,7 @@ export default function AccountList() {
           <div className="max-h-[630px] overflow-y-auto border border-gray-300 rounded">
             <table className="w-full">
               <thead className="bg-gray-200 sticky top-0">
-                {role === "admin" ? (
+                {role === "Admin" ? (
                   <tr>
                     <th className="border p-2 w-[10%]">ID</th>
                     <th className="border p-2 w-[25%]">Email</th>
@@ -158,15 +160,15 @@ export default function AccountList() {
                             onChange={handleChange}
                             className="border p-1 w-full"
                           >
-                            <option value="hcns">Hành chính nhân sự</option>
-                            <option value="leader">Leader</option>
-                            <option value="dev">Developer</option>
+                            <option value="HCNS">Hành chính nhân sự</option>
+                            <option value="Leader">Leader</option>
+                            <option value="Dev">Developer</option>
                           </select>
                         ) : (
                           account.role
                         )}
                       </td>
-                      {role === "admin" && (
+                      {role === "Admin" && (
                         <td className="border p-2">
                           {editingId === account.id ? (
                             <button

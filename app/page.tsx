@@ -7,7 +7,7 @@ export default function AccountForm() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/auth/login");
+    router.replace("/auth");
   }, []);
   return <div>Redirecting to login...</div>;
 }

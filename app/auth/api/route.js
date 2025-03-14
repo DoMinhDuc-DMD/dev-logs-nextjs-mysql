@@ -35,7 +35,7 @@ export async function POST(req) {
       message: "Đăng nhập thành công",
       userId: user.id,
       isLogin: true,
-      role: user.role,
+      userRole: user.role,
     });
   } catch (error) {
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });

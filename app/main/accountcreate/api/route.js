@@ -8,6 +8,21 @@ const db = mysql.createPool({
     database: "devlog_manage",
 });
 
+export async function GET() {
+    try {
+        const [role] = await db.query("SELECT role FROM account WHERE role != 'Admin' GROUP BY role");
+
+        const formattedRoles = role.map((row) => ({
+            value: row.role.toLowerCase(),
+            label: row.role
+        }));
+
+        return NextResponse.json({ roles: formattedRoles });
+    } catch (error) {
+        return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
+    }
+}
+
 export async function POST(req) {
     try {
         const { email, password, role } = await req.json();

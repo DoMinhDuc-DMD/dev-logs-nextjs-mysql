@@ -7,25 +7,31 @@ import Select from "react-select";
 export default function CreateAccount() {
   const router = useRouter();
   const [message, setMessage] = useState("");
+  const [options, setOptions] = useState<{ value: string; label: string }[]>(
+    []
+  );
 
   useEffect(() => {
     if (typeof window === "undefined") {
       const userRole = sessionStorage.getItem("userRole");
       const loggedIn = sessionStorage.getItem("isLogin");
 
-      if (loggedIn && userRole !== "admin") {
-        router.replace("/main");
+      if (loggedIn && userRole !== "Admin") {
+        router.replace("/main/notyourright");
       } else if (!loggedIn) {
-        router.replace("/auth/login");
+        router.replace("/auth");
       }
     }
-  });
 
-  const roleOptions = [
-    { value: "hcns", label: "Hành chính nhân sự" },
-    { value: "leader", label: "Trưởng nhóm" },
-    { value: "dev", label: "Developer" },
-  ];
+    async function fetchRoles() {
+      const res = await fetch("/main/accountcreate/api");
+      const data = await res.json();
+      if (data.roles && Array.isArray(data.roles)) {
+        setOptions(data.roles);
+      }
+    }
+    fetchRoles();
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -35,7 +41,7 @@ export default function CreateAccount() {
     const password = formData.get("password");
     const role = formData.get("role");
 
-    const res = await fetch("/main/createaccount/api", {
+    const res = await fetch("/main/accountcreate/api", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, role }),
@@ -83,7 +89,7 @@ export default function CreateAccount() {
         <label className="block text-left" htmlFor="role">
           Select Role
         </label>
-        <Select options={roleOptions} name="role" />
+        <Select options={options} name="role" />
         {message && <p className="text-center text-red-500">{message}</p>}
         <button
           className="w-32 mx-auto bg-blue-300 hover:bg-blue-500 hover:text-white px-3 py-1 rounded cursor-pointer"

@@ -1,25 +1,36 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface Information {
-  employee_code: "";
-  employee_name: "";
-  employee_birthday: "";
-  employee_bank_account: "";
-  employee_private_email: "";
-  employee_phone_number: "";
-  employee_citizen_identification: "";
-  employee_work_email: "";
-  employee_work_password: "";
-  employee_license_plate: "";
-}
-
-export default function AccountSetting() {
-  const [info, setInfo] = useState<Information>();
+export default function AccountDetail() {
+  const router = useRouter();
+  const [info, setInfo] = useState({
+    employee_code: "",
+    employee_name: "",
+    employee_birthday: "",
+    employee_bank_account: "",
+    employee_private_email: "",
+    employee_phone_number: "",
+    employee_citizen_identification: "",
+    employee_work_email: "",
+    employee_work_password: "",
+    employee_license_plate: "",
+    role: "",
+  });
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userRole = sessionStorage.getItem("userRole");
+      const loggedIn = sessionStorage.getItem("isLogin");
+
+      if (userRole !== "Admin" && userRole !== "HCNS") {
+        router.replace("/main/notyourright");
+      } else if (!loggedIn) {
+        router.replace("/auth");
+      }
+    }
+
     const userId = new URLSearchParams(window.location.search).get("id");
     if (!userId) return;
 
@@ -35,7 +46,7 @@ export default function AccountSetting() {
 
         if (!res.ok) throw new Error("Lỗi lấy thông tin tài khoản");
 
-        const data: Information = await res.json();
+        const data = await res.json();
         if (!data || Object.keys(data).length === 0)
           throw new Error("Dữ liệu không hợp lệ");
 
@@ -50,7 +61,7 @@ export default function AccountSetting() {
   return (
     <div className="p-5">
       <div className="rounded bg-white text-center py-5">
-        <p>Account Setting</p>
+        <p>Account Detail of {info?.employee_name}</p>
         <div className="w-[60%] mx-auto grid grid-cols-2 p-5 text-left gap-10">
           <div>
             <label htmlFor="employee_id">Mã nhân viên:</label>
@@ -60,6 +71,14 @@ export default function AccountSetting() {
               type="text"
               readOnly
               value={info?.employee_code || ""}
+            />
+            <label htmlFor="role">Chức vụ/Vị trí:</label>
+            <input
+              name="role"
+              className="w-full border rounded p-2 mb-2"
+              type="text"
+              value={info?.role || ""}
+              readOnly
             />
             <label htmlFor="employee_name">Họ và tên:</label>
             <input

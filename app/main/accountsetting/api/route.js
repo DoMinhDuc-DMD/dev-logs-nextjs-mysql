@@ -30,7 +30,7 @@ export async function GET(req) {
 
 export async function PUT(req) {
     try {
-        const { employee_code,
+        const {
             employee_name,
             employee_birthday,
             employee_bank_account,
@@ -43,8 +43,8 @@ export async function PUT(req) {
         if (!userId) {
             return NextResponse.json({ message: "Thiếu userId" }, { status: 400 });
         }
-        await db.query("UPDATE account SET employee_code = ?, employee_name = ?, employee_birthday = ?, employee_bank_account = ?, employee_private_email = ?,employee_phone_number = ?,employee_citizen_identification = ?,employee_work_email = ?,employee_work_password = ?,employee_license_plate = ? WHERE id = ?",
-            [employee_code,
+        await db.query("UPDATE account SET employee_name = ?, employee_birthday = ?, employee_bank_account = ?, employee_private_email = ?,employee_phone_number = ?,employee_citizen_identification = ?,employee_work_email = ?,employee_work_password = ?,employee_license_plate = ? WHERE id = ?",
+            [
                 employee_name,
                 employee_birthday,
                 employee_bank_account,

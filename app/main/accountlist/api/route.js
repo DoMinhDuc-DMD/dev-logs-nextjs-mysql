@@ -10,7 +10,7 @@ const db = mysql.createPool({
 
 export async function GET() {
     try {
-        const [accounts] = await db.query("SELECT * FROM account WHERE role != 'admin'");
+        const [accounts] = await db.query("SELECT * FROM account WHERE role != 'Admin'");
         return NextResponse.json(accounts);
     } catch (error) {
         return NextResponse.json({ message: "Lỗi server" }, { status: 500 });

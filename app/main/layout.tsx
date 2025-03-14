@@ -26,7 +26,7 @@ export default function MainLayout({
       const userRole = sessionStorage.getItem("userRole");
 
       if (!loggedIn) {
-        router.replace("/auth/login");
+        router.replace("/auth");
       } else {
         setRole(userRole);
         setIsChecking(false);
@@ -45,58 +45,66 @@ export default function MainLayout({
           <ul>
             <Link href="/main">
               <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
-                Trang chủ{" "}
+                Trang tổng quan
               </li>
             </Link>
 
             {/* Leader only */}
-            {role === "leader" && (
-              <Link href="/main/formaddproject">
+            {role === "Leader" && (
+              <Link href="/main/projectadd">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
-                  Tạo mới project
+                  Tạo mới dự án
                 </li>
               </Link>
             )}
 
-            {role !== "admin" && (
+            {/* Leader and Dev */}
+            {(role === "Leader" || role === "Developer") && (
               <>
-                <Link href="/main/formdevlogs">
+                <Link href="/main/projectlist">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
-                    Nhập Devlogs
+                    Danh sách dự án
+                  </li>
+                </Link>
+                <Link href="/main/devloginput">
+                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
+                    Nhập devlogs
                   </li>
                 </Link>
 
-                <Link href="/main/devloglist">
+                <Link href="/main/devloghistory">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
-                    Devlogs list
+                    Lịch sử devlogs
+                  </li>
+                </Link>
+              </>
+            )}
+
+            {/* Admin and HCNS */}
+            {(role === "Admin" || role === "HCNS") && (
+              <>
+                <Link href="">
+                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
+                    Danh sách devlogs
+                  </li>
+                </Link>
+                <Link href="/main/accountlist">
+                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
+                    Danh sách tài khoản
                   </li>
                 </Link>
               </>
             )}
 
             {/* Admin only */}
-            {role === "admin" && (
-              <>
-                <Link href="">
-                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
-                    Employee log list
-                  </li>
-                </Link>
-                <Link href="/main/createaccount">
-                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
-                    Tạo tài khoản
-                  </li>
-                </Link>
-              </>
-            )}
-
-            {(role === "admin" || role === "hcns") && (
-              <Link href="/main/accountlist">
+            {role === "Admin" && (
+              <Link href="/main/accountcreate">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
-                  Danh sách tài khoản
+                  Tạo tài khoản
                 </li>
               </Link>
             )}
+
             <Link href="/main/connect">
               <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">
                 Connect

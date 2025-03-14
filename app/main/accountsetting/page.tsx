@@ -3,22 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface Information {
-  employee_code: string;
-  employee_name: string;
-  employee_birthday: string;
-  employee_bank_account: string;
-  employee_private_email: string;
-  employee_phone_number: string;
-  employee_citizen_identification: string;
-  employee_work_email: string;
-  employee_work_password: string;
-  employee_license_plate: string;
-}
-
 export default function AccountSetting() {
   const router = useRouter();
-  const [info, setInfo] = useState<Information>({
+  const [info, setInfo] = useState({
     employee_code: "",
     employee_name: "",
     employee_birthday: "",
@@ -29,6 +16,7 @@ export default function AccountSetting() {
     employee_work_email: "",
     employee_work_password: "",
     employee_license_plate: "",
+    role: "",
   });
 
   useEffect(() => {
@@ -48,7 +36,7 @@ export default function AccountSetting() {
           throw new Error("Lỗi lấy thông tin tài khoản");
         }
 
-        const data: Information = await res.json();
+        const data = await res.json();
         if (!data || Object.keys(data).length === 0)
           throw new Error("Dữ liệu không hợp lệ");
 
@@ -89,7 +77,7 @@ export default function AccountSetting() {
     sessionStorage.removeItem("userId");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("isLogin");
-    router.replace("/auth/login");
+    router.replace("/auth");
   };
 
   return (
@@ -104,6 +92,14 @@ export default function AccountSetting() {
               className="w-full border rounded p-2 mb-2"
               type="text"
               value={info?.employee_code || ""}
+              readOnly
+            />
+            <label htmlFor="role">Chức vụ/Vị trí:</label>
+            <input
+              name="role"
+              className="w-full border rounded p-2 mb-2"
+              type="text"
+              value={info?.role || ""}
               readOnly
             />
             <label htmlFor="employee_name">Họ và tên:</label>
