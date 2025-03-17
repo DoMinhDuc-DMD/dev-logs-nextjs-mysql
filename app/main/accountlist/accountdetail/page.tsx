@@ -24,10 +24,10 @@ export default function AccountDetail() {
       const userRole = sessionStorage.getItem("userRole");
       const loggedIn = sessionStorage.getItem("isLogin");
 
-      if (userRole !== "Admin" && userRole !== "HCNS") {
-        router.replace("/main/notyourright");
-      } else if (!loggedIn) {
+      if (!loggedIn) {
         router.replace("/auth");
+      } else if (userRole !== "Admin" && userRole !== "HCNS") {
+        router.replace("/main/notyourright");
       }
     }
 
@@ -36,19 +36,15 @@ export default function AccountDetail() {
 
     async function fetchInfo() {
       try {
-        const res = await fetch(
-          `/main/accountlist/accountdetail/api?id=${userId}`,
-          {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+        const res = await fetch(`/main/accountlist/accountdetail/api?id=${userId}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
 
         if (!res.ok) throw new Error("Lỗi lấy thông tin tài khoản");
 
         const data = await res.json();
-        if (!data || Object.keys(data).length === 0)
-          throw new Error("Dữ liệu không hợp lệ");
+        if (!data || Object.keys(data).length === 0) throw new Error("Dữ liệu không hợp lệ");
 
         setInfo(data);
       } catch (error) {
@@ -65,40 +61,18 @@ export default function AccountDetail() {
         <div className="w-[60%] mx-auto grid grid-cols-2 p-5 text-left gap-10">
           <div>
             <label htmlFor="employee_id">Mã nhân viên:</label>
-            <input
-              name="employee_id"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              readOnly
-              value={info?.employee_code || ""}
-            />
+            <input name="employee_id" className="w-full border rounded p-2 mb-2" type="text" readOnly value={info?.employee_code || ""} />
             <label htmlFor="role">Chức vụ/Vị trí:</label>
-            <input
-              name="role"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              value={info?.role || ""}
-              readOnly
-            />
+            <input name="role" className="w-full border rounded p-2 mb-2" type="text" value={info?.role || ""} readOnly />
             <label htmlFor="employee_name">Họ và tên:</label>
-            <input
-              name="employee_name"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              readOnly
-              value={info?.employee_name || ""}
-            />
+            <input name="employee_name" className="w-full border rounded p-2 mb-2" type="text" readOnly value={info?.employee_name || ""} />
             <label htmlFor="employee_birthday">Ngày sinh:</label>
             <input
               name="employee_birthday"
               className="w-full border rounded p-2 mb-2"
               type="date"
               readOnly
-              value={
-                info?.employee_birthday
-                  ? new Date(info.employee_birthday).toISOString().split("T")[0]
-                  : ""
-              }
+              value={info?.employee_birthday ? new Date(info.employee_birthday).toISOString().split("T")[0] : ""}
             />
             <label htmlFor="employee_bank_account">Số tài khoản TCB:</label>
             <input
@@ -144,13 +118,7 @@ export default function AccountDetail() {
               value={info?.employee_work_email || ""}
             />
             <label htmlFor="employee_work_password">Mật khẩu:</label>
-            <input
-              name="employee_work_password"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              readOnly
-              value="******"
-            />
+            <input name="employee_work_password" className="w-full border rounded p-2 mb-2" type="text" readOnly value="******" />
             <label htmlFor="employee_license_plates">Biển số xe:</label>
             <input
               name="employee_license_plates"
@@ -161,10 +129,7 @@ export default function AccountDetail() {
             />
           </div>
         </div>
-        <button
-          onClick={() => history.back()}
-          className="bg-red-400 p-2 rounded cursor-pointer hover:bg-red-600 hover:text-white"
-        >
+        <button onClick={() => history.back()} className="bg-red-400 p-2 rounded cursor-pointer hover:bg-red-600 hover:text-white">
           Return
         </button>
       </div>

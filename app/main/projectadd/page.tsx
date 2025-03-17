@@ -1,8 +1,12 @@
 "use client";
 
+import { Button, DatePicker, Input } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Select from "react-select";
+import "@ant-design/v5-patch-for-react-19";
+import TextArea from "antd/es/input/TextArea";
+import dayjs from "dayjs";
 
 interface Dev {
   id: number;
@@ -20,19 +24,18 @@ export default function AddProject() {
     members: [],
   });
   const [tasks, setTasks] = useState<string[]>([""]);
-
-  const isMin = tasks.length === 1;
-  const isMax = tasks.length === 6;
+  const isDisabled =
+    !project.project_name.trim() || tasks.every((t) => t.trim() === "") || !project.start_date || !project.end_date || project.members.length === 0;
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const userRole = sessionStorage.getItem("userRole");
       const loggedIn = sessionStorage.getItem("isLogin");
 
-      if (loggedIn && userRole !== "Leader") {
-        router.replace("/main/notyourright");
-      } else if (!loggedIn) {
+      if (!loggedIn) {
         router.replace("/auth");
+      } else if (userRole !== "Leader") {
+        router.replace("/main/notyourright");
       }
     }
 
@@ -62,19 +65,31 @@ export default function AddProject() {
           tasks: tasks.filter((t) => t.trim() !== ""),
         }),
       });
-      if (!res.ok) throw new Error("Không thể thêm dự án");
 
-      alert("Thêm dự án thành công");
+      const responseData = await res.json();
+      if (!res.ok) {
+        console.error("Lỗi từ server:", responseData);
+        alert(responseData.message || "Có lỗi xảy ra, vui lòng thử lại.");
+        return;
+      }
+
+      alert("Thêm dự án thành công!");
       window.location.reload();
     } catch (error) {
-      console.log("Lỗi thêm dự án: ", error);
+      console.error("Lỗi thêm dự án:", error);
+      alert("Đã xảy ra lỗi khi thêm dự án. Vui lòng kiểm tra lại.");
     }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setProject((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleDateChange = (name: string, date: dayjs.Dayjs | null) => {
+    setProject((prev) => ({
+      ...prev,
+      [name]: date ? date.format("YYYY-MM-DD") : "",
+    }));
   };
 
   const handleTasksChange = (index: number, value: string) => {
@@ -105,73 +120,41 @@ export default function AddProject() {
       <div className="w-full text-center rounded-lg bg-white p-5">
         <h1 className="text-2xl font-bold">Thêm dự án</h1>
         <div className="flex justify-between items-center my-3">
-          <div>
-            <button
-              onClick={handleAddTasks}
-              disabled={isMax}
-              className={`bg-blue-400 p-2 mr-3 rounded ${
-                isMax
-                  ? "cursor-no-drop hover:bg-blue-600"
-                  : "cursor-pointer hover:bg-blue-600 hover:text-white"
-              }`}
-            >
-              Add new tasks
-            </button>
-            <button
-              onClick={handleRemoveTasks}
-              disabled={isMin}
-              className={`bg-red-400 p-2 rounded ${
-                isMin
-                  ? "cursor-no-drop hover:bg-red-600"
-                  : "cursor-pointer hover:bg-red-600 hover:text-white"
-              }`}
-            >
-              Remove latest tasks
-            </button>
+          <div className="flex gap-x-3">
+            <Button type="primary" onClick={handleAddTasks} disabled={tasks.length === 6}>
+              Thêm task
+            </Button>
+            <Button color="danger" variant="solid" onClick={handleRemoveTasks} disabled={tasks.length === 1}>
+              Giảm task
+            </Button>
           </div>
-          <button
-            onClick={handleAddProject}
-            className="bg-blue-400 p-2 rounded cursor-pointer hover:bg-blue-600 hover:text-white"
-          >
-            Add project
-          </button>
+          <Button type="primary" onClick={handleAddProject} disabled={isDisabled}>
+            Tạo dự án
+          </Button>
         </div>
         <div className="grid grid-cols-2 text-left gap-x-10">
           <div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between py-1">
               <label htmlFor="project_name">Tên dự án:</label>
-              <input
-                className="w-[70%] my-2 p-1 border rounded-lg"
-                name="project_name"
-                type="text"
-                onChange={handleChange}
-              />
+              <Input name="project_name" style={{ width: "70%", padding: "8px" }} onChange={handleChange} />
             </div>
-
             {tasks.map((t, index) => (
-              <div
-                key={index}
-                className="w-full flex items-center justify-between my-2"
-              >
-                <label htmlFor={`tasks_name_${index}`}>
-                  Tên công việc {index + 1}:
-                </label>
-                <input
-                  className="w-[70%] my-2 p-1 border rounded-lg"
+              <div key={index} className="flex items-center justify-between my-2">
+                <label htmlFor={`tasks_name_${index}`}>Tên task {index + 1}:</label>
+                <Input
                   name={`tasks_name_${index}`}
-                  type="text"
+                  style={{ width: "70%", padding: "8px" }}
                   value={t}
                   onChange={(e) => handleTasksChange(index, e.target.value)}
                 />
               </div>
             ))}
           </div>
-
           <div>
             <div className="flex items-center justify-between">
               <label htmlFor="select_dev">Thành viên tham gia:</label>
               <Select
-                className="w-[60%] block p-1"
+                className="w-[60%] p-1"
                 isMulti
                 name="select_dev"
                 options={dev?.map((dev) => ({
@@ -183,30 +166,14 @@ export default function AddProject() {
             </div>
             <div className="flex items-center justify-between my-2">
               <label htmlFor="start_date">Thời gian bắt đầu:</label>
-              <input
-                className="w-[40%] block my-2 p-1 border rounded-lg"
-                name="start_date"
-                type="date"
-                onChange={handleChange}
-              />
+              <DatePicker style={{ width: "50%", padding: "8px" }} onChange={(date) => handleDateChange("start_date", date)} />
             </div>
             <div className="flex items-center justify-between my-2">
               <label htmlFor="end_date">Thời gian kết thúc (dự kiến):</label>
-              <input
-                className="w-[40%] block my-2 p-1 border rounded-lg"
-                name="end_date"
-                type="date"
-                onChange={handleChange}
-              />
+              <DatePicker style={{ width: "50%", padding: "8px" }} onChange={(date) => handleDateChange("end_date", date)} />
             </div>
             <label htmlFor="description">Mô tả dự án:</label>
-            <textarea
-              className="w-full block my-2 p-1 border rounded-lg resize-none"
-              rows={8}
-              name="description"
-              placeholder="Nhập mô tả"
-              onChange={handleChange}
-            ></textarea>
+            <TextArea rows={8} name="description" placeholder="Nhập mô tả dự án..." onChange={handleChange} />
           </div>
         </div>
       </div>

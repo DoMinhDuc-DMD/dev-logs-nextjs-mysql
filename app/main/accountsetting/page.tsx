@@ -1,7 +1,9 @@
 "use client";
 
+import { Button, Input } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import "@ant-design/v5-patch-for-react-19";
 
 export default function AccountSetting() {
   const router = useRouter();
@@ -27,18 +29,13 @@ export default function AccountSetting() {
           router.replace("/auth/login");
           return;
         }
-
-        const res = await fetch(`/main/accountsetting/api?userId=${userId}`, {
-          method: "GET",
-        });
-
+        const res = await fetch(`/main/accountsetting/api?userId=${userId}`, { method: "GET" });
         if (!res.ok) {
           throw new Error("Lỗi lấy thông tin tài khoản");
         }
 
         const data = await res.json();
-        if (!data || Object.keys(data).length === 0)
-          throw new Error("Dữ liệu không hợp lệ");
+        if (!data || Object.keys(data).length === 0) throw new Error("Dữ liệu không hợp lệ");
 
         setInfo(data);
       } catch (error) {
@@ -50,7 +47,6 @@ export default function AccountSetting() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
     setInfo((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -87,116 +83,38 @@ export default function AccountSetting() {
         <div className="w-[60%] mx-auto grid grid-cols-2 p-5 text-left gap-10">
           <div>
             <label htmlFor="employee_id">Mã nhân viên:</label>
-            <input
-              name="employee_id"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              value={info?.employee_code || ""}
-              readOnly
-            />
+            <Input name="employee_id" value={info?.employee_code || ""} readOnly />
             <label htmlFor="role">Chức vụ/Vị trí:</label>
-            <input
-              name="role"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              value={info?.role || ""}
-              readOnly
-            />
+            <Input name="role" value={info?.role || ""} readOnly />
             <label htmlFor="employee_name">Họ và tên:</label>
-            <input
-              name="employee_name"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              value={info?.employee_name || ""}
-              onChange={handleChange}
-            />
+            <Input name="employee_name" value={info?.employee_name || ""} onChange={handleChange} />
             <label htmlFor="employee_birthday">Ngày sinh:</label>
-            <input
-              name="employee_birthday"
-              className="w-full border rounded p-2 mb-2"
-              type="date"
-              value={
-                info?.employee_birthday
-                  ? new Date(info.employee_birthday).toISOString().split("T")[0]
-                  : ""
-              }
-              onChange={handleChange}
-            />
+            <Input name="employee_birthday" value={info?.employee_birthday} onChange={handleChange} />
             <label htmlFor="employee_bank_account">Số tài khoản TCB:</label>
-            <input
-              name="employee_bank_account"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              value={info?.employee_bank_account || ""}
-              onChange={handleChange}
-            />
+            <Input name="employee_bank_account" value={info?.employee_bank_account || ""} onChange={handleChange} />
             <label htmlFor="employee_private_email">Email cá nhân:</label>
-            <input
-              name="employee_private_email"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              value={info?.employee_private_email || ""}
-              onChange={handleChange}
-            />
+            <Input name="employee_private_email" value={info?.employee_private_email || ""} onChange={handleChange} />
           </div>
           <div>
             <label htmlFor="employee_phone_number">Số điện thoại:</label>
-            <input
-              name="employee_phone_number"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              value={info?.employee_phone_number || ""}
-              onChange={handleChange}
-            />
+            <Input name="employee_phone_number" value={info?.employee_phone_number || ""} onChange={handleChange} />
             <label htmlFor="employee_citizen_identification">CCCD/CMND:</label>
-            <input
-              name="employee_citizen_identification"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              value={info?.employee_citizen_identification || ""}
-              onChange={handleChange}
-            />
+            <Input name="employee_citizen_identification" value={info?.employee_citizen_identification || ""} onChange={handleChange} />
             <label htmlFor="employee_work_email">Email:</label>
-            <input
-              name="employee_work_email"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              placeholder="example@vikmail.com"
-              value={info?.employee_work_email || ""}
-              onChange={handleChange}
-            />
+            <Input name="employee_work_email" value={info?.employee_work_email || ""} onChange={handleChange} />
             <label htmlFor="employee_work_password">Mật khẩu:</label>
-            <input
-              name="employee_work_password"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              value={info?.employee_work_password || ""}
-              onChange={handleChange}
-            />
+            <Input name="employee_work_password" value={info?.employee_work_password || ""} onChange={handleChange} />
             <label htmlFor="employee_license_plates">Biển số xe:</label>
-            <input
-              name="employee_license_plates"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              value={info?.employee_license_plate || ""}
-              onChange={handleChange}
-            />
+            <Input name="employee_license_plates" value={info?.employee_license_plate || ""} onChange={handleChange} />
           </div>
         </div>
         <div className="flex gap-x-3 justify-center w-full">
-          <button
-            onClick={handleUpdate}
-            className="bg-blue-400 p-2 rounded cursor-pointer hover:bg-blue-600 hover:text-white"
-          >
+          <Button onClick={handleUpdate} type="primary">
             Update
-          </button>
-
-          <button
-            onClick={handleLogout}
-            className="bg-red-400 p-2 rounded cursor-pointer hover:bg-red-600 hover:text-white"
-          >
+          </Button>
+          <Button onClick={handleLogout} color="danger" variant="solid">
             Logout
-          </button>
+          </Button>
         </div>
       </div>
     </div>

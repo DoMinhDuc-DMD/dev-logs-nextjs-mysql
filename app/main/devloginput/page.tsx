@@ -2,72 +2,92 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
 import Select from "react-select";
-import { DatePicker } from "antd";
+import { DatePicker, Button, Checkbox, CheckboxChangeEvent, InputNumber } from "antd";
+import dayjs from "dayjs";
+import TextArea from "antd/es/input/TextArea";
+import "@ant-design/v5-patch-for-react-19";
 
 export default function Form() {
   const router = useRouter();
+  const [project, setProject] = useState([]);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [task, setTask] = useState([]);
+  const [filteredTask, setFilteredTask] = useState([]);
   const [formData, setFormData] = useState({
-    hours: "",
+    hours: 1,
     overtime: false,
     note: "",
     date: "",
+    project: null,
+    task: null,
   });
-  const [project, setProject] = useState();
-  const [task, setTask] = useState();
+  const isButtonDisabled = !formData.date || !formData.hours || !formData.project || !formData.task;
 
   useEffect(() => {
-    if (typeof window === "undefined") {
+    if (typeof window !== "undefined") {
       const userRole = sessionStorage.getItem("userRole");
       const loggedIn = sessionStorage.getItem("isLogin");
-
-      if ((loggedIn && userRole !== "Leader") || userRole !== "Developer") {
-        router.replace("/main/notyourright");
-      } else if (!loggedIn) {
+      if (!loggedIn) {
         router.replace("/auth");
+      } else if (userRole !== "Leader" && userRole !== "Developer") {
+        router.replace("/main/notyourright");
       }
     }
-
     async function fetchProjectTask() {
       const res = await fetch("/main/devloginput/api");
       const data = await res.json();
       setProject(data.formattedProject);
       setTask(data.formattedTask);
     }
-
     fetchProjectTask();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]:
-        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
-    }));
+  const handleInputNumberChange = (value: number | null) => {
+    if (value !== null) {
+      setFormData((prev) => ({
+        ...prev,
+        hours: value !== null ? value : 1,
+      }));
+    }
   };
 
   const handleSelectChange = (selectedOption: any, actionMeta: any) => {
     const { name } = actionMeta;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: selectedOption.value,
-    }));
-  };
-
-  const handleDateChange = (value: any) => {
-    if (value) {
-      const adjustedDate = new Date(
-        value.getTime() - value.getTimezoneOffset() * 60000
-      );
+    if (name === "project") {
+      setSelectedProject(selectedOption.value);
+      const filtered = task.filter((t: any) => t.projectId === selectedOption.value);
+      setFilteredTask(filtered);
 
       setFormData((prev) => ({
         ...prev,
-        date: adjustedDate.toISOString().split("T")[0],
+        project: selectedOption.value,
+        task: null,
+      }));
+    } else if (name === "task") {
+      setFormData((prev) => ({
+        ...prev,
+        task: selectedOption.value,
       }));
     }
+  };
+
+  const handleCheckBoxChange = (e: CheckboxChangeEvent) => {
+    setFormData((prev) => ({
+      ...prev,
+      overtime: e.target.checked,
+    }));
+  };
+
+  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      note: e.target.value,
+    }));
+  };
+
+  const handleDateChange = (date: dayjs.Dayjs | null) => {
+    setFormData((prev) => ({ ...prev, date: date ? date.format("YYYY-MM-DD") : "" }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -81,66 +101,37 @@ export default function Form() {
 
     const data = await res.json();
     alert(data.message);
+    window.location.reload();
   };
 
   return (
     <div className="p-5 flex gap-x-2">
       <div className="w-full">
         <div className="rounded-lg bg-white p-5">
-          <div className="flex justify-between items-center">
-            <Select
-              className="w-[30%]"
-              options={project}
-              name="project"
-              onChange={handleSelectChange}
-            />
-            <Select
-              className="w-[30%]"
-              options={task}
-              name="task"
-              onChange={handleSelectChange}
-            />
+          <div className="flex justify-between items-center my-5">
+            <Select className="w-[35%]" onChange={handleSelectChange} name="project" options={project} />
+            <Select className="w-[35%]" onChange={handleSelectChange} name="task" options={filteredTask} isDisabled={!selectedProject} />
             <div className="flex items-center gap-x-6">
-              <label htmlFor="hours">Số giờ: </label>
-              <input
-                id="datetime"
-                name="hours"
+              <label htmlFor="hours">Số giờ</label>
+              <InputNumber
+                value={formData.hours}
+                min={1}
+                max={24}
+                onChange={handleInputNumberChange}
                 type="number"
-                placeholder="..."
-                onChange={handleChange}
-                className="w-[50px] h-[36px] text-center border rounded [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                style={{ width: 60, height: 35 }}
               />
               <label htmlFor="overtime">OT</label>
-              <input
-                name="overtime"
-                type="checkbox"
-                id="overtime"
-                className="ml-2"
-                onChange={handleChange}
-              />
+              <Checkbox name="overtime" id="overtime" onChange={handleCheckBoxChange}></Checkbox>
             </div>
           </div>
-          <input
-            name="note"
-            className="flex w-full mt-5 p-2"
-            type="text"
-            placeholder="Ghi chú"
-            onChange={handleChange}
-          />
+          <TextArea name="note" rows={4} placeholder="Ghi chú" onChange={handleTextAreaChange} />
+          <Button onClick={handleSubmit} type="primary" className="mt-5" disabled={isButtonDisabled}>
+            Add devlog
+          </Button>
         </div>
-        <button
-          onClick={handleSubmit}
-          className="bg-blue-400 p-2 mt-5 rounded cursor-pointer hover:bg-blue-600 hover:text-white"
-        >
-          Add devlog
-        </button>
       </div>
-      {/* <Calendar
-        className=" bg-gray-300 rounded-lg p-2"
-        onChange={handleDateChange}
-        value={formData.date}
-      /> */}
-      <DatePicker open={true} className="w-[300px]" />
+      <DatePicker onChange={handleDateChange} className="w-[30%] h-10" />
     </div>
   );
 }

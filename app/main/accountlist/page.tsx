@@ -1,7 +1,9 @@
 "use client";
 
+import { Button, Input } from "antd";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
+import "@ant-design/v5-patch-for-react-19";
 
 interface Account {
   id: number;
@@ -47,10 +49,10 @@ export default function AccountList() {
 
       setRole(userRole);
 
-      if (userRole !== "Admin" && userRole !== "HCNS") {
-        router.replace("/main/notyourright");
-      } else if (!loggedIn) {
+      if (!loggedIn) {
         router.replace("/auth");
+      } else if (userRole !== "Admin" && userRole !== "HCNS") {
+        router.replace("/main/notyourright");
       }
     }
 
@@ -66,9 +68,7 @@ export default function AccountList() {
     });
   };
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setEditedData((prev) => ({ ...prev!, [e.target.name]: e.target.value }));
   };
 
@@ -100,7 +100,7 @@ export default function AccountList() {
         <div className="h-full">
           <div className="max-h-[630px] overflow-y-auto border border-gray-300 rounded">
             <table className="w-full">
-              <thead className="bg-gray-200 sticky top-0">
+              <thead className="bg-gray-200 sticky top-0" style={{ zIndex: 1000 }}>
                 {role === "Admin" ? (
                   <tr>
                     <th className="border p-2 w-[10%]">ID</th>
@@ -121,45 +121,25 @@ export default function AccountList() {
               <tbody className="text-center">
                 {accounts.length > 0 ? (
                   accounts.map((account, index) => (
-                    <tr
-                      key={`account-${index + 1}`}
-                      className="hover:bg-gray-100"
-                    >
+                    <tr key={`account-${index + 1}`} className="hover:bg-gray-100">
                       <td className="border p-2">{index + 1}</td>
                       <td className="border p-2">
                         {editingId === account.id ? (
-                          <input
-                            name="employee_work_email"
-                            className="border rounded w-full p-1"
-                            type="email"
-                            value={editedData?.employee_work_email || ""}
-                            onChange={handleChange}
-                          />
+                          <Input name="employee_work_email" type="email" value={editedData?.employee_work_email || ""} onChange={handleChange} />
                         ) : (
                           account.employee_work_email
                         )}
                       </td>
                       <td className="border p-2">
                         {editingId === account.id ? (
-                          <input
-                            name="employee_work_password"
-                            className="border rounded w-full p-1"
-                            type="text"
-                            value={editedData?.employee_work_password || ""}
-                            onChange={handleChange}
-                          />
+                          <Input name="employee_work_password" value={editedData?.employee_work_password || ""} onChange={handleChange} />
                         ) : (
                           "******"
                         )}
                       </td>
                       <td className="border p-2">
                         {editingId === account.id ? (
-                          <select
-                            name="role"
-                            value={editedData?.role || ""}
-                            onChange={handleChange}
-                            className="border p-1 w-full"
-                          >
+                          <select name="role" value={editedData?.role || ""} onChange={handleChange} className="border p-1 w-full">
                             <option value="HCNS">Hành chính nhân sự</option>
                             <option value="Leader">Leader</option>
                             <option value="Dev">Developer</option>
@@ -171,30 +151,15 @@ export default function AccountList() {
                       {role === "Admin" && (
                         <td className="border p-2">
                           {editingId === account.id ? (
-                            <button
-                              onClick={handleSave}
-                              className="bg-blue-400 px-3 py-1 rounded cursor-pointer hover:bg-blue-600 hover:text-white"
-                            >
-                              Save
-                            </button>
+                            <Button onClick={handleSave}>Save</Button>
                           ) : (
                             <>
-                              <button
-                                onClick={() =>
-                                  router.push(
-                                    `/main/accountlist/accountdetail?id=${account.id}`
-                                  )
-                                }
-                                className="bg-blue-400 px-3 py-1 rounded cursor-pointer hover:bg-blue-600 hover:text-white"
-                              >
+                              <Button onClick={() => router.push(`/main/accountlist/accountdetail?id=${account.id}`)} type="primary">
                                 Detail
-                              </button>
-                              <button
-                                onClick={() => handleAdjust(account)}
-                                className="bg-green-400 px-3 py-1 rounded cursor-pointer hover:bg-green-600 hover:text-white"
-                              >
+                              </Button>
+                              <Button onClick={() => handleAdjust(account)} color="cyan" type="primary">
                                 Adjust
-                              </button>
+                              </Button>
                             </>
                           )}
                         </td>

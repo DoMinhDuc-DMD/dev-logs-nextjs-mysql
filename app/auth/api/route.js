@@ -26,9 +26,10 @@ export async function POST(req) {
     const user = rows[0];
 
     if (password !== rows[0].employee_work_password) {
-      return NextResponse(JSON.stringify({ message: "Sai mật khẩu" }), {
-        status: 401,
-      });
+      return NextResponse.json(
+        { message: "Sai mật khẩu" },
+        { status: 401 }
+      );
     }
 
     return NextResponse.json({

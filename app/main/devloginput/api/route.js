@@ -10,17 +10,18 @@ const db = mysql.createPool({
 
 export async function GET() {
   try {
-    const [project] = await db.query("SELECT project_name FROM project");
-    const [task] = await db.query("SELECT task_name FROM task");
+    const [project] = await db.query("SELECT * FROM project");
+    const [task] = await db.query("SELECT * FROM task");
 
     const formattedProject = project.map((row) => ({
-      value: row.project_name.toLowerCase(),
+      value: row.id,
       label: row.project_name,
     }));
 
     const formattedTask = task.map((row) => ({
-      value: row.task_name.toLowerCase(),
+      value: row.id,
       label: row.task_name,
+      projectId: row.project_id
     }));
 
     return NextResponse.json({ formattedProject, formattedTask });
@@ -31,12 +32,9 @@ export async function GET() {
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    console.log(body);
+    const { userId, hours, overtime, date, note, project, task } = await req.json();
 
-    const { userId, hour, overtime, date, note } = body;
-
-    if (!projectId || !taskId || !hour || !date) {
+    if (!project || !task || !hours || !date) {
       return NextResponse.json(
         { message: "Vui lòng nhập đầy đủ thông tin" },
         { status: 400 }
@@ -44,14 +42,14 @@ export async function POST(req) {
     }
 
     const [result] = await db.query(
-      `INSERT INTO devlog (hour, overtime, date, note) VALUES (?, ?, ?, ?)`,
-      [project, position, hour, overtime ? 1 : 0, date, note]
+      `INSERT INTO devlog (hours, overtime, date, note) VALUES (?, ?, ?, ?)`,
+      [hours, overtime, date, note]
     );
 
     const devlogId = result.insertId;
     await db.query(
-      `INSERT INTO devlog_project (devlog_id, account_id) VALUES (?, ?)`,
-      [devlogId, userId]
+      `INSERT INTO devlog_project (devlog_id, account_id, project_id, task_id) VALUES (?, ?, ?, ?)`,
+      [devlogId, userId, project, task]
     );
 
     return NextResponse.json({ message: "Thêm devlog thành công!" });

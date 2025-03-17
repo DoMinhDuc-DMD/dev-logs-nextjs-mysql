@@ -21,6 +21,7 @@ export async function GET() {
 export async function POST(req) {
     try {
         const { project_name, start_date, end_date, members, description, tasks } = await req.json();
+        console.log(project_name, start_date, end_date, members, description, tasks);
         const [projectResult] = await db.query("INSERT INTO project (project_name,description,start_date,end_date) VALUES (?,?,?,?)",
             [project_name, description, start_date, end_date]);
 
@@ -30,7 +31,7 @@ export async function POST(req) {
         }
 
         for (const member of members) {
-            await db.query("INSERT INTO dev_project (dev_id,project_id) VALUES (?,?)", [member, project_id]);
+            await db.query("INSERT INTO member_project (account_id,project_id) VALUES (?,?)", [member, project_id]);
         }
 
         return NextResponse.json(

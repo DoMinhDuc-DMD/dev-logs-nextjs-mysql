@@ -18,8 +18,16 @@ export async function GET(req) {
         }
 
         const [rows] = await db.query("SELECT * FROM account WHERE id = ?", [userId]);
+
         if (rows.length === 0) {
             return NextResponse.json({ message: "Không tìm thấy tài khoản" }, { status: 404 });
+        }
+        const user = rows[0];
+
+        if (user.employee_birthday) {
+            user.employee_birthday = new Date(user.employee_birthday)
+                .toISOString()
+                .split("T")[0];
         }
 
         return NextResponse.json(rows[0]);
