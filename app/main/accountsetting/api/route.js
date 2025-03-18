@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import mysql from "mysql2/promise";
+import { format } from "date-fns";
 
 const db = mysql.createPool({
     host: "localhost",
@@ -17,20 +18,14 @@ export async function GET(req) {
             return NextResponse.json({ message: "Thiếu userId" }, { status: 400 });
         }
 
-        const [rows] = await db.query("SELECT * FROM account WHERE id = ?", [userId]);
+        const [accounts] = await db.query("SELECT * FROM account WHERE id = ?", [userId]);
 
-        if (rows.length === 0) {
-            return NextResponse.json({ message: "Không tìm thấy tài khoản" }, { status: 404 });
-        }
-        const user = rows[0];
-
+        const user = accounts[0];
         if (user.employee_birthday) {
-            user.employee_birthday = new Date(user.employee_birthday)
-                .toISOString()
-                .split("T")[0];
+            user.employee_birthday = format(new Date(user.employee_birthday), 'dd/MM/yyyy');
         }
 
-        return NextResponse.json(rows[0]);
+        return NextResponse.json(accounts[0]);
     } catch (error) {
         return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
     }

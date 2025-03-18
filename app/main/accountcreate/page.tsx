@@ -1,5 +1,6 @@
 "use client";
 
+import { Button, Input } from "antd";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import Select from "react-select";
@@ -59,24 +60,23 @@ export default function CreateAccount() {
   return (
     <form className="w-130 my-10 mx-auto rounded bg-white p-5 shadow-lg w-[400px]" onSubmit={handleSubmit}>
       <h2 className="text-center text-xl font-semibold mb-5">Register New Account</h2>
-      <div className="flex flex-col gap-y-1">
+      <div className="flex flex-col gap-y-4">
         <label className="block text-left" htmlFor="email">
           Account
         </label>
-        <input className="px-3 py-2 border rounded" placeholder="Enter email" type="email" name="email" />
+        <Input style={{ padding: 10 }} placeholder="Enter email" type="email" name="email" />
         <label className="block text-left" htmlFor="password">
           Password
         </label>
-        <input className="px-3 py-2 border rounded" placeholder="Enter password" type="password" name="password" />
-
+        <Input style={{ padding: 10 }} placeholder="Enter password" type="password" name="password" />
         <label className="block text-left" htmlFor="role">
           Select Role
         </label>
         <Select options={options} name="role" />
         {message && <p className="text-center text-red-500">{message}</p>}
-        <button className="w-32 mx-auto bg-blue-300 hover:bg-blue-500 hover:text-white px-3 py-1 rounded cursor-pointer" type="submit">
+        <Button className="w-30 py-2 mx-auto" type="primary" htmlType="submit">
           Register
-        </button>
+        </Button>
       </div>
     </form>
   );

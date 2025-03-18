@@ -37,6 +37,7 @@ export async function POST(req) {
       userId: user.id,
       isLogin: true,
       userRole: user.role,
+      userName: user.employee_name
     });
   } catch (error) {
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });

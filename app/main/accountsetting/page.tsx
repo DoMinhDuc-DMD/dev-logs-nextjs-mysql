@@ -26,7 +26,7 @@ export default function AccountSetting() {
       try {
         const userId = sessionStorage.getItem("userId");
         if (!userId) {
-          router.replace("/auth/login");
+          router.replace("/auth");
           return;
         }
         const res = await fetch(`/main/accountsetting/api?userId=${userId}`, { method: "GET" });
@@ -54,7 +54,7 @@ export default function AccountSetting() {
     try {
       const userId = sessionStorage.getItem("userId");
       if (!userId) {
-        router.replace("/auth/login");
+        router.replace("/auth");
         return;
       }
 
@@ -73,6 +73,7 @@ export default function AccountSetting() {
     sessionStorage.removeItem("userId");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("isLogin");
+    sessionStorage.removeItem("userName");
     router.replace("/auth");
   };
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { Button, Input } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -26,7 +27,7 @@ export default function AccountDetail() {
 
       if (!loggedIn) {
         router.replace("/auth");
-      } else if (userRole !== "Admin" && userRole !== "HCNS") {
+      } else if (userRole !== "Admin" && userRole !== "HR") {
         router.replace("/main/notyourright");
       }
     }
@@ -61,77 +62,34 @@ export default function AccountDetail() {
         <div className="w-[60%] mx-auto grid grid-cols-2 p-5 text-left gap-10">
           <div>
             <label htmlFor="employee_id">Mã nhân viên:</label>
-            <input name="employee_id" className="w-full border rounded p-2 mb-2" type="text" readOnly value={info?.employee_code || ""} />
+            <Input name="employee_id" value={info?.employee_code || ""} readOnly />
             <label htmlFor="role">Chức vụ/Vị trí:</label>
-            <input name="role" className="w-full border rounded p-2 mb-2" type="text" value={info?.role || ""} readOnly />
+            <Input name="role" value={info?.role || ""} readOnly />
             <label htmlFor="employee_name">Họ và tên:</label>
-            <input name="employee_name" className="w-full border rounded p-2 mb-2" type="text" readOnly value={info?.employee_name || ""} />
+            <Input name="employee_name" value={info?.employee_name || ""} readOnly />
             <label htmlFor="employee_birthday">Ngày sinh:</label>
-            <input
-              name="employee_birthday"
-              className="w-full border rounded p-2 mb-2"
-              type="date"
-              readOnly
-              value={info?.employee_birthday ? new Date(info.employee_birthday).toISOString().split("T")[0] : ""}
-            />
+            <Input name="employee_birthday" value={info?.employee_birthday} readOnly />
             <label htmlFor="employee_bank_account">Số tài khoản TCB:</label>
-            <input
-              name="employee_bank_account"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              readOnly
-              value={info?.employee_bank_account || ""}
-            />
+            <Input name="employee_bank_account" value={info?.employee_bank_account || ""} readOnly />
             <label htmlFor="employee_private_email">Email cá nhân:</label>
-            <input
-              name="employee_private_email"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              readOnly
-              value={info?.employee_private_email || ""}
-            />
+            <Input name="employee_private_email" value={info?.employee_private_email || ""} readOnly />
           </div>
           <div>
             <label htmlFor="employee_phone_number">Số điện thoại:</label>
-            <input
-              name="employee_phone_number"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              readOnly
-              value={info?.employee_phone_number || ""}
-            />
+            <Input name="employee_phone_number" value={info?.employee_phone_number || ""} readOnly />
             <label htmlFor="employee_citizen_identification">CCCD/CMND:</label>
-            <input
-              name="employee_citizen_identification"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              readOnly
-              value={info?.employee_citizen_identification || ""}
-            />
+            <Input name="employee_citizen_identification" value={info?.employee_citizen_identification || ""} readOnly />
             <label htmlFor="employee_work_email">Email:</label>
-            <input
-              name="employee_work_email"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              placeholder="example@vikmail.com"
-              readOnly
-              value={info?.employee_work_email || ""}
-            />
+            <Input name="employee_work_email" value={info?.employee_work_email || ""} readOnly />
             <label htmlFor="employee_work_password">Mật khẩu:</label>
-            <input name="employee_work_password" className="w-full border rounded p-2 mb-2" type="text" readOnly value="******" />
+            <Input name="employee_work_password" value={info?.employee_work_password || ""} readOnly />
             <label htmlFor="employee_license_plates">Biển số xe:</label>
-            <input
-              name="employee_license_plates"
-              className="w-full border rounded p-2 mb-2"
-              type="text"
-              readOnly
-              value={info?.employee_license_plate || ""}
-            />
+            <Input name="employee_license_plates" value={info?.employee_license_plate || ""} readOnly />
           </div>
         </div>
-        <button onClick={() => history.back()} className="bg-red-400 p-2 rounded cursor-pointer hover:bg-red-600 hover:text-white">
+        <Button onClick={() => history.back()} variant="solid" color="danger">
           Return
-        </button>
+        </Button>
       </div>
     </div>
   );

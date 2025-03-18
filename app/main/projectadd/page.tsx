@@ -18,14 +18,20 @@ export default function AddProject() {
   const [dev, setDev] = useState<Dev[]>([]);
   const [project, setProject] = useState({
     project_name: "",
-    start_date: "",
-    end_date: "",
+    start_date: null,
+    end_date: null,
     description: "",
     members: [],
   });
   const [tasks, setTasks] = useState<string[]>([""]);
   const isDisabled =
     !project.project_name.trim() || tasks.every((t) => t.trim() === "") || !project.start_date || !project.end_date || project.members.length === 0;
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -72,7 +78,6 @@ export default function AddProject() {
         alert(responseData.message || "Có lỗi xảy ra, vui lòng thử lại.");
         return;
       }
-
       alert("Thêm dự án thành công!");
       window.location.reload();
     } catch (error) {
@@ -153,16 +158,15 @@ export default function AddProject() {
           <div>
             <div className="flex items-center justify-between">
               <label htmlFor="select_dev">Thành viên tham gia:</label>
-              <Select
-                className="w-[60%] p-1"
-                isMulti
-                name="select_dev"
-                options={dev?.map((dev) => ({
-                  value: dev.id,
-                  label: dev.employee_name,
-                }))}
-                onChange={handleSelectChange}
-              />
+              {dev.length > 0 && (
+                <Select
+                  className="w-[60%] p-1"
+                  isMulti
+                  name="select_dev"
+                  options={dev.map((dev) => ({ value: dev.id, label: dev.employee_name }))}
+                  onChange={handleSelectChange}
+                />
+              )}
             </div>
             <div className="flex items-center justify-between my-2">
               <label htmlFor="start_date">Thời gian bắt đầu:</label>

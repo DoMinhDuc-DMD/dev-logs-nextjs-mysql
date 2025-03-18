@@ -7,13 +7,16 @@ import { DatePicker, Button, Checkbox, CheckboxChangeEvent, InputNumber } from "
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import "@ant-design/v5-patch-for-react-19";
+import session from "express-session";
 
 export default function Form() {
   const router = useRouter();
+
   const [project, setProject] = useState([]);
-  const [selectedProject, setSelectedProject] = useState(null);
   const [task, setTask] = useState([]);
   const [filteredTask, setFilteredTask] = useState([]);
+
+  const [selectedProject, setSelectedProject] = useState(null);
   const [formData, setFormData] = useState({
     hours: 1,
     overtime: false,
@@ -23,6 +26,11 @@ export default function Form() {
     task: null,
   });
   const isButtonDisabled = !formData.date || !formData.hours || !formData.project || !formData.task;
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -37,6 +45,14 @@ export default function Form() {
     async function fetchProjectTask() {
       const res = await fetch("/main/devloginput/api");
       const data = await res.json();
+
+      const userId = sessionStorage.getItem("userId");
+
+      const userProjects = data.member_project.filter((mp: any) => mp.account_id == userId);
+
+      console.log(data.member_project);
+
+      // setProject(filteredProject);
       setProject(data.formattedProject);
       setTask(data.formattedTask);
     }
@@ -109,8 +125,10 @@ export default function Form() {
       <div className="w-full">
         <div className="rounded-lg bg-white p-5">
           <div className="flex justify-between items-center my-5">
-            <Select className="w-[35%]" onChange={handleSelectChange} name="project" options={project} />
-            <Select className="w-[35%]" onChange={handleSelectChange} name="task" options={filteredTask} isDisabled={!selectedProject} />
+            {isMounted && <Select className="w-[35%]" onChange={handleSelectChange} name="project" options={project} />}
+            {isMounted && (
+              <Select className="w-[35%]" onChange={handleSelectChange} name="task" options={filteredTask} isDisabled={!selectedProject} />
+            )}
             <div className="flex items-center gap-x-6">
               <label htmlFor="hours">Số giờ</label>
               <InputNumber

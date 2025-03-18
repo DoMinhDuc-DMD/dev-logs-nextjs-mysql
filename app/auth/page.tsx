@@ -33,6 +33,7 @@ export default function LoginForm() {
       sessionStorage.setItem("userId", data.userId);
       sessionStorage.setItem("isLogin", "true");
       sessionStorage.setItem("userRole", data.userRole);
+      sessionStorage.setItem("userName", data.userName);
 
       router.replace("/main");
     } catch (error) {

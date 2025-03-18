@@ -11,6 +11,7 @@ const db = mysql.createPool({
 export async function GET() {
   try {
     const [project] = await db.query("SELECT * FROM project");
+    const [member_project] = await db.query("SELECT * FROM member_project");
     const [task] = await db.query("SELECT * FROM task");
 
     const formattedProject = project.map((row) => ({
@@ -24,7 +25,7 @@ export async function GET() {
       projectId: row.project_id
     }));
 
-    return NextResponse.json({ formattedProject, formattedTask });
+    return NextResponse.json({ formattedProject, formattedTask, member_project });
   } catch (error) {
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
