@@ -89,7 +89,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Nhập devlogs</li>
                 </Link>
                 <Link href="/main/devloghistory">
-                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Lịch sử devlogs</li>
+                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Lịch sử nhập devlogs</li>
                 </Link>
               </>
             )}

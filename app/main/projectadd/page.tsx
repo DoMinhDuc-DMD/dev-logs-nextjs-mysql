@@ -23,9 +23,13 @@ export default function AddProject() {
     description: "",
     members: [],
   });
-  const [tasks, setTasks] = useState<string[]>([""]);
+  const [tasks, setTasks] = useState<{ task_name: string; task_name_index: number }[]>([{ task_name: "", task_name_index: 0 }]);
   const isDisabled =
-    !project.project_name.trim() || tasks.every((t) => t.trim() === "") || !project.start_date || !project.end_date || project.members.length === 0;
+    !project.project_name.trim() ||
+    tasks.every((t) => t.task_name.trim() === "") ||
+    !project.start_date ||
+    !project.end_date ||
+    project.members.length === 0;
 
   const [isMounted, setIsMounted] = useState(false);
 
@@ -68,7 +72,7 @@ export default function AddProject() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...project,
-          tasks: tasks.filter((t) => t.trim() !== ""),
+          tasks: tasks.filter((t) => t.task_name.trim() !== ""),
         }),
       });
 
@@ -99,7 +103,7 @@ export default function AddProject() {
 
   const handleTasksChange = (index: number, value: string) => {
     const newTasks = [...tasks];
-    newTasks[index] = value;
+    newTasks[index] = { task_name: value, task_name_index: index + 1 };
     setTasks(newTasks);
   };
 
@@ -110,12 +114,12 @@ export default function AddProject() {
 
   const handleAddTasks = () => {
     if (tasks.length < 6) {
-      setTasks([...tasks, ""]);
+      setTasks([...tasks, { task_name: "", task_name_index: tasks.length + 1 }]);
     }
   };
 
   const handleRemoveTasks = () => {
-    if (tasks.length > 1 && tasks.length <= 6) {
+    if (tasks.length > 1) {
       setTasks(tasks.slice(0, -1));
     }
   };
@@ -145,11 +149,11 @@ export default function AddProject() {
             </div>
             {tasks.map((t, index) => (
               <div key={index} className="flex items-center justify-between my-2">
-                <label htmlFor={`tasks_name_${index}`}>Tên task {index + 1}:</label>
+                <label htmlFor={`task_name_${index}`}>Tên task {index + 1}:</label>
                 <Input
-                  name={`tasks_name_${index}`}
+                  name={`task_name_${index}`}
                   style={{ width: "70%", padding: "8px" }}
-                  value={t}
+                  value={t.task_name}
                   onChange={(e) => handleTasksChange(index, e.target.value)}
                 />
               </div>

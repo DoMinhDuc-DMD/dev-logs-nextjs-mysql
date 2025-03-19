@@ -21,13 +21,12 @@ export async function GET() {
 export async function POST(req) {
     try {
         const { project_name, start_date, end_date, members, description, tasks } = await req.json();
-        console.log(project_name, start_date, end_date, members, description, tasks);
         const [projectResult] = await db.query("INSERT INTO project (project_name,description,start_date,end_date) VALUES (?,?,?,?)",
             [project_name, description, start_date, end_date]);
 
         const project_id = projectResult.insertId;
-        for (const task_name of tasks) {
-            await db.query("INSERT INTO task (task_name,project_id) VALUES (?,?)", [task_name, project_id])
+        for (const task of tasks) {
+            await db.query("INSERT INTO task (task_name,project_id,task_name_index) VALUES (?,?,?)", [task.task_name, project_id, task.task_name_index])
         }
 
         for (const member of members) {

@@ -10,13 +10,13 @@ const db = mysql.createPool({
 
 export async function GET() {
   try {
-    const [project] = await db.query("SELECT * FROM project");
-    const [member_project] = await db.query("SELECT * FROM member_project");
+    const [project] = await db.query("SELECT project.id,project.project_name, member_project.account_id FROM project INNER JOIN member_project ON project.id = member_project.project_id");
     const [task] = await db.query("SELECT * FROM task");
 
     const formattedProject = project.map((row) => ({
       value: row.id,
       label: row.project_name,
+      accountId: row.account_id
     }));
 
     const formattedTask = task.map((row) => ({
@@ -25,7 +25,7 @@ export async function GET() {
       projectId: row.project_id
     }));
 
-    return NextResponse.json({ formattedProject, formattedTask, member_project });
+    return NextResponse.json({ formattedProject, formattedTask });
   } catch (error) {
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }

@@ -7,7 +7,6 @@ import { DatePicker, Button, Checkbox, CheckboxChangeEvent, InputNumber } from "
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import "@ant-design/v5-patch-for-react-19";
-import session from "express-session";
 
 export default function Form() {
   const router = useRouter();
@@ -42,19 +41,22 @@ export default function Form() {
         router.replace("/main/notyourright");
       }
     }
+
+    const userId = sessionStorage.getItem("userId");
+    if (!userId) return;
+
     async function fetchProjectTask() {
-      const res = await fetch("/main/devloginput/api");
-      const data = await res.json();
+      try {
+        const res = await fetch("/main/devloginput/api");
+        const data = await res.json();
 
-      const userId = sessionStorage.getItem("userId");
+        const filteredProject = data.formattedProject.filter((project: any) => project.accountId === Number(userId));
 
-      const userProjects = data.member_project.filter((mp: any) => mp.account_id == userId);
-
-      console.log(data.member_project);
-
-      // setProject(filteredProject);
-      setProject(data.formattedProject);
-      setTask(data.formattedTask);
+        setProject(filteredProject);
+        setTask(data.formattedTask);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     }
     fetchProjectTask();
   }, []);
