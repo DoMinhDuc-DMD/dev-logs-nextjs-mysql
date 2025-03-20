@@ -42,15 +42,9 @@ export async function POST(req) {
       );
     }
 
-    const [result] = await db.query(
-      `INSERT INTO devlog (hours, overtime, date, note) VALUES (?, ?, ?, ?)`,
-      [hours, overtime, date, note]
-    );
-
-    const devlogId = result.insertId;
     await db.query(
-      `INSERT INTO devlog_project (devlog_id, account_id, project_id, task_id) VALUES (?, ?, ?, ?)`,
-      [devlogId, userId, project, task]
+      `INSERT INTO devlog (hours, overtime, date, note, account_id, project_id, task_id) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [hours, overtime, date, note, userId, project, task]
     );
 
     return NextResponse.json({ message: "Thêm devlog thành công!" });

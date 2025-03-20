@@ -10,9 +10,7 @@ const db = mysql.createPool({
 
 export async function GET() {
     try {
-        const [devlogData] = await db.query(`SELECT devlog.hours, devlog.date, devlog.account_id, task.task_name_index 
-            FROM devlog 
-            JOIN task ON task.id = devlog.task_id`);
+        const [devlogData] = await db.query(`SELECT SUM(hours) AS total_hours, date, account_id FROM devlog GROUP BY date, account_id`);
 
         return NextResponse.json(devlogData);
     } catch (error) {
