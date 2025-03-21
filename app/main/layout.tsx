@@ -67,7 +67,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <Link href="/main/projectadd">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Tạo mới dự án</li>
                 </Link>
-                <Link href="">
+                <Link href="/main/devloglist">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách devlog</li>
                 </Link>
               </>
@@ -76,20 +76,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             {/* Leader and Dev */}
             {(role === "Leader" || role === "Developer") && (
               <>
-                <Link href="/main/projectlist">
-                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách dự án</li>
-                </Link>
-              </>
-            )}
-
-            {/* Dev only */}
-            {role === "Developer" && (
-              <>
                 <Link href="/main/devloginput">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Nhập devlogs</li>
                 </Link>
                 <Link href="/main/devloghistory">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Lịch sử nhập devlogs</li>
+                </Link>
+                <Link href="/main/projectlist">
+                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách dự án</li>
                 </Link>
               </>
             )}

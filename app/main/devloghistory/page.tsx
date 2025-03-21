@@ -9,6 +9,7 @@ export default function DevlogHistory() {
   const router = useRouter();
   const [devlogList, setDevlogList] = useState([]);
 
+  const currentDate = new Date();
   const currentMonth = dayjs().month() + 1;
   const currentYear = dayjs().year();
   const [selectedMonth, setSelectedMonth] = useState(dayjs(`${currentYear}-${currentMonth}`).format("YYYY-MM"));
@@ -30,18 +31,17 @@ export default function DevlogHistory() {
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const userRole = sessionStorage.getItem("userRole");
-      const loggedIn = sessionStorage.getItem("isLogin");
-      if (!loggedIn) {
-        router.replace("/auth");
-      } else if (userRole !== "Developer") {
-        router.replace("/main/notyourright");
-      }
-    }
-
+    const userRole = sessionStorage.getItem("userRole");
     const userId = sessionStorage.getItem("userId");
-    if (!userId) return;
+    const loggedIn = sessionStorage.getItem("isLogin");
+
+    if (!userRole || !userId || !loggedIn) {
+      router.replace("/auth");
+      return;
+    }
+    if (userRole !== "Developer" && userRole !== "Leader") {
+      router.replace("/main/notyourright");
+    }
 
     async function fetchDevlog() {
       try {
@@ -96,14 +96,16 @@ export default function DevlogHistory() {
                 <div key={index} className="grid grid-rows-9">
                   <div
                     className={`flex border items-center justify-center font-semibold ${
-                      day.dayOfWeek === daysInWeek[5] || day.dayOfWeek === daysInWeek[6] ? `bg-gray-200` : `bg-white`
+                      (day.date.slice(0, 5) === dayjs(currentDate).format("DD/MM") && "bg-blue-300") ||
+                      ((day.dayOfWeek === "T7" || day.dayOfWeek === "CN") && `bg-gray-200`)
                     }`}
                   >
                     {day.date.slice(0, 5)}
                   </div>
                   <div
                     className={`flex border items-center justify-center font-semibold ${
-                      day.dayOfWeek === daysInWeek[5] || day.dayOfWeek === daysInWeek[6] ? `bg-gray-200` : `bg-white`
+                      (day.date.slice(0, 5) === dayjs(currentDate).format("DD/MM") && "bg-blue-300") ||
+                      ((day.dayOfWeek === "T7" || day.dayOfWeek === "CN") && `bg-gray-200`)
                     }`}
                   >
                     {day.dayOfWeek}
@@ -116,7 +118,8 @@ export default function DevlogHistory() {
                       <div
                         key={taskIndex}
                         className={`flex border items-center justify-center ${
-                          day.dayOfWeek === daysInWeek[5] || day.dayOfWeek === daysInWeek[6] ? `bg-gray-200` : `bg-white`
+                          (day.date.slice(0, 5) === dayjs(currentDate).format("DD/MM") && "bg-blue-300") ||
+                          ((day.dayOfWeek === "T7" || day.dayOfWeek === "CN") && `bg-gray-200`)
                         }`}
                       >
                         {totalHoursForTask > 0 ? totalHoursForTask : ""}

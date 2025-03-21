@@ -52,18 +52,20 @@ export default function AccountList() {
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const userRole = sessionStorage.getItem("userRole");
-      const loggedIn = sessionStorage.getItem("isLogin");
+    const userRole = sessionStorage.getItem("userRole");
+    const userId = sessionStorage.getItem("userId");
+    const loggedIn = sessionStorage.getItem("isLogin");
 
-      setRole(userRole);
-
-      if (!loggedIn) {
-        router.replace("/auth");
-      } else if (userRole !== "Admin" && userRole !== "HR") {
-        router.replace("/main/notyourright");
-      }
+    if (!userRole || !userId || !loggedIn) {
+      router.replace("/auth");
+      return;
     }
+    if (userRole !== "Admin" && userRole !== "HR") {
+      router.replace("/main/notyourright");
+    }
+
+    setRole(userRole);
+
     fetchAccount();
   }, [role]);
 

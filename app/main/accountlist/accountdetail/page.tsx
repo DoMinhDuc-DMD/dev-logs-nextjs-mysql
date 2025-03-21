@@ -21,19 +21,17 @@ export default function AccountDetail() {
   });
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const userRole = sessionStorage.getItem("userRole");
-      const loggedIn = sessionStorage.getItem("isLogin");
-
-      if (!loggedIn) {
-        router.replace("/auth");
-      } else if (userRole !== "Admin" && userRole !== "HR") {
-        router.replace("/main/notyourright");
-      }
-    }
-
+    const userRole = sessionStorage.getItem("userRole");
+    const loggedIn = sessionStorage.getItem("isLogin");
     const userId = new URLSearchParams(window.location.search).get("id");
-    if (!userId) return;
+
+    if (!userRole || !userId || !loggedIn) {
+      router.replace("/auth");
+      return;
+    }
+    if (userRole !== "Admin" && userRole !== "HR") {
+      router.replace("/main/notyourright");
+    }
 
     async function fetchInfo() {
       try {

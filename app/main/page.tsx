@@ -46,7 +46,7 @@ export default function Main() {
     categoryPercentage: 2,
     datasets: [
       {
-        label: "Hours",
+        label: "Effective",
         data: dataHour,
         backgroundColor: "oklch(0.81 0.1 250.46)",
       },
@@ -65,18 +65,17 @@ export default function Main() {
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const userRole = sessionStorage.getItem("userRole");
-      const loggedIn = sessionStorage.getItem("isLogin");
-      if (!loggedIn) {
-        router.replace("/auth");
-      } else if (userRole !== "Developer") {
-        router.replace("/main/notyourright");
-      }
-    }
-
+    const userRole = sessionStorage.getItem("userRole");
     const userId = sessionStorage.getItem("userId");
-    if (!userId) return;
+    const loggedIn = sessionStorage.getItem("isLogin");
+
+    if (!userRole || !userId || !loggedIn) {
+      router.replace("/auth");
+      return;
+    }
+    if (userRole !== "Developer" && userRole !== "Leader") {
+      router.replace("/main/notyourright");
+    }
 
     async function fetchDevlog() {
       try {

@@ -32,18 +32,17 @@ export default function Form() {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const userRole = sessionStorage.getItem("userRole");
-      const loggedIn = sessionStorage.getItem("isLogin");
-      if (!loggedIn) {
-        router.replace("/auth");
-      } else if (userRole !== "Leader" && userRole !== "Developer") {
-        router.replace("/main/notyourright");
-      }
-    }
-
+    const userRole = sessionStorage.getItem("userRole");
     const userId = sessionStorage.getItem("userId");
-    if (!userId) return;
+    const loggedIn = sessionStorage.getItem("isLogin");
+
+    if (!userRole || !userId || !loggedIn) {
+      router.replace("/auth");
+      return;
+    }
+    if (userRole !== "Leader" && userRole !== "Developer") {
+      router.replace("/main/notyourright");
+    }
 
     async function fetchProjectTask() {
       try {
@@ -129,7 +128,13 @@ export default function Form() {
           <div className="flex justify-between items-center my-5">
             {isMounted && <Select className="w-[35%]" onChange={handleSelectChange} name="project" options={project} />}
             {isMounted && (
-              <Select className="w-[35%]" onChange={handleSelectChange} name="task" options={filteredTask} isDisabled={!selectedProject} />
+              <Select
+                className="w-[35%]"
+                onChange={handleSelectChange}
+                name="task"
+                options={filteredTask}
+                isDisabled={!selectedProject}
+              />
             )}
             <div className="flex items-center gap-x-6">
               <label htmlFor="hours">Số giờ</label>

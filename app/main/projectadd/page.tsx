@@ -21,7 +21,7 @@ export default function AddProject() {
     start_date: null,
     end_date: null,
     description: "",
-    members: [],
+    members: [] as Number[],
   });
   const [tasks, setTasks] = useState<{ task_name: string; task_name_index: number }[]>([{ task_name: "", task_name_index: 0 }]);
   const isDisabled =
@@ -38,16 +38,19 @@ export default function AddProject() {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const userRole = sessionStorage.getItem("userRole");
-      const loggedIn = sessionStorage.getItem("isLogin");
+    const userRole = sessionStorage.getItem("userRole");
+    const userId = sessionStorage.getItem("userId");
+    const loggedIn = sessionStorage.getItem("isLogin");
 
-      if (!loggedIn) {
-        router.replace("/auth");
-      } else if (userRole !== "Leader") {
-        router.replace("/main/notyourright");
-      }
+    if (!userRole || !userId || !loggedIn) {
+      router.replace("/auth");
+      return;
     }
+    if (userRole !== "Leader") {
+      router.replace("/main/notyourright");
+    }
+
+    setProject((prev) => ({ ...prev, members: [Number(userId)] }));
 
     async function fetchData() {
       const res = await fetch("/main/projectadd/api", {
@@ -109,12 +112,12 @@ export default function AddProject() {
 
   const handleSelectChange = (selectedDev: any) => {
     const selectedMembers = selectedDev.map((option: any) => option.value);
-    setProject((prev) => ({ ...prev, members: selectedMembers }));
+    setProject((prev) => ({ ...prev, members: [Number(sessionStorage.getItem("userId")), ...selectedMembers] }));
   };
 
   const handleAddTasks = () => {
     if (tasks.length < 6) {
-      setTasks([...tasks, { task_name: "", task_name_index: tasks.length + 1 }]);
+      setTasks([...tasks, { task_name: "", task_name_index: tasks.length }]);
     }
   };
 
