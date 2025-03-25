@@ -1,6 +1,7 @@
 "use client";
 
 import { Button, Input } from "antd";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -35,15 +36,8 @@ export default function AccountDetail() {
 
     async function fetchInfo() {
       try {
-        const res = await fetch(`/main/accountlist/accountdetail/api?id=${userId}`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
-
-        if (!res.ok) throw new Error("Lỗi lấy thông tin tài khoản");
-
-        const data = await res.json();
-        if (!data || Object.keys(data).length === 0) throw new Error("Dữ liệu không hợp lệ");
+        const res = await axios.get(`/apis/accountdetail?id=${userId}`);
+        const data = res.data;
 
         setInfo(data);
       } catch (error) {

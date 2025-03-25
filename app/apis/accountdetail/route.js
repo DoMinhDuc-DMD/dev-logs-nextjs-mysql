@@ -1,13 +1,6 @@
 import { NextResponse } from "next/server";
-import mysql from "mysql2/promise";
-import dayjs from "Dayjs";
-
-const db = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "devlog_manage",
-});
+import dayjs from "dayjs";
+import db from "../../apis/connectdb/db";
 
 export async function GET(req) {
     try {

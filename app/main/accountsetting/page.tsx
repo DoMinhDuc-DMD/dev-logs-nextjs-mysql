@@ -1,9 +1,11 @@
 "use client";
 
-import { Button, Input } from "antd";
+import { Button, DatePicker, Input } from "antd";
+import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
+import axios from "axios";
 
 export default function AccountSetting() {
   const router = useRouter();
@@ -29,15 +31,8 @@ export default function AccountSetting() {
           router.replace("/auth");
           return;
         }
-        const res = await fetch(`/main/accountsetting/api?userId=${userId}`, { method: "GET" });
-        if (!res.ok) {
-          throw new Error("Lỗi lấy thông tin tài khoản");
-        }
-
-        const data = await res.json();
-        if (!data || Object.keys(data).length === 0) throw new Error("Dữ liệu không hợp lệ");
-
-        setInfo(data);
+        const res = await axios.get(`/apis/accountsetting?userId=${userId}`);
+        setInfo(res.data);
       } catch (error) {
         console.log("Lỗi lấy thông tin tài khoản: ", error);
       }
@@ -50,6 +45,13 @@ export default function AccountSetting() {
     setInfo((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleDateChange = (date: any) => {
+    setInfo((prev) => ({
+      ...prev,
+      employee_birthday: date ? dayjs(date).format("YYYY-MM-DD") : "",
+    }));
+  };
+
   const handleUpdate = async () => {
     try {
       const userId = sessionStorage.getItem("userId");
@@ -58,11 +60,7 @@ export default function AccountSetting() {
         return;
       }
 
-      await fetch("/main/accountsetting/api", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...info, userId }),
-      });
+      await axios.put("/apis/accountsetting/", { ...info, userId });
       alert("Cập nhật thông tin tài khoản thành công!");
     } catch (error) {
       console.log("Lỗi cập nhật thông tin tài khoản: ", error);
@@ -90,7 +88,13 @@ export default function AccountSetting() {
             <label htmlFor="employee_name">Họ và tên:</label>
             <Input name="employee_name" value={info?.employee_name || ""} onChange={handleChange} />
             <label htmlFor="employee_birthday">Ngày sinh:</label>
-            <Input name="employee_birthday" value={info?.employee_birthday} onChange={handleChange} />
+            <DatePicker
+              name="employee_birthday"
+              format="YYYY-MM-DD"
+              value={info?.employee_birthday ? dayjs(info.employee_birthday) : null}
+              onChange={handleDateChange}
+              className="w-full"
+            />
             <label htmlFor="employee_bank_account">Số tài khoản TCB:</label>
             <Input name="employee_bank_account" value={info?.employee_bank_account || ""} onChange={handleChange} />
             <label htmlFor="employee_private_email">Email cá nhân:</label>

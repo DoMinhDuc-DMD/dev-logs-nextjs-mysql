@@ -1,6 +1,7 @@
 "use client";
 
 import { Button, Input } from "antd";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import Select from "react-select";
@@ -9,25 +10,35 @@ export default function CreateAccount() {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [options, setOptions] = useState<{ value: string; label: string }[]>([]);
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const userRole = sessionStorage.getItem("userRole");
-    const userId = sessionStorage.getItem("userId");
-    const loggedIn = sessionStorage.getItem("isLogin");
+    setIsMounted(true);
+  }, []);
 
-    if (!userRole || !userId || !loggedIn) {
-      router.replace("/auth");
-      return;
-    }
-    if (userRole !== "Admin") {
-      router.replace("/main/notyourright");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userRole = sessionStorage.getItem("userRole");
+      const userId = sessionStorage.getItem("userId");
+      const loggedIn = sessionStorage.getItem("isLogin");
+
+      if (!userRole || !userId || !loggedIn) {
+        router.replace("/auth");
+        return;
+      }
+      if (userRole !== "Admin") {
+        router.replace("/main/notyourright");
+      }
     }
 
     async function fetchRoles() {
-      const res = await fetch("/main/accountcreate/api");
-      const data = await res.json();
-      if (data.roles && Array.isArray(data.roles)) {
+      try {
+        const res = await axios.get("/apis/accountcreate");
+        const data = res.data;
         setOptions(data.roles);
+      } catch (error) {
+        console.error("Lỗi lấy danh sách role.");
       }
     }
     fetchRoles();
@@ -39,16 +50,11 @@ export default function CreateAccount() {
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
-    const role = formData.get("role");
-
-    const res = await fetch("/main/accountcreate/api", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, role }),
-    });
 
     try {
-      const data = await res.json();
+      const res = await axios.post("/apis/accountcreate", { email, password, role: selectedRole });
+      const data = await res.data;
+
       setMessage(data.message);
       setTimeout(() => {
         router.push("/main/accountlist");
@@ -73,7 +79,7 @@ export default function CreateAccount() {
         <label className="block text-left" htmlFor="role">
           Select Role
         </label>
-        <Select options={options} name="role" />
+        {isMounted && <Select options={options} onChange={(selected) => setSelectedRole(selected?.value || null)} />}
         {message && <p className="text-center text-red-500">{message}</p>}
         <Button className="w-30 py-2 mx-auto" type="primary" htmlType="submit">
           Register

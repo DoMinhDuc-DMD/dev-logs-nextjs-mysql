@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import { DatePicker } from "antd";
+import axios from "axios";
 
 export default function DevlogHistory() {
   const router = useRouter();
@@ -45,13 +46,8 @@ export default function DevlogHistory() {
 
     async function fetchDevlog() {
       try {
-        const res = await fetch("/main/devloghistory/api");
-
-        if (!res.ok) {
-          throw new Error("Không thể lấy danh sách devlog");
-        }
-
-        const data = await res.json();
+        const res = await axios.get("/apis/devloghistory");
+        const data = await res.data;
         const filteredData = data.filter((devlog: any) => devlog.account_id === Number(userId));
 
         setDevlogList(filteredData);

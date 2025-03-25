@@ -7,6 +7,7 @@ import "@ant-design/v5-patch-for-react-19";
 import Select from "react-select";
 import Search from "antd/es/input/Search";
 import RestoreIcon from "@mui/icons-material/Restore";
+import axios from "axios";
 
 interface Account {
   id: number;
@@ -32,16 +33,8 @@ export default function AccountList() {
 
   const fetchAccount = async () => {
     try {
-      const res = await fetch("/main/accountlist/api", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!res.ok) {
-        throw new Error("Không thể lấy danh sách tài khoản");
-      }
-
-      const data = await res.json();
+      const res = await axios.get("/apis/accountlist");
+      const data = res.data;
 
       setAccounts(data.accounts);
       setOriginalData(data.accounts);
@@ -65,7 +58,6 @@ export default function AccountList() {
     }
 
     setRole(userRole);
-
     fetchAccount();
   }, [role]);
 
@@ -88,15 +80,11 @@ export default function AccountList() {
   const handleSave = async () => {
     if (!editingId || !editedData) return;
     try {
-      await fetch("/main/accountlist/api", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: editingId,
-          email: editedData?.employee_work_email,
-          password: editedData?.employee_work_password,
-          role: editedData?.role,
-        }),
+      await axios.put("/apis/accountlist", {
+        id: editingId,
+        email: editedData?.employee_work_email,
+        password: editedData?.employee_work_password,
+        role: editedData?.role,
       });
 
       await fetchAccount();
@@ -189,7 +177,7 @@ export default function AccountList() {
           </Button>
         ) : (
           <div className="flex gap-x-2 justify-center">
-            <Button onClick={() => router.push(`/main/accountlist/accountdetail?id=${record.id}`)} type="primary">
+            <Button onClick={() => router.push(`/main/accountdetail?id=${record.id}`)} type="primary">
               Detail
             </Button>
             <Button onClick={() => handleAdjust(record)} variant="solid" color="cyan">

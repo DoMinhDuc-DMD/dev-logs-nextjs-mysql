@@ -1,21 +1,39 @@
 "use client";
 
-import { Button, Input } from "antd";
+import { Button, Input, Modal } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
+import axios from "axios";
+
+interface Task {
+  id: number;
+  task_name_index: number;
+  project_id: number;
+  task_name: string;
+}
 
 export default function ProjectList() {
   const router = useRouter();
+
   const [project, setProject] = useState([]);
-  const [task, setTask] = useState<{ id: number; task_name_index: number; project_id: number; task_name: string }[]>([
-    { id: 0, task_name_index: 0, project_id: 0, task_name: "" },
-  ]);
-  const [newTask, setNewTask] = useState<{ id: number; task_name_index: number; project_id: number; task_name: string }[]>([]);
+  const [task, setTask] = useState<Task[]>([]);
+  const [newTask, setNewTask] = useState<Task[]>([]);
+
   const [member, setMember] = useState([]);
   const [memberRole, setMemberRole] = useState("");
-  const [expandedCard, setExpandedCard] = useState<{ [key: number]: boolean }>({});
   const [defaultTaskLength, setDefaultTaskLength] = useState<{ [key: number]: number }>({});
+
+  const [isModalOpen, setIsModalOpen] = useState<{ [key: number]: boolean }>({});
+  const openModal = (projectId: number) => {
+    setIsModalOpen((prev) => ({ ...prev, [projectId]: true }));
+  };
+  const handleOK = (projectId: number) => {
+    setIsModalOpen((prev) => ({ ...prev, [projectId]: false }));
+  };
+  const handleCloseModal = (projectId: number) => {
+    setIsModalOpen((prev) => ({ ...prev, [projectId]: false }));
+  };
 
   useEffect(() => {
     const userRole = sessionStorage.getItem("userRole");
@@ -33,16 +51,8 @@ export default function ProjectList() {
     setMemberRole(userRole);
 
     async function fetchData() {
-      const res = await fetch("/main/projectlist/api", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!res.ok) {
-        throw new Error("Không thể lấy danh sách dự án");
-      }
-
-      const data = await res.json();
+      const res = await axios.get("/apis/projectlist");
+      const data = await res.data;
 
       const filteredProject = data.projects.filter((project: any) =>
         data.members.some((member: any) => member.account_id === Number(userId) && member.project_id === project.id)
@@ -61,13 +71,6 @@ export default function ProjectList() {
     }
     fetchData();
   }, []);
-
-  const handleAdjustProject = (index: number) => {
-    setExpandedCard((prev: any) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
-  };
 
   const handleTaskChange = (taskId: number, newTaskName: string) => {
     setTask((prev) => prev.map((task) => (task.id === taskId ? { ...task, task_name: newTaskName } : task)));
@@ -105,37 +108,41 @@ export default function ProjectList() {
     });
   };
 
+  const handleUpdateTask = (projectId: number) => {};
+
   return (
     <div className="p-5">
-      <div className="w-full h-[85vh] p-5 rounded bg-white text-center">
-        <div className="mb-3">Danh sách các dự án</div>
+      <div className="w-full h-[85vh] p-5 rounded bg-white ">
+        <div className="text-center mb-3">Danh sách các dự án</div>
         <div className="h-[95%] border rounded overflow-y-auto">
-          {project.map((project: any, index: any) => {
-            const projectName = project.project_name;
-            const projectDescription = project.description;
-
+          {project.map((project: any) => {
             const memberProject = member.filter((member: any) => member.project_id === project.id);
             const taskProject = task.filter((task: any) => task.project_id === project.id);
             const newTaskProject = newTask;
 
-            const isExpanded = expandedCard[index];
-
             return (
-              <div key={project.id} className={`flex flex-col items-center border rounded m-3 py-6 px-3`}>
+              <div key={project.id} className={`flex flex-col items-center bg-blue-200 border rounded m-3 py-6 px-3`}>
                 <div className="w-full flex justify-between items-center">
-                  <div className="text-left">
-                    <div className="font-semibold">Tên dự án: {projectName}</div>
-                    <div>Số lượng thành viên: {memberProject.length - 1} người</div>
+                  <div>
+                    <div className="font-semibold">Tên dự án: {project.name}</div>
+                    <div>Số lượng thành viên: {memberProject.length} người</div>
                     <div>Số lượng task: {taskProject.length} task</div>
-                    <div>Mô tả dự án: {projectDescription}</div>
+                    <div>Mô tả dự án: {project.description}</div>
                   </div>
                   <div>
-                    <Button type="primary" onClick={() => handleAdjustProject(index)}>
-                      {isExpanded ? "Hủy điều chỉnh" : "Điều chỉnh dự án"}
+                    <Button type="primary" onClick={() => openModal(project.id)}>
+                      Điều chỉnh dự án
                     </Button>
                   </div>
                 </div>
-                {isExpanded && (
+
+                <Modal
+                  width={"50%"}
+                  title="Điều chỉnh dự án"
+                  open={isModalOpen[project.id] || false}
+                  onOk={() => handleOK(project.id)}
+                  onCancel={() => handleCloseModal(project.id)}
+                >
                   <div className="flex w-full justify-between pt-3">
                     <div className="flex flex-col gap-y-3 w-[60%]">
                       {taskProject.map((task: any) => (
@@ -143,24 +150,24 @@ export default function ProjectList() {
                           key={task.id}
                           value={task.task_name}
                           onChange={(e) => handleTaskChange(task.id, e.target.value)}
-                          disabled={memberRole !== "Leader"}
+                          readOnly={memberRole !== "Leader"}
                         />
                       ))}
                       {newTaskProject.map((task: any) => (
                         <Input key={task.id} value={task.task_name} onChange={(e) => handleTaskChange(task.id, e.target.value)} />
                       ))}
                     </div>
-                    <div className="flex flex-col gap-y-3 justify-center">
+                    <div className="flex flex-col gap-y-3">
                       <Button type="primary" onClick={() => handleAddTask(project.id)}>
                         Thêm task mới
                       </Button>
                       <Button type="primary" onClick={() => handleRemoveTask(project.id)}>
                         Giảm task mới
                       </Button>
-                      <Button type="primary">Lưu</Button>
+                      <Button type="primary">Cập nhật</Button>
                     </div>
                   </div>
-                )}
+                </Modal>
               </div>
             );
           })}

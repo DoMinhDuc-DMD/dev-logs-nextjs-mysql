@@ -7,6 +7,7 @@ import Select from "react-select";
 import "@ant-design/v5-patch-for-react-19";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
+import axios from "axios";
 
 interface Dev {
   id: number;
@@ -25,17 +26,7 @@ export default function AddProject() {
   });
   const [tasks, setTasks] = useState<{ task_name: string; task_name_index: number }[]>([{ task_name: "", task_name_index: 0 }]);
   const isDisabled =
-    !project.project_name.trim() ||
-    tasks.every((t) => t.task_name.trim() === "") ||
-    !project.start_date ||
-    !project.end_date ||
-    project.members.length === 0;
-
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    !project.project_name.trim() || tasks.every((t) => t.task_name.trim() === "") || !project.start_date || !project.end_date || project.members.length === 0;
 
   useEffect(() => {
     const userRole = sessionStorage.getItem("userRole");
@@ -53,38 +44,24 @@ export default function AddProject() {
     setProject((prev) => ({ ...prev, members: [Number(userId)] }));
 
     async function fetchData() {
-      const res = await fetch("/main/projectadd/api", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!res.ok) {
-        throw new Error("Không thể lấy danh sách tài khoản");
+      try {
+        const res = await axios.get<Dev[]>("/apis/projectadd");
+        setDev(Array.isArray(res.data) ? res.data : []);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu:", error);
+        setDev([]);
       }
-
-      const data: Dev[] = await res.json();
-      setDev(Array.isArray(data) ? data : []);
     }
     fetchData();
   }, []);
 
   const handleAddProject = async () => {
     try {
-      const res = await fetch("/main/projectadd/api", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...project,
-          tasks: tasks.filter((t) => t.task_name.trim() !== ""),
-        }),
+      await axios.post("/apis/projectadd", {
+        ...project,
+        tasks: tasks.filter((t) => t.task_name.trim() !== ""),
       });
 
-      const responseData = await res.json();
-      if (!res.ok) {
-        console.error("Lỗi từ server:", responseData);
-        alert(responseData.message || "Có lỗi xảy ra, vui lòng thử lại.");
-        return;
-      }
       alert("Thêm dự án thành công!");
       window.location.reload();
     } catch (error) {

@@ -41,56 +41,47 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <Link href="/main">
               <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Trang tổng quan</li>
             </Link>
-
             {/* Admin only */}
             {role === "Admin" && (
               <Link href="/main/accountcreate">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Tạo tài khoản</li>
               </Link>
             )}
-
-            {/* Admin and HCNS */}
+            {/* Admin and HR */}
             {(role === "Admin" || role === "HR") && (
-              <>
-                <Link href="">
-                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách devlogs</li>
-                </Link>
-                <Link href="/main/accountlist">
-                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách tài khoản</li>
-                </Link>
-              </>
+              <Link href="/main/accountlist">
+                <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách tài khoản</li>
+              </Link>
             )}
-
+            {/* Admin and HR and Leader */}
+            {(role === "Admin" || role === "HR" || role === "Leader") && (
+              <Link href="/main/devloglist">
+                <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách devlog</li>
+              </Link>
+            )}
             {/* Leader only */}
             {role === "Leader" && (
-              <>
-                <Link href="/main/projectadd">
-                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Tạo mới dự án</li>
-                </Link>
-                <Link href="/main/devloglist">
-                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách devlog</li>
-                </Link>
-              </>
+              <Link href="/main/projectadd">
+                <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Tạo mới dự án</li>
+              </Link>
             )}
-
             {/* Leader and Dev */}
             {(role === "Leader" || role === "Developer") && (
               <>
+                <Link href="/main/projectlist">
+                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách dự án</li>
+                </Link>
                 <Link href="/main/devloginput">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Nhập devlogs</li>
                 </Link>
                 <Link href="/main/devloghistory">
-                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Lịch sử nhập devlogs</li>
+                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Lịch sử nhập devlog</li>
                 </Link>
-                <Link href="/main/projectlist">
-                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách dự án</li>
+                <Link href="/main/dashboard">
+                  <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Thống kê devlog</li>
                 </Link>
               </>
             )}
-
-            <Link href="/main/connect">
-              <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Connect</li>
-            </Link>
           </ul>
         </div>
       </div>

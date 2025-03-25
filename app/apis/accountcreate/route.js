@@ -1,16 +1,9 @@
 import { NextResponse } from "next/server";
-import mysql from "mysql2/promise";
-
-const db = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "devlog_manage",
-});
+import db from "../../apis/connectdb/db";
 
 export async function GET() {
     try {
-        const [role] = await db.query("SELECT role FROM account WHERE role != 'Admin' GROUP BY role");
+        const [role] = await db.query("SELECT role FROM account GROUP BY role");
 
         const formattedRoles = role.map((row) => ({
             value: row.role.toLowerCase(),

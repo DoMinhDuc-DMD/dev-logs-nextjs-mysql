@@ -3,6 +3,7 @@
 import { Button, Input } from "antd";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import axios from "axios";
 import "@ant-design/v5-patch-for-react-19";
 
 export default function LoginForm() {
@@ -17,17 +18,8 @@ export default function LoginForm() {
     const password = formData.get("password");
 
     try {
-      const res = await fetch("/auth/api", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setMessage(data.message || "Login Failed!");
-        return;
-      }
+      const res = await axios.post("/apis/auth", { email, password });
+      const data = res.data;
       setMessage(data.message);
 
       sessionStorage.setItem("userId", data.userId);
@@ -36,8 +28,8 @@ export default function LoginForm() {
       sessionStorage.setItem("userName", data.userName);
 
       router.replace("/main");
-    } catch (error) {
-      setMessage("Error processing request.");
+    } catch (error: any) {
+      setMessage(error.response?.data?.message || "Login Failed!");
     }
   }
 

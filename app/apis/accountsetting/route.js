@@ -1,13 +1,5 @@
 import { NextResponse } from "next/server";
-import mysql from "mysql2/promise";
-import { format } from "date-fns";
-
-const db = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "devlog_manage",
-});
+import db from "../../apis/connectdb/db";
 
 export async function GET(req) {
     try {
@@ -22,7 +14,7 @@ export async function GET(req) {
 
         const user = accounts[0];
         if (user.employee_birthday) {
-            user.employee_birthday = format(new Date(user.employee_birthday), 'dd/MM/yyyy');
+            user.employee_birthday = user.employee_birthday;
         }
 
         return NextResponse.json(accounts[0]);

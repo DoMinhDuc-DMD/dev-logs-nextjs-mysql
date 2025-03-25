@@ -7,6 +7,7 @@ import { DatePicker, Button, Checkbox, CheckboxChangeEvent, InputNumber } from "
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import "@ant-design/v5-patch-for-react-19";
+import axios from "axios";
 
 export default function Form() {
   const router = useRouter();
@@ -46,8 +47,8 @@ export default function Form() {
 
     async function fetchProjectTask() {
       try {
-        const res = await fetch("/main/devloginput/api");
-        const data = await res.json();
+        const res = await axios.get("/apis/devloginput");
+        const data = await res.data;
 
         const filteredProject = data.formattedProject.filter((project: any) => project.accountId === Number(userId));
 
@@ -110,13 +111,8 @@ export default function Form() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const userId = sessionStorage.getItem("userId");
-    const res = await fetch("/main/devloginput/api", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...formData, userId }),
-    });
-
-    const data = await res.json();
+    const res = await axios.post("/apis/devloginput", { ...formData, userId });
+    const data = await res.data;
     alert(data.message);
     window.location.reload();
   };
@@ -127,25 +123,10 @@ export default function Form() {
         <div className="rounded-lg bg-white p-5">
           <div className="flex justify-between items-center my-5">
             {isMounted && <Select className="w-[35%]" onChange={handleSelectChange} name="project" options={project} />}
-            {isMounted && (
-              <Select
-                className="w-[35%]"
-                onChange={handleSelectChange}
-                name="task"
-                options={filteredTask}
-                isDisabled={!selectedProject}
-              />
-            )}
+            {isMounted && <Select className="w-[35%]" onChange={handleSelectChange} name="task" options={filteredTask} isDisabled={!selectedProject} />}
             <div className="flex items-center gap-x-6">
               <label htmlFor="hours">Số giờ</label>
-              <InputNumber
-                value={formData.hours}
-                min={1}
-                max={24}
-                onChange={handleInputNumberChange}
-                type="number"
-                style={{ width: 60, height: 35 }}
-              />
+              <InputNumber value={formData.hours} min={1} max={24} onChange={handleInputNumberChange} type="number" />
               <label htmlFor="overtime">OT</label>
               <Checkbox name="overtime" id="overtime" onChange={handleCheckBoxChange}></Checkbox>
             </div>
