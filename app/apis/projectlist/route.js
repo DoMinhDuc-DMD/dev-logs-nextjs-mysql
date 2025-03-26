@@ -12,3 +12,28 @@ export async function GET() {
         return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
     }
 }
+
+export async function POST(req) {
+    try {
+        const { updatedTasks, newProjectTasks } = await req.json();
+
+        if (!updatedTasks || !Array.isArray(updatedTasks) || updatedTasks.length === 0) {
+            return NextResponse.json({ message: "Không có dữ liệu cập nhật" }, { status: 400 });
+        }
+
+        await Promise.all(updatedTasks.map(task =>
+            db.query("UPDATE task SET task_name = ?, task_name_index = ? WHERE id = ?",
+                [task.task_name, task.task_name_index, task.id])
+        ));
+
+        await Promise.all(newProjectTasks.map(task => {
+            db.query("INSERT INTO task (task_name, project_id, task_name_index) VALUES (?, ?, ?)",
+                [task.task_name, task.project_id, task.task_name_index])
+        }))
+
+        return NextResponse.json({ message: "Cập nhật thành công" }, { status: 200 });
+
+    } catch (error) {
+        return NextResponse.json({ message: "Lỗi server" }, { status: 500 })
+    }
+}
