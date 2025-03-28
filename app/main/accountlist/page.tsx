@@ -1,15 +1,13 @@
 "use client";
 
-import { Table, Button, Input } from "antd";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
-import Select from "react-select";
-import Search from "antd/es/input/Search";
-import RestoreIcon from "@mui/icons-material/Restore";
 import axios from "axios";
+import AccountListTable from "@/components/accountlist/AccountListTable";
+import AccountListSearch from "@/components/accountlist/AccountListSearch";
 
-interface Account {
+export interface Account {
   id: number;
   employee_work_email: string;
   employee_work_password: string;
@@ -119,90 +117,20 @@ export default function AccountList() {
     setAccounts(originalData);
   };
 
-  const columns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      width: "10%",
-      align: "center" as const,
-      render: (_: any, __: any, index: number) => index + 1,
-    },
-    {
-      title: "Email",
-      dataIndex: "employee_work_email",
-      key: "employee_work_email",
-      width: "25%",
-      align: "center" as const,
-      onCell: () => ({ style: { textAlign: "left" as const, padding: " 10px" } }),
-      render: (text: string, record: any) =>
-        editingId === record.id ? (
-          <Input name="employee_work_email" type="email" value={editedData?.employee_work_email || ""} onChange={handleChange} />
-        ) : (
-          text
-        ),
-    },
-    {
-      title: "Password",
-      dataIndex: "employee_work_password",
-      key: "employee_work_password",
-      width: "25%",
-      align: "center" as const,
-      render: (text: string, record: any) =>
-        editingId === record.id ? (
-          <Input name="employee_work_password" value={editedData?.employee_work_password || ""} onChange={handleChange} />
-        ) : (
-          "******"
-        ),
-    },
-    {
-      title: "Role",
-      width: "20%",
-      align: "center" as const,
-      render: (_: any, record: any) =>
-        editingId === record.id ? (
-          <Select options={options} defaultValue={{ label: record.role, value: record.role }} onChange={handleSelectChange} />
-        ) : (
-          record.role
-        ),
-    },
-    {
-      title: "Actions",
-      width: "20%",
-      align: "center" as const,
-      render: (_: any, record: any) =>
-        editingId === record.id ? (
-          <Button onClick={handleSave} type="primary">
-            Save
-          </Button>
-        ) : (
-          <div className="flex gap-x-2 justify-center">
-            <Button onClick={() => router.push(`/main/accountdetail?id=${record.id}`)} type="primary">
-              Detail
-            </Button>
-            <Button onClick={() => handleAdjust(record)} variant="solid" color="cyan">
-              Adjust
-            </Button>
-          </div>
-        ),
-    },
-  ];
-
   return (
     <div className="p-5">
       <div className="w-full rounded px-5 bg-white">
-        <div className="flex py-5 gap-x-5 justify-end">
-          <Button icon={<RestoreIcon />} onClick={handleReset}></Button>
-          <Search
-            placeholder="input search text"
-            value={searchInput}
-            style={{ width: "25%" }}
-            onChange={handleSearchChange}
-            onSearch={handleSearch}
-            enterButton
-          />
-        </div>
-        <Table columns={columns} dataSource={accounts} rowKey="id" size="small" pagination={{ pageSize: 10 }} />
+        <AccountListSearch searchInput={searchInput!} handleReset={handleReset} handleSearch={handleSearch} handleSearchChange={handleSearchChange} />
+        <AccountListTable
+          accounts={accounts}
+          options={options}
+          editingId={editingId}
+          handleAdjust={handleAdjust}
+          handleChange={handleChange}
+          handleSelectChange={handleSelectChange}
+          handleSave={handleSave}
+          editedData={editedData}
+        />
       </div>
     </div>
   );
