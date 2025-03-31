@@ -1,16 +1,28 @@
 "use client";
 
-import { Button, Table } from "antd";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
+import DeglogListModal from "@/components/devloglist/DevlogListModal";
+import DevlogListTable from "@/components/devloglist/DevlogListTable";
+import DevlogListSearch from "@/components/devloglist/DevlogListSearch";
 
 export default function DevlogList() {
   const router = useRouter();
   const [data, setData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
   const date = dayjs(new Date()).format("DD-MM-YYYY");
+  const [selectedDevlog, setSelectedDevlog] = useState<any>(null);
+  const [searchInput, setSearchInput] = useState<string>("");
+
+  const openModal = (devlog: any) => {
+    setSelectedDevlog(devlog);
+  };
+  const closeModal = () => {
+    setSelectedDevlog(null);
+  };
 
   useEffect(() => {
     const userRole = sessionStorage.getItem("userRole");
@@ -28,16 +40,17 @@ export default function DevlogList() {
     const fetchData = async () => {
       try {
         const res = await axios.get("/apis/devloglist");
-        const filteredDevlogs = res.data.devlogs.filter((item: any) => dayjs(item.date).format("DD-MM-YYYY") === date);
-        console.log(filteredDevlogs);
+        const data = await res.data;
 
-        const filteredLeaderEnrolledProjects = res.data.leaderEnrolledProjects.filter(
-          (item: any) => (item.account_id = Number(userId))
+        const filteredDevlogs = data.devlogs.filter(
+          (item: any) =>
+            dayjs(item.date).format("DD-MM-YYYY") === date &&
+            data.leaderProjects.some(
+              (project: any) => project.account_id === Number(userId) && project.project_id === item.project_id
+            )
         );
-
-        console.log(filteredLeaderEnrolledProjects);
-
         setData(filteredDevlogs);
+        setOriginalData(filteredDevlogs);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -45,73 +58,43 @@ export default function DevlogList() {
     fetchData();
   }, []);
 
-  const columns = [
-    {
-      title: "STT",
-      dataIndex: "id",
-      key: "id",
-      width: "5%",
-      align: "center" as const,
-      render: (_: any, __: any, index: number) => index + 1,
-    },
-    {
-      title: "Email",
-      dataIndex: "employee_work_email",
-      key: "employee_work_email",
-      width: "10%",
-      align: "center" as const,
-    },
-    {
-      title: "Tên dự án",
-      dataIndex: "project_name",
-      key: "project_name",
-      width: "20%",
-      align: "center" as const,
-    },
-    {
-      title: "Tên tác vụ",
-      dataIndex: "task_name",
-      key: "task_name",
-      width: "20%",
-      align: "center" as const,
-    },
-    {
-      title: "Số giờ",
-      dataIndex: "hours",
-      key: "hours",
-      width: "6%",
-      align: "center" as const,
-    },
-    {
-      title: "OT",
-      dataIndex: "overtime",
-      key: "overtime",
-      width: "4%",
-      align: "center" as const,
-    },
-    {
-      title: "Ghi chú",
-      dataIndex: "note",
-      key: "note",
-      width: "25%",
-      align: "center" as const,
-    },
-    {
-      title: "Hành động",
-      width: "10%",
-      align: "center" as const,
-      render: (_: any, record: any) => (
-        <div className="flex gap-x-2 justify-center">
-          <Button type="primary">Notice</Button>
-        </div>
-      ),
-    },
-  ];
+  const handleSearch = (value: string) => {
+    if (!value) {
+      setData(originalData);
+    } else {
+      setSearchInput(value);
+      const searchTerm = value.toLowerCase();
+
+      const filteredDevlogs = originalData.filter(
+        (devlog: any) =>
+          devlog.employee_work_email.includes(searchTerm) ||
+          devlog.employee_code.includes(searchTerm) ||
+          devlog.project_name.includes(searchTerm) ||
+          devlog.task_name.includes(searchTerm)
+      );
+
+      setData(filteredDevlogs);
+    }
+  };
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+  };
+  const handleReset = () => {
+    setSearchInput("");
+    setData(originalData);
+  };
 
   return (
     <div className="p-5">
-      <div className="w-full rounded p-5 bg-white">
-        <Table rowKey="id" columns={columns} dataSource={data} pagination={{ pageSize: 10 }} />
+      <div className="w-full rounded px-5 bg-white">
+        <DevlogListSearch
+          searchInput={searchInput}
+          handleSearch={handleSearch}
+          handleSearchChange={handleSearchChange}
+          handleReset={handleReset}
+        />
+        <DevlogListTable data={data} openModal={openModal} />
+        <DeglogListModal selectedDevlog={selectedDevlog} closeModal={closeModal} />
       </div>
     </div>
   );

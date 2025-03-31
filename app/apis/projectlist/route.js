@@ -5,7 +5,9 @@ export async function GET() {
     try {
         const [projects] = await db.query("SELECT * FROM project");
         const [tasks] = await db.query("SELECT * FROM task");
-        const [members] = await db.query("SELECT * FROM member_project");
+        const [members] = await db.query(`SELECT member_project.*, account.employee_name, account.employee_work_email 
+                                        FROM member_project 
+                                        INNER JOIN account ON member_project.account_id = account.id`);
 
         return NextResponse.json({ projects, tasks, members }, { status: 200 });
     } catch (error) {

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
+import dayjs from "dayjs";
 import ProjectListComponent from "@/components/projectlist/ProjectList";
 
 export interface Task {
@@ -15,13 +16,12 @@ export interface Task {
 
 export default function ProjectList() {
   const router = useRouter();
-
   const [project, setProject] = useState<any[]>([]);
   const [task, setTask] = useState<Task[]>([]);
   const [defaultTask, setDefaultTask] = useState<Task[]>([]);
-
   const [member, setMember] = useState<any[]>([]);
   const [memberRole, setMemberRole] = useState("");
+  const date = dayjs(new Date()).format("DD-MM-YYYY");
 
   useEffect(() => {
     const userRole = sessionStorage.getItem("userRole") || "";
@@ -42,7 +42,9 @@ export default function ProjectList() {
       const res = await axios.get("/apis/projectlist");
       const data = res.data ?? {};
 
-      const filteredProject = data.projects.filter((project: any) => data.members.some((member: any) => member.account_id === Number(userId) && member.project_id === project.id));
+      const filteredProject = data.projects.filter((project: any) =>
+        data.members.some((member: any) => member.account_id === Number(userId) && member.project_id === project.id)
+      );
 
       setProject(filteredProject);
       setTask(data.tasks ?? []);
@@ -58,7 +60,14 @@ export default function ProjectList() {
       <div className="w-full h-[85vh] p-5 rounded bg-white ">
         <div className="text-center mb-3">Danh sách các dự án</div>
         <div className="h-[95%] border rounded overflow-y-auto">
-          <ProjectListComponent projects={project} tasks={task} defaultTasks={defaultTask} members={member} memberRole={memberRole} />
+          <ProjectListComponent
+            projects={project}
+            tasks={task}
+            defaultTasks={defaultTask}
+            members={member}
+            memberRole={memberRole}
+            date={date}
+          />
         </div>
       </div>
     </div>

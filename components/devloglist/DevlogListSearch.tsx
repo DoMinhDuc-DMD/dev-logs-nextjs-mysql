@@ -5,19 +5,14 @@ import RestoreIcon from "@mui/icons-material/Restore";
 import Search from "antd/es/input/Search";
 import { ChangeEvent } from "react";
 
-interface AccountListSearchProps {
+interface DevlogListSearchProps {
   searchInput: string;
   handleSearch: (value: string) => void;
   handleSearchChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleReset: () => void;
 }
 
-export default function AccountListSearch({
-  searchInput,
-  handleReset,
-  handleSearch,
-  handleSearchChange,
-}: AccountListSearchProps) {
+export default function DevlogListSearch({ searchInput, handleSearch, handleSearchChange, handleReset }: DevlogListSearchProps) {
   return (
     <div className="flex py-5 gap-x-5 justify-end">
       <Button icon={<RestoreIcon />} onClick={handleReset}></Button>

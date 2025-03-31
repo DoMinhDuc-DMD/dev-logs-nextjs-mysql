@@ -10,15 +10,35 @@ interface ProjectModalProps {
   defaultTasks: Task[];
   projectId: number;
   memberRole: string;
-  isOpenModal: { [key: number]: boolean };
-  handleOK: (projectId: number) => void;
+  isOpenProjectModal: { [key: number]: boolean };
   handleCloseModal: (projectId: number) => void;
 }
 
-export default function ProjectModal({ tasks, newTasks, defaultTasks, projectId, memberRole, isOpenModal, handleOK, handleCloseModal }: ProjectModalProps) {
+export default function ProjectModal({
+  tasks,
+  newTasks,
+  defaultTasks,
+  projectId,
+  memberRole,
+  isOpenProjectModal,
+  handleCloseModal,
+}: ProjectModalProps) {
   return (
-    <Modal width={"50%"} title="Điều chỉnh dự án" open={isOpenModal[projectId] || false} onOk={() => handleOK(projectId)} onCancel={() => handleCloseModal(projectId)}>
-      <TaskList projectId={projectId} tasks={tasks} newTasks={newTasks} defaultTasks={defaultTasks} memberRole={memberRole} handleCloseModal={handleCloseModal} />
+    <Modal
+      width={"50%"}
+      title="Điều chỉnh dự án"
+      open={isOpenProjectModal[projectId] || false}
+      onOk={() => handleCloseModal(projectId)}
+      onCancel={() => handleCloseModal(projectId)}
+    >
+      <TaskList
+        projectId={projectId}
+        tasks={tasks}
+        newTasks={newTasks}
+        defaultTasks={defaultTasks}
+        memberRole={memberRole}
+        handleCloseModal={handleCloseModal}
+      />
     </Modal>
   );
 }
