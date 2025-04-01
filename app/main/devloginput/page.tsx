@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Select from "react-select";
-import { DatePicker, Button, Checkbox, CheckboxChangeEvent, InputNumber } from "antd";
+import { DatePicker, Button, Checkbox, CheckboxChangeEvent, InputNumber, message } from "antd";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import "@ant-design/v5-patch-for-react-19";
@@ -27,6 +27,7 @@ export default function Form() {
   });
   const isButtonDisabled = !formData.date || !formData.hours || !formData.project || !formData.task;
   const [isMounted, setIsMounted] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     setIsMounted(true);
@@ -113,31 +114,36 @@ export default function Form() {
     const userId = sessionStorage.getItem("userId");
     const res = await axios.post("/apis/devloginput", { ...formData, userId });
     const data = await res.data;
-    alert(data.message);
+    messageApi.info(data.message);
     window.location.reload();
   };
 
   return (
-    <div className="p-5 flex gap-x-2">
-      <div className="w-full">
-        <div className="rounded-lg bg-white p-5">
-          <div className="flex justify-between items-center my-5">
-            {isMounted && <Select className="w-[35%]" onChange={handleSelectChange} name="project" options={project} />}
-            {isMounted && <Select className="w-[35%]" onChange={handleSelectChange} name="task" options={filteredTask} isDisabled={!selectedProject} />}
-            <div className="flex items-center gap-x-6">
-              <label htmlFor="hours">Số giờ</label>
-              <InputNumber value={formData.hours} min={1} max={24} onChange={handleInputNumberChange} type="number" />
-              <label htmlFor="overtime">OT</label>
-              <Checkbox name="overtime" id="overtime" onChange={handleCheckBoxChange}></Checkbox>
+    <>
+      {contextHolder}
+      <div className="p-5 flex gap-x-2">
+        <div className="w-full">
+          <div className="rounded-lg bg-white p-5">
+            <div className="flex justify-between items-center my-5">
+              {isMounted && <Select className="w-[35%]" onChange={handleSelectChange} name="project" options={project} />}
+              {isMounted && (
+                <Select className="w-[35%]" onChange={handleSelectChange} name="task" options={filteredTask} isDisabled={!selectedProject} />
+              )}
+              <div className="flex items-center gap-x-6">
+                <label htmlFor="hours">Số giờ</label>
+                <InputNumber value={formData.hours} min={1} max={24} onChange={handleInputNumberChange} type="number" />
+                <label htmlFor="overtime">OT</label>
+                <Checkbox name="overtime" id="overtime" onChange={handleCheckBoxChange}></Checkbox>
+              </div>
             </div>
+            <TextArea name="note" rows={4} placeholder="Ghi chú" onChange={handleTextAreaChange} />
+            <Button onClick={handleSubmit} type="primary" className="mt-5" disabled={isButtonDisabled}>
+              Add devlog
+            </Button>
           </div>
-          <TextArea name="note" rows={4} placeholder="Ghi chú" onChange={handleTextAreaChange} />
-          <Button onClick={handleSubmit} type="primary" className="mt-5" disabled={isButtonDisabled}>
-            Add devlog
-          </Button>
         </div>
+        <DatePicker onChange={handleDateChange} className="w-[30%] h-10" />
       </div>
-      <DatePicker onChange={handleDateChange} className="w-[30%] h-10" />
-    </div>
+    </>
   );
 }

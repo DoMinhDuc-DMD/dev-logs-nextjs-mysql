@@ -1,7 +1,7 @@
 "use client";
 
 import { Task } from "@/app/main/projectlist/page";
-import { Button, Input } from "antd";
+import { Button, Input, message } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -18,6 +18,7 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
   const [task, setTask] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState<Task[]>([]);
   const [defaultTask, setDefaultTask] = useState<Task[]>([]);
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     setTask(tasks);
@@ -65,48 +66,61 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
 
     const hasEmptyTask = [...updatedTasks, ...newProjectTasks].some((t) => t.task_name.trim() == "");
     if (hasEmptyTask) {
-      alert("Tên task không được để trống");
+      messageApi.info("Tên task không được để trống");
       return;
     }
 
     try {
-      await axios.post("/apis/projectlist", { updatedTasks, newProjectTasks });
-      alert("Cập nhật thành công");
+      await axios.post("/apis/projectlist", { action: "updateTasks", updatedTasks, newProjectTasks });
+      messageApi.info("Cập nhật thành công");
 
       setNewTask([]);
       handleCloseModal(projectId);
     } catch (error) {
       console.error("Lỗi cập nhật dự án:", error);
-      alert("Đã xảy ra lỗi khi cập nhật dự án. Vui lòng kiểm tra lại.");
+      messageApi.info("Đã xảy ra lỗi khi cập nhật dự án. Vui lòng kiểm tra lại.");
     }
   };
 
-  const disabledUpdate = !task.some((t, index) => t.task_name.trim() !== defaultTask[index].task_name.trim()) && newTask.every((t) => t.task_name.trim() === "");
+  const disabledUpdate =
+    !task.some((t, index) => t.task_name.trim() !== defaultTask[index].task_name.trim()) && newTask.every((t) => t.task_name.trim() === "");
 
   const projectTask = task.filter((task: any) => task.project_id === projectId);
   const newProjectTask = newTask.filter((task: any) => task.project_id === projectId);
 
   return (
-    <div className="flex w-full justify-between pt-3">
-      <div className="flex flex-col gap-y-3 w-[60%]">
-        {projectTask.map((task: any) => (
-          <Input key={task.id} value={task.task_name} onChange={(e) => handleTaskChange(task.id, e.target.value)} readOnly={memberRole !== "Leader"} />
-        ))}
-        {newProjectTask.map((task: any) => (
-          <Input key={task.id} value={task.task_name} onChange={(e) => handleTaskChange(task.id, e.target.value)} />
-        ))}
+    <>
+      {contextHolder}
+      <div className="flex w-full justify-between pt-3">
+        <div className="flex flex-col gap-y-3 w-[60%]">
+          {projectTask.map((task: any) => (
+            <Input
+              key={task.id}
+              value={task.task_name}
+              onChange={(e) => handleTaskChange(task.id, e.target.value)}
+              readOnly={memberRole !== "Leader"}
+            />
+          ))}
+          {newProjectTask.map((task: any) => (
+            <Input key={task.id} value={task.task_name} onChange={(e) => handleTaskChange(task.id, e.target.value)} />
+          ))}
+        </div>
+        <div className="flex flex-col gap-y-3">
+          <Button
+            type="primary"
+            onClick={() => handleAddTask()}
+            disabled={projectTask.length === 6 || projectTask.length + newProjectTask.length === 6}
+          >
+            Thêm task mới
+          </Button>
+          <Button type="primary" onClick={() => handleRemoveTask()} disabled={newProjectTask.length === 0 || projectTask.length === 6}>
+            Giảm task mới
+          </Button>
+          <Button type="primary" onClick={() => handleUpdateTask()} disabled={disabledUpdate}>
+            Cập nhật
+          </Button>
+        </div>
       </div>
-      <div className="flex flex-col gap-y-3">
-        <Button type="primary" onClick={() => handleAddTask()} disabled={projectTask.length === 6 || projectTask.length + newProjectTask.length === 6}>
-          Thêm task mới
-        </Button>
-        <Button type="primary" onClick={() => handleRemoveTask()} disabled={newProjectTask.length === 0 || projectTask.length === 6}>
-          Giảm task mới
-        </Button>
-        <Button type="primary" onClick={() => handleUpdateTask()} disabled={disabledUpdate}>
-          Cập nhật
-        </Button>
-      </div>
-    </div>
+    </>
   );
 }

@@ -1,31 +1,36 @@
 "use client";
 
-import { Button, Checkbox, Modal, Table } from "antd";
+import { Button, message, Modal, Table } from "antd";
+import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
 import { useState } from "react";
+import axios from "axios";
+import dayjs from "dayjs";
 
 interface DevlogCheckModalProps {
   project: any;
-  date: string;
+  userId: string;
   memberProjects: any[];
   isOpenDevlogCheckModal: { [key: number]: boolean };
   handleCloseModal: (projectId: number) => void;
 }
 
-export default function DevlogCheckModal({
-  project,
-  date,
-  memberProjects,
-  isOpenDevlogCheckModal,
-  handleCloseModal,
-}: DevlogCheckModalProps) {
-  const [checked, setChecked] = useState<{ [key: number]: boolean }>({});
+export default function DevlogCheckModal({ project, userId, memberProjects, isOpenDevlogCheckModal, handleCloseModal }: DevlogCheckModalProps) {
+  const [disabled, setDisabled] = useState<{ [key: number]: boolean }>({});
+  const [messageApi, contextHolder] = message.useMessage();
+  const date = dayjs(new Date().toLocaleString()).format("YYYY-MM-DD HH:mm:ss");
 
-  const handleNotice = (memberId: number) => {
-    alert(`Đã thông báo tới ${memberId}`);
-    setChecked((prev) => ({
-      ...prev,
-      [memberId]: true,
-    }));
+  const handleNotice = async (accountId: number, memberName: string) => {
+    try {
+      await axios.post("/apis/projectlist", { action: "noticeDevlog", userId, accountId, projectId: project.id, date });
+
+      messageApi.info(`Đã thông báo tới ${memberName}`);
+    } catch (error) {
+      console.log(error);
+    }
+    setDisabled((prev) => ({ ...prev, [memberName]: true }));
+    setTimeout(() => {
+      setDisabled((prev) => ({ ...prev, [memberName]: false }));
+    }, 10000);
   };
 
   const columns = [
@@ -47,14 +52,27 @@ export default function DevlogCheckModal({
       title: "Devlog hôm nay",
       width: "25%",
       align: "center" as const,
-      render: (record: any) => <Checkbox checked={checked[record.account_id]} disabled />,
+      render: (record: any) =>
+        new Date(record.devlog_date).toLocaleDateString() === new Date().toLocaleDateString() ? (
+          <CheckCircleTwoTone twoToneColor="#4ec80c" />
+        ) : (
+          <CloseCircleTwoTone twoToneColor="#dc2d2d" />
+        ),
     },
     {
       title: "Hành động",
       width: "25%",
       align: "center" as const,
       render: (record: any) => (
-        <Button type="primary" onClick={() => handleNotice(record.account_id)}>
+        <Button
+          type="primary"
+          onClick={() => handleNotice(record.account_id, record.employee_name)}
+          disabled={
+            record.account_id === Number(userId) ||
+            new Date(record.devlog_date).toLocaleDateString() === new Date().toLocaleDateString() ||
+            disabled[record.employee_name]
+          }
+        >
           Thông báo
         </Button>
       ),
@@ -62,22 +80,25 @@ export default function DevlogCheckModal({
   ];
 
   return (
-    <Modal
-      title="Theo dõi devlog nhân viên"
-      width={"50%"}
-      open={isOpenDevlogCheckModal[project.id] || false}
-      onOk={() => handleCloseModal(project.id)}
-      onCancel={() => handleCloseModal(project.id)}
-    >
-      <div className="flex justify-between my-3">
-        <div>
-          <strong>Tên dự án:</strong> {project.project_name}
+    <>
+      {contextHolder}
+      <Modal
+        title="Theo dõi devlog nhân viên"
+        width={"50%"}
+        open={isOpenDevlogCheckModal[project.id] || false}
+        onOk={() => handleCloseModal(project.id)}
+        onCancel={() => handleCloseModal(project.id)}
+      >
+        <div className="flex justify-between my-3">
+          <div>
+            <strong>Tên dự án:</strong> {project.project_name}
+          </div>
+          <div>
+            <strong>Ngày:</strong> {dayjs(date).format("DD-MM-YYYY")}
+          </div>
         </div>
-        <div>
-          <strong>Ngày:</strong> {date}
-        </div>
-      </div>
-      <Table rowKey={"id"} columns={columns} dataSource={memberProjects} size="small" pagination={{ pageSize: 5 }} />
-    </Modal>
+        <Table rowKey={(record) => record.account_id} columns={columns} dataSource={memberProjects} size="small" pagination={{ pageSize: 5 }} />
+      </Modal>
+    </>
   );
 }

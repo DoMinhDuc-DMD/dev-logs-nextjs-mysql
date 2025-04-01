@@ -21,7 +21,7 @@ export default function ProjectList() {
   const [defaultTask, setDefaultTask] = useState<Task[]>([]);
   const [member, setMember] = useState<any[]>([]);
   const [memberRole, setMemberRole] = useState("");
-  const date = dayjs(new Date()).format("DD-MM-YYYY");
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
     const userRole = sessionStorage.getItem("userRole") || "";
@@ -37,6 +37,7 @@ export default function ProjectList() {
       return;
     }
     setMemberRole(userRole);
+    setUserId(userId);
 
     async function fetchData() {
       const res = await axios.get("/apis/projectlist");
@@ -60,14 +61,7 @@ export default function ProjectList() {
       <div className="w-full h-[85vh] p-5 rounded bg-white ">
         <div className="text-center mb-3">Danh sách các dự án</div>
         <div className="h-[95%] border rounded overflow-y-auto">
-          <ProjectListComponent
-            projects={project}
-            tasks={task}
-            defaultTasks={defaultTask}
-            members={member}
-            memberRole={memberRole}
-            date={date}
-          />
+          <ProjectListComponent projects={project} tasks={task} defaultTasks={defaultTask} members={member} memberRole={memberRole} userId={userId} />
         </div>
       </div>
     </div>

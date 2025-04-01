@@ -1,15 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { Badge, Dropdown, MenuProps } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import DehazeIcon from "@mui/icons-material/Dehaze";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import { BellFilled } from "@ant-design/icons";
+import dayjs from "dayjs";
+import MenuTwoToneIcon from "@mui/icons-material/MenuTwoTone";
+import axios from "axios";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [notification, setNotification] = useState<any[]>([]);
+  const [dot, setDot] = useState(false);
 
   const handleToggle = () => {
     const sidebar = document.querySelector(".sidebar");
@@ -23,7 +29,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       const loggedIn = sessionStorage.getItem("isLogin");
       const userRole = sessionStorage.getItem("userRole");
       const userName = sessionStorage.getItem("userName");
+      const userId = sessionStorage.getItem("userId");
       setUserName(userName);
+      setUserId(userId);
 
       if (!loggedIn) {
         router.replace("/auth");
@@ -31,7 +39,32 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         setRole(userRole);
       }
     }
+
+    async function fetchData() {
+      const res = await axios.get("/apis/layout");
+      setNotification(res.data);
+    }
+    fetchData();
   }, []);
+
+  const filteredNotice = notification.filter((item: any) => item.employee_id === Number(userId));
+
+  const items: MenuProps["items"] = filteredNotice.map((item: any) => ({
+    key: item.id,
+    label: (
+      <Link href={"/main/devloginput"}>
+        <div className="w-[300px]">
+          <div>{dayjs(new Date(item.date)).format("HH:mm, DD/MM/YYYY")}</div>
+          <div className="text-red-500">
+            Leader báo nhập devlog cho dự án "{item.project_name}" lần thứ {item.notice_count}!
+          </div>
+        </div>
+      </Link>
+    ),
+  }));
+  useEffect(() => {
+    setDot(filteredNotice.length > 0);
+  });
 
   return (
     <div className="flex">
@@ -54,7 +87,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               </Link>
             )}
             {/* Admin and HR and Leader */}
-            {(role === "Admin" || role === "HR" || role === "Leader") && (
+            {role !== "Developer" && (
               <Link href="/main/devloglist">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách devlog</li>
               </Link>
@@ -88,14 +121,22 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <div className="content w-[85%] h-[100vh] bg-gray-200">
         <div className="flex justify-between items-center w-[100%] h-12 bg-blue-300 px-6">
           <div className="flex gap-x-5 items-center">
-            <DehazeIcon onClick={handleToggle} className="cursor-pointer hover:bg-gray-400" />
+            <div className="p-3 hover:bg-gray-400 cursor-pointer" onClick={handleToggle}>
+              <MenuTwoToneIcon fontSize="small" />
+            </div>
             <Link href="/main" className="p-3 cursor-pointer hover:bg-gray-400">
               Trang chủ
             </Link>
           </div>
           <div className="flex gap-x-5 items-center">
-            <NotificationsIcon className="cursor-pointer hover:bg-gray-400" />
-            <Link href="/main/accountsetting" className="p-3 cursor-pointer hover:bg-gray-400">
+            <Dropdown menu={{ items }} trigger={["click"]} placement="bottomRight" arrow={filteredNotice.length > 0}>
+              <div className="p-3 hover:bg-gray-400 cursor-pointer">
+                <Badge count={filteredNotice.length} size="small">
+                  <BellFilled style={{ fontSize: 20 }} />
+                </Badge>
+              </div>
+            </Dropdown>
+            <Link href="/main/accountsetting" className="w-[150px] text-center p-3 cursor-pointer hover:bg-gray-400">
               {userName}
             </Link>
           </div>
