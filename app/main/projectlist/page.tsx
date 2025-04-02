@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import dayjs from "dayjs";
-import ProjectListComponent from "@/components/projectlist/ProjectList";
+import ProjectListComponent from "@/components/projectList/ProjectList";
 
 export interface Task {
   id: number;
@@ -40,7 +40,7 @@ export default function ProjectList() {
     setUserId(userId);
 
     async function fetchData() {
-      const res = await axios.get("/apis/projectlist");
+      const res = await axios.get("/api/projectList");
       const data = res.data ?? {};
 
       const filteredProject = data.projects.filter((project: any) =>

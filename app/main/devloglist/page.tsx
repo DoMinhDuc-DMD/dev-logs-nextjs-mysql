@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
-import DeglogListModal from "@/components/devloglist/DevlogListModal";
-import DevlogListTable from "@/components/devloglist/DevlogListTable";
-import DevlogListSearch from "@/components/devloglist/DevlogListSearch";
+import DeglogListModal from "@/components/devlogList/DevlogListModal";
+import DevlogListTable from "@/components/devlogList/DevlogListTable";
+import DevlogListSearch from "@/components/devlogList/DevlogListSearch";
 
 export default function DevlogList() {
   const router = useRouter();
@@ -39,15 +39,13 @@ export default function DevlogList() {
 
     const fetchData = async () => {
       try {
-        const res = await axios.get("/apis/devloglist");
+        const res = await axios.get("/api/devlogList");
         const data = await res.data;
 
         const filteredDevlogs = data.devlogs.filter(
           (item: any) =>
             dayjs(item.date).format("DD-MM-YYYY") === date &&
-            data.leaderProjects.some(
-              (project: any) => project.account_id === Number(userId) && project.project_id === item.project_id
-            )
+            data.leaderProjects.some((project: any) => project.account_id === Number(userId) && project.project_id === item.project_id)
         );
         setData(filteredDevlogs);
         setOriginalData(filteredDevlogs);
@@ -87,12 +85,7 @@ export default function DevlogList() {
   return (
     <div className="p-5">
       <div className="w-full rounded px-5 bg-white">
-        <DevlogListSearch
-          searchInput={searchInput}
-          handleSearch={handleSearch}
-          handleSearchChange={handleSearchChange}
-          handleReset={handleReset}
-        />
+        <DevlogListSearch searchInput={searchInput} handleSearch={handleSearch} handleSearchChange={handleSearchChange} handleReset={handleReset} />
         <DevlogListTable data={data} openModal={openModal} />
         <DeglogListModal selectedDevlog={selectedDevlog} closeModal={closeModal} />
       </div>

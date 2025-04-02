@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
-import ProjectAdd from "@/components/projectadd/ProjectAdd";
+import ProjectAdd from "@/components/projectAdd/ProjectAdd";
 
 export interface Dev {
   id: number;
@@ -39,7 +39,7 @@ export default function AddProject() {
 
     async function fetchData() {
       try {
-        const res = await axios.get<Dev[]>("/apis/projectadd");
+        const res = await axios.get<Dev[]>("/api/projectAdd");
         setDev(Array.isArray(res.data) ? res.data : []);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);

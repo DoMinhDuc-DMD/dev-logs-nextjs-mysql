@@ -1,6 +1,6 @@
 "use client";
 
-import { Task } from "@/app/main/projectlist/page";
+import { Task } from "@/app/main/projectList/page";
 import { Button, Input, message } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -71,7 +71,7 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
     }
 
     try {
-      await axios.post("/apis/projectlist", { action: "updateTasks", updatedTasks, newProjectTasks });
+      await axios.post("/api/projectList", { action: "updateTasks", updatedTasks, newProjectTasks });
       messageApi.info("Cập nhật thành công");
 
       setNewTask([]);

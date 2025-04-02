@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -19,9 +24,36 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/login/api/route.js", "app/main/devloginput/devloginput/route.js", "app/main/devloghistory/page", "app/apis/auth/route.js", "app/auth/api/route.js"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/api/auth/route.ts",
+    "app/api/projectList/route.ts",
+    "app/api/projectAdd/route.ts",
+    "next.config.ts",
+    "app/api/connectdb/db.ts",
+    "app/api/accountSetting/route.js",
+    ".next/types/app/api/accountcreate/route.tsx",
+    ".next/types/app/api/accountdetail/route.tsx",
+    ".next/types/app/api/accountlist/route.tsx",
+    ".next/types/app/api/accountsetting/route.tsx",
+    ".next/types/app/api/auth/route.tsx",
+    ".next/types/app/api/dashboard/route.tsx",
+    ".next/types/app/api/devloghistory/route.tsx",
+    ".next/types/app/api/devloginput/route.tsx",
+    ".next/types/app/api/devloglist/route.tsx",
+    ".next/types/app/api/layout/route.tsx",
+    ".next/types/app/api/projectadd/route.tsx",
+    ".next/types/app/api/projectlist/route.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

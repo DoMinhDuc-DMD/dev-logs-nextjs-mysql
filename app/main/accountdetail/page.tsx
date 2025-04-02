@@ -4,6 +4,7 @@ import { Button, Input } from "antd";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import "@ant-design/v5-patch-for-react-19";
 
 export default function AccountDetail() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function AccountDetail() {
 
     async function fetchInfo() {
       try {
-        const res = await axios.get(`/apis/accountdetail?id=${userId}`);
+        const res = await axios.get(`/api/accountDetail?id=${userId}`);
         const data = res.data;
 
         setInfo(data);

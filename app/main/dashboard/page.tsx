@@ -80,7 +80,7 @@ export default function Main() {
 
     async function fetchDevlog() {
       try {
-        const res = await axios.get("/apis/dashboard");
+        const res = await axios.get("/api/dashboard");
 
         const data = await res.data;
         const filteredData = data.filter((devlog: any) => devlog.account_id === Number(userId));

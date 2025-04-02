@@ -10,15 +10,15 @@ import axios from "axios";
 export default function AccountSetting() {
   const router = useRouter();
   const [info, setInfo] = useState({
-    employee_code: "",
     employee_name: "",
-    employee_birthday: "",
-    employee_bank_account: "",
-    employee_private_email: "",
-    employee_phone_number: "",
-    employee_citizen_identification: "",
+    employee_code: "",
     employee_work_email: "",
     employee_work_password: "",
+    employee_private_email: "",
+    employee_phone_number: "",
+    employee_birthday: "",
+    employee_bank_account: "",
+    employee_citizen_identification: "",
     employee_license_plate: "",
     role: "",
   });
@@ -32,8 +32,10 @@ export default function AccountSetting() {
           router.replace("/auth");
           return;
         }
-        const res = await axios.get(`/apis/accountsetting?userId=${userId}`);
-        setInfo(res.data);
+        const res = await axios.get("/api/accountSetting");
+        const data = res.data.filter((item: any) => item.id === Number(userId));
+
+        setInfo(data[0]);
       } catch (error) {
         console.log("Lỗi lấy thông tin tài khoản: ", error);
       }
@@ -61,7 +63,7 @@ export default function AccountSetting() {
         return;
       }
 
-      await axios.put("/apis/accountsetting/", { ...info, userId });
+      await axios.put("/api/accountSetting/", { ...info, userId });
       messageApi.info("Cập nhật thông tin tài khoản thành công!");
     } catch (error) {
       console.log("Lỗi cập nhật thông tin tài khoản: ", error);
@@ -87,7 +89,7 @@ export default function AccountSetting() {
               <label htmlFor="employee_id">Mã nhân viên:</label>
               <Input name="employee_id" value={info?.employee_code || ""} readOnly />
               <label htmlFor="role">Chức vụ/Vị trí:</label>
-              <Input name="role" value={info?.role || ""} readOnly />
+              <Input name="role" value={info.role || ""} readOnly />
               <label htmlFor="employee_name">Họ và tên:</label>
               <Input name="employee_name" value={info?.employee_name || ""} onChange={handleChange} />
               <label htmlFor="employee_birthday">Ngày sinh:</label>
@@ -112,8 +114,8 @@ export default function AccountSetting() {
               <Input name="employee_work_email" value={info?.employee_work_email || ""} onChange={handleChange} />
               <label htmlFor="employee_work_password">Mật khẩu:</label>
               <Input name="employee_work_password" value={info?.employee_work_password || ""} onChange={handleChange} />
-              <label htmlFor="employee_license_plates">Biển số xe:</label>
-              <Input name="employee_license_plates" value={info?.employee_license_plate || ""} onChange={handleChange} />
+              <label htmlFor="employee_license_plate">Biển số xe:</label>
+              <Input name="employee_license_plate" value={info?.employee_license_plate || ""} onChange={handleChange} />
             </div>
           </div>
           <div className="flex gap-x-3 justify-center w-full">

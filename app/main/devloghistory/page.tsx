@@ -46,7 +46,7 @@ export default function DevlogHistory() {
 
     async function fetchDevlog() {
       try {
-        const res = await axios.get("/apis/devloghistory");
+        const res = await axios.get("/api/devlogHistory");
         const data = await res.data;
         const filteredData = data.filter((devlog: any) => devlog.account_id === Number(userId));
 

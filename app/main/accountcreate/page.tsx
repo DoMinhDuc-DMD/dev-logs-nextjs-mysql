@@ -11,11 +11,6 @@ export default function CreateAccount() {
   const [message, setMessage] = useState("");
   const [options, setOptions] = useState<{ value: string; label: string }[]>([]);
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -34,7 +29,7 @@ export default function CreateAccount() {
 
     async function fetchRoles() {
       try {
-        const res = await axios.get("/apis/accountcreate");
+        const res = await axios.get("/api/accountCreate");
         const data = res.data;
         setOptions(data.roles);
       } catch (error) {
@@ -52,7 +47,7 @@ export default function CreateAccount() {
     const password = formData.get("password");
 
     try {
-      const res = await axios.post("/apis/accountcreate", { email, password, role: selectedRole });
+      const res = await axios.post("/api/accountCreate", { email, password, role: selectedRole });
       const data = await res.data;
 
       setMessage(data.message);
@@ -79,7 +74,7 @@ export default function CreateAccount() {
         <label className="block text-left" htmlFor="role">
           Select Role
         </label>
-        {isMounted && <Select options={options} onChange={(selected) => setSelectedRole(selected?.value || null)} />}
+        {<Select options={options} onChange={(selected) => setSelectedRole(selected?.value || null)} />}
         {message && <p className="text-center text-red-500">{message}</p>}
         <Button className="w-30 py-2 mx-auto" type="primary" htmlType="submit">
           Register

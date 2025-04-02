@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import db from "../../apis/connectdb/db";
+import db from "../connectdb/db";
 
-export async function POST(req) {
+export async function POST(req: any) {
   try {
     const { email, password } = await req.json();
 
-    const [rows] = await db.query("SELECT * FROM account WHERE employee_work_email = ?", [email]);
+    const [rows]: any = await db.query("SELECT * FROM account WHERE employee_work_email = ?", [email]);
 
     if (!rows || rows.length === 0) {
       return NextResponse.json({ message: "Email không tồn tại" }, { status: 401 });

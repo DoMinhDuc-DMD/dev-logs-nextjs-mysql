@@ -41,10 +41,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     }
 
     async function fetchData() {
-      const res = await axios.get("/apis/layout");
+      const res = await axios.get("/api/layout");
       setNotification(res.data);
     }
     fetchData();
+    setDot(filteredNotice.length > 0);
   }, []);
 
   const filteredNotice = notification.filter((item: any) => item.employee_id === Number(userId));
@@ -52,7 +53,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const items: MenuProps["items"] = filteredNotice.map((item: any) => ({
     key: item.id,
     label: (
-      <Link href={"/main/devloginput"}>
+      <Link href={"/main/devlogInput"}>
         <div className="w-[300px]">
           <div>{dayjs(new Date(item.date)).format("HH:mm, DD/MM/YYYY")}</div>
           <div className="text-red-500">
@@ -62,9 +63,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       </Link>
     ),
   }));
-  useEffect(() => {
-    setDot(filteredNotice.length > 0);
-  });
 
   return (
     <div className="flex">
@@ -76,38 +74,38 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             </Link>
             {/* Admin only */}
             {role === "Admin" && (
-              <Link href="/main/accountcreate">
+              <Link href="/main/accountCreate">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Tạo tài khoản</li>
               </Link>
             )}
             {/* Admin and HR */}
             {(role === "Admin" || role === "HR") && (
-              <Link href="/main/accountlist">
+              <Link href="/main/accountList">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách tài khoản</li>
               </Link>
             )}
             {/* Admin and HR and Leader */}
             {role !== "Developer" && (
-              <Link href="/main/devloglist">
+              <Link href="/main/devlogList">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách devlog</li>
               </Link>
             )}
             {/* Leader only */}
             {role === "Leader" && (
-              <Link href="/main/projectadd">
+              <Link href="/main/projectAdd">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Tạo mới dự án</li>
               </Link>
             )}
             {/* Leader and Dev */}
             {(role === "Leader" || role === "Developer") && (
               <>
-                <Link href="/main/projectlist">
+                <Link href="/main/projectList">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách dự án</li>
                 </Link>
-                <Link href="/main/devloginput">
+                <Link href="/main/devlogInput">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Nhập devlogs</li>
                 </Link>
-                <Link href="/main/devloghistory">
+                <Link href="/main/devlogHistory">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Lịch sử nhập devlog</li>
                 </Link>
                 <Link href="/main/dashboard">
@@ -136,7 +134,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 </Badge>
               </div>
             </Dropdown>
-            <Link href="/main/accountsetting" className="w-[150px] text-center p-3 cursor-pointer hover:bg-gray-400">
+            <Link href="/main/accountSetting" className="w-[150px] text-center p-3 cursor-pointer hover:bg-gray-400">
               {userName}
             </Link>
           </div>

@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import db from "../../apis/connectdb/db";
+import db from "../connectdb/db";
 
 export async function GET() {
-    try {
-        const [devlogs] = await db.query(`
+  try {
+    const [devlogs] = await db.query(`
             SELECT devlog.*, 
                     account.employee_work_email, 
                     account.employee_code, 
@@ -16,10 +16,10 @@ export async function GET() {
             ORDER BY devlog.id DESC
             `);
 
-        const [leaderProjects] = await db.query(`SELECT * FROM member_project`)
+    const [leaderProjects] = await db.query(`SELECT * FROM member_project`);
 
-        return NextResponse.json({ devlogs, leaderProjects });
-    } catch (error) {
-        return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
-    }
+    return NextResponse.json({ devlogs, leaderProjects });
+  } catch (error) {
+    return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
+  }
 }

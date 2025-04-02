@@ -2,7 +2,7 @@
 
 import ProjectModal from "./ProjectModal";
 import DevlogCheckModal from "./DevlogCheckModal";
-import { Task } from "@/app/main/projectlist/page";
+import { Task } from "@/app/main/projectList/page";
 import { useState } from "react";
 import ProjectCard from "./ProjectCard";
 

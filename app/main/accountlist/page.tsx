@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
-import AccountListTable from "@/components/accountlist/AccountListTable";
-import AccountListSearch from "@/components/accountlist/AccountListSearch";
+import AccountListTable from "@/components/accountList/AccountListTable";
+import AccountListSearch from "@/components/accountList/AccountListSearch";
 
 export interface Account {
   id: number;
@@ -31,7 +31,7 @@ export default function AccountList() {
 
   const fetchAccount = async () => {
     try {
-      const res = await axios.get("/apis/accountlist");
+      const res = await axios.get("/api/accountList");
       const data = res.data;
 
       setAccounts(data.accounts);
@@ -78,7 +78,7 @@ export default function AccountList() {
   const handleSave = async () => {
     if (!editingId || !editedData) return;
     try {
-      await axios.put("/apis/accountlist", {
+      await axios.put("/api/accountList", {
         id: editingId,
         email: editedData?.employee_work_email,
         password: editedData?.employee_work_password,

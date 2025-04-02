@@ -1,6 +1,6 @@
 "use client";
 
-import { Task } from "@/app/main/projectlist/page";
+import { Task } from "@/app/main/projectList/page";
 import { Modal } from "antd";
 import TaskList from "./TaskList";
 
