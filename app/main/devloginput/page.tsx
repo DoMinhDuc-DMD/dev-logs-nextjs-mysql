@@ -37,7 +37,7 @@ export default function Form() {
       return;
     }
     if (userRole !== "Leader" && userRole !== "Developer") {
-      router.replace("/main/notyourright");
+      router.replace("/main/notYourRight");
     }
 
     async function fetchProjectTask() {

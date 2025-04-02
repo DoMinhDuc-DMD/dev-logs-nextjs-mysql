@@ -34,7 +34,7 @@ export default function DevlogList() {
       return;
     }
     if (userRole !== "Leader") {
-      router.replace("/main/notyourright");
+      router.replace("/main/notYourRight");
     }
 
     const fetchData = async () => {

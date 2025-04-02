@@ -33,7 +33,7 @@ export default function ProjectList() {
       return;
     }
     if (userRole !== "Leader" && userRole !== "Developer") {
-      router.replace("/main/notyourright");
+      router.replace("/main/notYourRight");
       return;
     }
     setMemberRole(userRole);

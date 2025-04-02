@@ -52,7 +52,7 @@ export default function AccountList() {
       return;
     }
     if (userRole !== "Admin" && userRole !== "HR") {
-      router.replace("/main/notyourright");
+      router.replace("/main/notYourRight");
     }
 
     setRole(userRole);

@@ -32,7 +32,7 @@ export default function AddProject() {
       return;
     }
     if (userRole !== "Leader") {
-      router.replace("/main/notyourright");
+      router.replace("/main/notYourRight");
     }
 
     setProject((prev) => ({ ...prev, members: [Number(userId)] }));

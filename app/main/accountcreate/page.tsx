@@ -23,7 +23,7 @@ export default function CreateAccount() {
         return;
       }
       if (userRole !== "Admin") {
-        router.replace("/main/notyourright");
+        router.replace("/main/notYourRight");
       }
     }
 

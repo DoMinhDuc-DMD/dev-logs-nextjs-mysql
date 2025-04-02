@@ -32,7 +32,7 @@ export default function AccountDetail() {
       return;
     }
     if (userRole !== "Admin" && userRole !== "HR") {
-      router.replace("/main/notyourright");
+      router.replace("/main/notYourRight");
     }
 
     async function fetchInfo() {

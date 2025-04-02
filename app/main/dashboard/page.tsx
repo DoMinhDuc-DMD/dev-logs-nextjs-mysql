@@ -75,7 +75,7 @@ export default function Main() {
       return;
     }
     if (userRole !== "Developer" && userRole !== "Leader") {
-      router.replace("/main/notyourright");
+      router.replace("/main/notYourRight");
     }
 
     async function fetchDevlog() {
