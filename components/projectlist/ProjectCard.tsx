@@ -1,17 +1,25 @@
 "use client";
 
+import { Member, ProjectList, Task } from "@/app/main/projectList/page";
 import { Button } from "antd";
 
 interface ProjectCardProps {
-  project: any;
-  memberProject: any;
-  projectTask: any;
+  project: ProjectList;
+  memberProject: Member[];
+  projectTask: Task[];
   memberRole: string;
   openProjectModal: (projectId: number) => void;
   openDevlogCheckModal: (projectId: number) => void;
 }
 
-export default function ProjectCard({ project, memberProject, projectTask, memberRole, openProjectModal, openDevlogCheckModal }: ProjectCardProps) {
+export default function ProjectCard({
+  project,
+  memberProject,
+  projectTask,
+  memberRole,
+  openProjectModal,
+  openDevlogCheckModal,
+}: ProjectCardProps) {
   return (
     <div key={project.id} className={`flex flex-col items-center bg-blue-200 border rounded m-3 py-6 px-3`}>
       <div className="w-full flex justify-between items-center">

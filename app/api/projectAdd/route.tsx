@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import db from "../connectdb/db";
+import { ResultSetHeader, RowDataPacket } from "mysql2";
 
 export async function GET() {
   try {
@@ -7,26 +8,30 @@ export async function GET() {
 
     return NextResponse.json(accounts);
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }
 
-export async function POST(req: any) {
+export async function POST(req: NextRequest) {
   try {
-    const { project_name, start_date, end_date, members, description, tasks } = await req.json();
-    const [projectResult]: any = await db.query("INSERT INTO project (project_name,description,start_date,end_date) VALUES (?,?,?,?)", [
-      project_name,
-      description,
-      start_date,
-      end_date,
-    ]);
+    const { project, tasks } = await req.json();
+
+    const [projectResult] = await db.query<ResultSetHeader>(
+      "INSERT INTO project (project_name,description,start_date,end_date) VALUES (?,?,?,?)",
+      [project.project_name, project.description, project.start_date, project.end_date]
+    );
 
     const project_id = projectResult.insertId;
     for (const task of tasks) {
-      await db.query("INSERT INTO task (task_name,project_id,task_name_index) VALUES (?,?,?)", [task.task_name, project_id, task.task_name_index]);
+      await db.query("INSERT INTO task (task_name,project_id,task_name_index) VALUES (?,?,?)", [
+        task.task_name,
+        project_id,
+        task.task_name_index,
+      ]);
     }
 
-    for (const member of members) {
+    for (const member of project.members) {
       await db.query("INSERT INTO member_project (account_id,project_id) VALUES (?,?)", [member, project_id]);
     }
 

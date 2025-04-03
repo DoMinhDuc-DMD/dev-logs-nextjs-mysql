@@ -15,14 +15,14 @@ export default function Form() {
   const [task, setTask] = useState([]);
   const [filteredTask, setFilteredTask] = useState([]);
 
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedProject, setSelectedProject] = useState<number>();
   const [formData, setFormData] = useState({
     hours: 1,
     overtime: false,
     note: "",
     date: "",
-    project: null,
-    task: null,
+    project: 0,
+    task: 0,
   });
   const isButtonDisabled = !formData.date || !formData.hours || !formData.project || !formData.task;
   const [messageApi, contextHolder] = message.useMessage();
@@ -45,7 +45,7 @@ export default function Form() {
         const res = await axios.get("/api/devlogInput");
         const data = await res.data;
 
-        const filteredProject = data.formattedProject.filter((project: any) => project.accountId === Number(userId));
+        const filteredProject = data.formattedProject.filter((project: { accountId: number }) => project.accountId === Number(userId));
 
         setProject(filteredProject);
         setTask(data.formattedTask);
@@ -65,9 +65,9 @@ export default function Form() {
     }
   };
 
-  const handleSelectProject = (selectedOption: any) => {
+  const handleSelectProject = (selectedOption: number) => {
     setSelectedProject(selectedOption);
-    const filtered = task.filter((t: any) => t.projectId === selectedOption);
+    const filtered = task.filter((t: { projectId: number }) => t.projectId === selectedOption);
 
     setFilteredTask(filtered);
 
@@ -77,7 +77,7 @@ export default function Form() {
     }));
   };
 
-  const handleSelectTask = (selectedOption: any) => {
+  const handleSelectTask = (selectedOption: number) => {
     setFormData((prev) => ({
       ...prev,
       task: selectedOption,

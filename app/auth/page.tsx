@@ -28,8 +28,8 @@ export default function LoginForm() {
       sessionStorage.setItem("userName", data.userName);
 
       router.replace("/main");
-    } catch (error: any) {
-      setMessage(error.response?.data?.message || "Login Failed!");
+    } catch (error) {
+      setMessage("Login Failed!");
     }
   }
 

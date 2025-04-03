@@ -1,14 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import db from "../connectdb/db";
 import { RowDataPacket } from "mysql2/promise";
 
 export async function GET() {
   try {
-    interface RoleData extends RowDataPacket {
-      role: string;
-    }
-
-    const [roles] = await db.query<RoleData[]>("SELECT role FROM account WHERE role != 'Admin' GROUP BY role");
+    const [roles] = await db.query<RowDataPacket[]>("SELECT role FROM account WHERE role != 'Admin' GROUP BY role");
 
     const formattedRoles = roles.map((row) => ({
       value: row.role.toLowerCase(),
@@ -17,11 +13,12 @@ export async function GET() {
 
     return NextResponse.json({ roles: formattedRoles });
   } catch (error) {
+    console.error("Lỗi lấy danh sách role: ", error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }
 
-export async function POST(req: any) {
+export async function POST(req: NextRequest) {
   try {
     const { email, password, role } = await req.json();
 
@@ -29,7 +26,7 @@ export async function POST(req: any) {
       return NextResponse.json({ message: "Vui lòng nhập đầy đủ thông tin" }, { status: 400 });
     }
 
-    const [existingUser]: any = await db.query("SELECT * FROM account WHERE employee_work_email = ?", [email]);
+    const [existingUser] = await db.query<RowDataPacket[]>("SELECT * FROM account WHERE employee_work_email = ?", [email]);
     if (existingUser.length > 0) {
       return NextResponse.json({ message: "Email đã tồn tại" });
     }

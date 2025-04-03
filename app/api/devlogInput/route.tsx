@@ -1,20 +1,21 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import db from "../connectdb/db";
+import { RowDataPacket } from "mysql2";
 
 export async function GET() {
   try {
-    const [project]: any = await db.query(
+    const [project] = await db.query<RowDataPacket[]>(
       "SELECT project.id,project.project_name, member_project.account_id FROM project INNER JOIN member_project ON project.id = member_project.project_id"
     );
-    const [task]: any = await db.query("SELECT * FROM task WHERE isAvailable = true");
+    const [task] = await db.query<RowDataPacket[]>("SELECT * FROM task WHERE isAvailable = true");
 
-    const formattedProject = project.map((row: any) => ({
+    const formattedProject = project.map((row) => ({
       value: row.id,
       label: row.project_name,
       accountId: row.account_id,
     }));
 
-    const formattedTask = task.map((row: any) => ({
+    const formattedTask = task.map((row) => ({
       value: row.id,
       label: row.task_name,
       projectId: row.project_id,
@@ -22,11 +23,12 @@ export async function GET() {
 
     return NextResponse.json({ formattedProject, formattedTask });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }
 
-export async function POST(req: any) {
+export async function POST(req: NextRequest) {
   try {
     const { userId, hours, overtime, date, note, project, task } = await req.json();
 

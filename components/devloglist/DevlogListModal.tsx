@@ -1,9 +1,10 @@
 "use client";
 
+import { DevlogList } from "@/app/main/devlogList/page";
 import { Modal } from "antd";
 
 interface DevlogListModalProps {
-  selectedDevlog: any;
+  selectedDevlog: DevlogList | null;
   closeModal: () => void;
 }
 
@@ -37,7 +38,7 @@ export default function DevlogListModal({ selectedDevlog, closeModal }: DevlogLi
             </div>
             <div>
               <strong>Overtime: </strong>
-              {selectedDevlog.overtime === 0 ? "Không" : "Có"}
+              {selectedDevlog.overtime ? "Có" : "Không"}
             </div>
             <div>
               <strong>Ghi chú: </strong>

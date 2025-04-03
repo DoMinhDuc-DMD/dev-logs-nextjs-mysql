@@ -1,10 +1,11 @@
 "use client";
 
+import { DevlogList } from "@/app/main/devlogList/page";
 import { Button, Table } from "antd";
 
 interface DevlogListTableProps {
-  data: any[];
-  openModal: (devlog: any) => void;
+  data: DevlogList[];
+  openModal: (devlog: DevlogList) => void;
 }
 
 export default function DevlogListTable({ data, openModal }: DevlogListTableProps) {
@@ -14,7 +15,7 @@ export default function DevlogListTable({ data, openModal }: DevlogListTableProp
       key: "id",
       width: "2%",
       align: "center" as const,
-      render: (_: any, __: any, index: number) => index + 1,
+      render: (_: unknown, __: unknown, index: number) => index + 1,
     },
     {
       title: "Mã nhân viên",
@@ -55,7 +56,7 @@ export default function DevlogListTable({ data, openModal }: DevlogListTableProp
       title: "Hành động",
       width: "10%",
       align: "center" as const,
-      render: (_: any, record: any) => (
+      render: (record: DevlogList) => (
         <div className="flex gap-x-2 justify-center">
           <Button type="primary" onClick={() => openModal(record)}>
             Detail

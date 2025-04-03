@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import db from "../connectdb/db";
 
 export async function GET() {
@@ -6,11 +6,12 @@ export async function GET() {
     const [accounts] = await db.query("SELECT * FROM account");
     return NextResponse.json(accounts);
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }
 
-export async function PUT(req: any) {
+export async function PUT(req: NextRequest) {
   try {
     const {
       employee_name,
@@ -45,6 +46,7 @@ export async function PUT(req: any) {
 
     return NextResponse.json({ message: "Cập nhật thành công" }, { status: 200 });
   } catch (error) {
+    console.error(error);
     console.error("Lỗi cập nhật tài khoản:", error);
   }
 }

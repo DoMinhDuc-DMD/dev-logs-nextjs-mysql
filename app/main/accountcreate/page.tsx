@@ -1,10 +1,9 @@
 "use client";
 
-import { Button, Input } from "antd";
+import { Button, Input, Select } from "antd";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import Select from "react-select";
 
 export default function CreateAccount() {
   const router = useRouter();
@@ -74,7 +73,7 @@ export default function CreateAccount() {
         <label className="block text-left" htmlFor="role">
           Select Role
         </label>
-        {<Select options={options} onChange={(selected) => setSelectedRole(selected?.value || null)} />}
+        <Select options={options} placeholder="Select role" style={{ height: 43 }} onChange={(selected) => setSelectedRole(selected || null)} />
         {message && <p className="text-center text-red-500">{message}</p>}
         <Button className="w-30 py-2 mx-auto" type="primary" htmlType="submit">
           Register

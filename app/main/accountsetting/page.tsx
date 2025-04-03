@@ -10,6 +10,7 @@ import axios from "axios";
 export default function AccountSetting() {
   const router = useRouter();
   const [info, setInfo] = useState({
+    id: 0,
     employee_name: "",
     employee_code: "",
     employee_work_email: "",
@@ -33,7 +34,8 @@ export default function AccountSetting() {
           return;
         }
         const res = await axios.get("/api/accountSetting");
-        const data = res.data.filter((item: any) => item.id === Number(userId));
+
+        const data = res.data.filter((item: { id: number }) => item.id === Number(userId));
 
         setInfo(data[0]);
       } catch (error) {
@@ -48,10 +50,10 @@ export default function AccountSetting() {
     setInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleDateChange = (date: any) => {
+  const handleDateChange = (date: dayjs.Dayjs) => {
     setInfo((prev) => ({
       ...prev,
-      employee_birthday: date ? dayjs(date).format("YYYY-MM-DD") : "",
+      employee_birthday: date ? date.format("YYYY-MM-DD") : "",
     }));
   };
 

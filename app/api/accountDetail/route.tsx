@@ -1,13 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
 import db from "../connectdb/db";
+import { RowDataPacket } from "mysql2";
 
-export async function GET(req: any) {
+export async function GET(req: NextRequest) {
   try {
     const searchParams = new URL(req.url).searchParams;
     const userId = searchParams.get("id");
 
-    const [accounts]: any = await db.query("SELECT * FROM account WHERE id = ?", [userId]);
+    const [accounts] = await db.query<RowDataPacket[]>("SELECT * FROM account WHERE id = ?", [userId]);
 
     const user = accounts[0];
     if (user.employee_birthday) {

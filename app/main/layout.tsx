@@ -9,13 +9,22 @@ import dayjs from "dayjs";
 import MenuTwoToneIcon from "@mui/icons-material/MenuTwoTone";
 import axios from "axios";
 
+interface Notification {
+  id: number;
+  leader_id: number;
+  employee_id: number;
+  project_id: number;
+  project_name: string;
+  notice_count: number;
+  date: string;
+}
+
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [notification, setNotification] = useState<any[]>([]);
-  const [dot, setDot] = useState(false);
+  const [notification, setNotification] = useState<Notification[]>([]);
 
   const handleToggle = () => {
     const sidebar = document.querySelector(".sidebar");
@@ -45,12 +54,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       setNotification(res.data);
     }
     fetchData();
-    setDot(filteredNotice.length > 0);
   }, []);
 
-  const filteredNotice = notification.filter((item: any) => item.employee_id === Number(userId));
+  const filteredNotice = notification.filter((item) => item.employee_id === Number(userId));
 
-  const items: MenuProps["items"] = filteredNotice.map((item: any) => ({
+  const items: MenuProps["items"] = filteredNotice.map((item) => ({
     key: item.id,
     label: (
       <Link href={"/main/devlogInput"}>

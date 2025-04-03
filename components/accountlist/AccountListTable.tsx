@@ -1,14 +1,13 @@
 "use client";
 
-import { Account } from "@/app/main/accountList/page";
-import { Button, Input, Table } from "antd";
+import { Account, Option } from "@/app/main/accountList/page";
+import { Button, Input, Table, Select } from "antd";
 import { useRouter } from "next/navigation";
 import { ChangeEvent } from "react";
-import Select from "react-select";
 
 interface AccountListTableProps {
   accounts: Account[];
-  options: any[];
+  options: Option[];
   editingId: number | null;
   editedData: {
     employee_work_email: string;
@@ -17,7 +16,7 @@ interface AccountListTableProps {
   } | null;
   handleAdjust: (account: Account) => void;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleSelectChange: (selectedOption: any) => void;
+  handleSelectChange: (selectedOption: string) => void;
   handleSave: () => void;
 }
 
@@ -39,7 +38,7 @@ export default function AccountListTable({
       key: "id",
       width: "10%",
       align: "center" as const,
-      render: (_: any, __: any, index: number) => index + 1,
+      render: (_: unknown, __: unknown, index: number) => index + 1,
     },
     {
       title: "Email",
@@ -48,7 +47,7 @@ export default function AccountListTable({
       width: "25%",
       align: "center" as const,
       onCell: () => ({ style: { textAlign: "left" as const, padding: " 10px" } }),
-      render: (text: string, record: any) =>
+      render: (text: string, record: Account) =>
         editingId === record.id ? (
           <Input name="employee_work_email" type="email" value={editedData?.employee_work_email || ""} onChange={handleChange} />
         ) : (
@@ -61,7 +60,7 @@ export default function AccountListTable({
       key: "employee_work_password",
       width: "25%",
       align: "center" as const,
-      render: (record: any) =>
+      render: (record: Account) =>
         editingId === record.id ? (
           <Input name="employee_work_password" value={editedData?.employee_work_password || ""} onChange={handleChange} />
         ) : (
@@ -72,9 +71,9 @@ export default function AccountListTable({
       title: "Role",
       width: "20%",
       align: "center" as const,
-      render: (_: any, record: any) =>
+      render: (record: Account) =>
         editingId === record.id ? (
-          <Select options={options} defaultValue={{ label: record.role, value: record.role }} onChange={handleSelectChange} />
+          <Select style={{ width: "100%" }} options={options} defaultValue={record.role} onChange={handleSelectChange} />
         ) : (
           record.role
         ),
@@ -83,7 +82,7 @@ export default function AccountListTable({
       title: "Actions",
       width: "20%",
       align: "center" as const,
-      render: (_: any, record: any) =>
+      render: (record: Account) =>
         editingId === record.id ? (
           <Button onClick={handleSave} type="primary">
             Save

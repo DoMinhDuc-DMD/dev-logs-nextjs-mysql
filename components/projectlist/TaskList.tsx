@@ -85,15 +85,15 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
   const disabledUpdate =
     !task.some((t, index) => t.task_name.trim() !== defaultTask[index].task_name.trim()) && newTask.every((t) => t.task_name.trim() === "");
 
-  const projectTask = task.filter((task: any) => task.project_id === projectId);
-  const newProjectTask = newTask.filter((task: any) => task.project_id === projectId);
+  const projectTask = task.filter((task: Task) => task.project_id === projectId);
+  const newProjectTask = newTask.filter((task: Task) => task.project_id === projectId);
 
   return (
     <>
       {contextHolder}
       <div className="flex w-full justify-between pt-3">
         <div className="flex flex-col gap-y-3 w-[60%]">
-          {projectTask.map((task: any) => (
+          {projectTask.map((task: Task) => (
             <Input
               key={task.id}
               value={task.task_name}
@@ -101,7 +101,7 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
               readOnly={memberRole !== "Leader"}
             />
           ))}
-          {newProjectTask.map((task: any) => (
+          {newProjectTask.map((task: Task) => (
             <Input key={task.id} value={task.task_name} onChange={(e) => handleTaskChange(task.id, e.target.value)} />
           ))}
         </div>

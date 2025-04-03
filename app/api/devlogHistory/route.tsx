@@ -8,7 +8,8 @@ export async function GET() {
             JOIN task ON task.id = devlog.task_id`);
 
     return NextResponse.json(devlogData);
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }

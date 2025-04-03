@@ -6,7 +6,8 @@ export async function GET() {
     const [devlogData] = await db.query(`SELECT SUM(hours) AS total_hours, date, account_id FROM devlog GROUP BY date, account_id`);
 
     return NextResponse.json(devlogData);
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }

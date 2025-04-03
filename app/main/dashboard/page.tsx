@@ -19,9 +19,15 @@ interface BarData {
   }[];
 }
 
+interface DevlogList {
+  account_id: number;
+  date: Date;
+  total_hours: number;
+}
+
 export default function Main() {
   const router = useRouter();
-  const [devlogList, setDevlogList] = useState([]);
+  const [devlogList, setDevlogList] = useState<DevlogList[]>([]);
 
   const currentMonth = dayjs().month() + 1;
   const currentYear = dayjs().year();
@@ -33,7 +39,7 @@ export default function Main() {
   });
 
   const dataHour = Array(daysInMonth).fill(0);
-  devlogList.forEach((data: any) => {
+  devlogList.forEach((data: DevlogList) => {
     const formattedDate = dayjs(data.date).format("DD/MM");
     const index = daysArray.indexOf(formattedDate);
 
@@ -83,7 +89,7 @@ export default function Main() {
         const res = await axios.get("/api/dashboard");
 
         const data = await res.data;
-        const filteredData = data.filter((devlog: any) => devlog.account_id === Number(userId));
+        const filteredData = data.filter((devlog: { account_id: number }) => devlog.account_id === Number(userId));
 
         setDevlogList(filteredData);
       } catch (error) {

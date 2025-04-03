@@ -9,15 +9,30 @@ import DevlogListModal from "../../../components/devlogList/DevlogListModal";
 import DevlogListTable from "../../../components/devlogList/DevlogListTable";
 import DevlogListSearch from "../../../components/devlogList/DevlogListSearch";
 
+export interface DevlogList {
+  id: number;
+  account_id: number;
+  date: string;
+  employee_code: string;
+  employee_work_email: string;
+  hours: number;
+  note: string;
+  overtime: boolean;
+  project_id: number;
+  project_name: string;
+  task_id: number;
+  task_name: string;
+}
+
 export default function DevlogList() {
   const router = useRouter();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<DevlogList[]>([]);
   const [originalData, setOriginalData] = useState([]);
   const date = dayjs(new Date()).format("DD-MM-YYYY");
-  const [selectedDevlog, setSelectedDevlog] = useState<any>(null);
+  const [selectedDevlog, setSelectedDevlog] = useState<DevlogList | null>(null);
   const [searchInput, setSearchInput] = useState<string>("");
 
-  const openModal = (devlog: any) => {
+  const openModal = (devlog: DevlogList) => {
     setSelectedDevlog(devlog);
   };
   const closeModal = () => {
@@ -43,9 +58,11 @@ export default function DevlogList() {
         const data = await res.data;
 
         const filteredDevlogs = data.devlogs.filter(
-          (item: any) =>
+          (item: DevlogList) =>
             dayjs(item.date).format("DD-MM-YYYY") === date &&
-            data.leaderProjects.some((project: any) => project.account_id === Number(userId) && project.project_id === item.project_id)
+            data.leaderProjects.some(
+              (project: DevlogList) => project.account_id === Number(userId) && project.project_id === item.project_id
+            )
         );
         setData(filteredDevlogs);
         setOriginalData(filteredDevlogs);
@@ -64,7 +81,7 @@ export default function DevlogList() {
       const searchTerm = value.toLowerCase();
 
       const filteredDevlogs = originalData.filter(
-        (devlog: any) =>
+        (devlog: DevlogList) =>
           devlog.employee_work_email.includes(searchTerm) ||
           devlog.employee_code.includes(searchTerm) ||
           devlog.project_name.includes(searchTerm) ||
@@ -85,7 +102,12 @@ export default function DevlogList() {
   return (
     <div className="p-5">
       <div className="w-full rounded px-5 bg-white">
-        <DevlogListSearch searchInput={searchInput} handleSearch={handleSearch} handleSearchChange={handleSearchChange} handleReset={handleReset} />
+        <DevlogListSearch
+          searchInput={searchInput}
+          handleSearch={handleSearch}
+          handleSearchChange={handleSearchChange}
+          handleReset={handleReset}
+        />
         <DevlogListTable data={data} openModal={openModal} />
         <DevlogListModal selectedDevlog={selectedDevlog} closeModal={closeModal} />
       </div>

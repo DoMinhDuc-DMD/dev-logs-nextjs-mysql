@@ -5,16 +5,23 @@ import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
 import { useState } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
+import { Member, ProjectList } from "@/app/main/projectList/page";
 
 interface DevlogCheckModalProps {
-  project: any;
+  project: ProjectList;
   userId: string;
-  memberProjects: any[];
+  memberProjects: Member[];
   isOpenDevlogCheckModal: { [key: number]: boolean };
   handleCloseModal: (projectId: number) => void;
 }
 
-export default function DevlogCheckModal({ project, userId, memberProjects, isOpenDevlogCheckModal, handleCloseModal }: DevlogCheckModalProps) {
+export default function DevlogCheckModal({
+  project,
+  userId,
+  memberProjects,
+  isOpenDevlogCheckModal,
+  handleCloseModal,
+}: DevlogCheckModalProps) {
   const [disabled, setDisabled] = useState<{ [key: number]: boolean }>({});
   const [messageApi, contextHolder] = message.useMessage();
   const date = dayjs(new Date().toLocaleString()).format("YYYY-MM-DD HH:mm:ss");
@@ -40,7 +47,7 @@ export default function DevlogCheckModal({ project, userId, memberProjects, isOp
       key: "id",
       width: "10%",
       align: "center" as const,
-      render: (_: any, __: any, index: number) => index + 1,
+      render: (_: unknown, __: unknown, index: number) => index + 1,
     },
     {
       title: "Tên nhân viên",
@@ -53,7 +60,7 @@ export default function DevlogCheckModal({ project, userId, memberProjects, isOp
       title: "Devlog hôm nay",
       width: "25%",
       align: "center" as const,
-      render: (record: any) =>
+      render: (record: Member) =>
         new Date(record.devlog_date).toLocaleDateString() === new Date().toLocaleDateString() ? (
           <CheckCircleTwoTone twoToneColor="#4ec80c" />
         ) : (
@@ -64,14 +71,14 @@ export default function DevlogCheckModal({ project, userId, memberProjects, isOp
       title: "Hành động",
       width: "25%",
       align: "center" as const,
-      render: (record: any) => (
+      render: (record: Member) => (
         <Button
           type="primary"
           onClick={() => handleNotice(record.account_id, record.employee_name)}
           disabled={
             record.account_id === Number(userId) ||
             new Date(record.devlog_date).toLocaleDateString() === new Date().toLocaleDateString() ||
-            disabled[record.employee_name]
+            disabled[record.account_id]
           }
         >
           Thông báo
@@ -98,7 +105,13 @@ export default function DevlogCheckModal({ project, userId, memberProjects, isOp
             <strong>Ngày:</strong> {dayjs(date).format("DD-MM-YYYY")}
           </div>
         </div>
-        <Table rowKey={(record) => record.account_id} columns={columns} dataSource={memberProjects} size="small" pagination={{ pageSize: 5 }} />
+        <Table
+          rowKey={(record) => record.account_id}
+          columns={columns}
+          dataSource={memberProjects}
+          size="small"
+          pagination={{ pageSize: 5 }}
+        />
       </Modal>
     </>
   );

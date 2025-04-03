@@ -20,6 +20,7 @@ export async function GET() {
 
     return NextResponse.json({ devlogs, leaderProjects });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }

@@ -1,7 +1,6 @@
 "use client";
 
-import { Button, DatePicker, Input, message } from "antd";
-import Select from "react-select";
+import { Button, DatePicker, Input, message, Select } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
@@ -36,8 +35,8 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
 
   const handleAddProject = async () => {
     try {
-      await axios.post("/apis/projectadd", {
-        ...project,
+      await axios.post("/api/projectAdd", {
+        project,
         tasks: tasks.filter((t) => t.task_name.trim() !== ""),
       });
 
@@ -66,8 +65,9 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
     setTasks(newTasks);
   };
 
-  const handleSelectChange = (selectedDev: any) => {
-    const selectedMembers = selectedDev.map((option: any) => option.value);
+  const handleSelectChange = (selectedDev: number[]) => {
+    const selectedMembers = selectedDev.map((option) => option);
+
     setProject((prev) => ({ ...prev, members: [Number(sessionStorage.getItem("userId")), ...selectedMembers] }));
   };
 
@@ -132,9 +132,9 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
                 <label htmlFor="select_dev">Thành viên tham gia:</label>
                 {devs.length > 0 && (
                   <Select
-                    className="w-[60%] p-1"
-                    isMulti
-                    name="select_dev"
+                    style={{ width: "50%", height: 40 }}
+                    placeholder="Select member"
+                    mode="multiple"
                     options={devs.map((devs) => ({ value: devs.id, label: devs.employee_name }))}
                     onChange={handleSelectChange}
                   />

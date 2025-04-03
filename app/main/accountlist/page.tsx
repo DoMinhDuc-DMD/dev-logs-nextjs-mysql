@@ -4,14 +4,19 @@ import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
-import AccountListTable from "../../../components/accountlist/AccountListTable";
-import AccountListSearch from "../../../components/accountlist/AccountListSearch";
+import AccountListSearch from "@/components/accountlist/AccountListSearch";
+import AccountListTable from "@/components/accountlist/AccountListTable";
 
 export interface Account {
   id: number;
   employee_work_email: string;
   employee_work_password: string;
   role: string;
+}
+
+export interface Option {
+  label: string;
+  value: string;
 }
 
 export default function AccountList() {
@@ -27,7 +32,7 @@ export default function AccountList() {
     role: string;
   } | null>(null);
   const [role, setRole] = useState<string | null>(null);
-  const [options, setOptions] = useState([]);
+  const [options, setOptions] = useState<Option[]>([]);
 
   const fetchAccount = async () => {
     try {
@@ -71,8 +76,9 @@ export default function AccountList() {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEditedData((prev) => ({ ...prev!, [e.target.name]: e.target.value }));
   };
-  const handleSelectChange = (selectedOption: any) => {
-    setEditedData((prev) => ({ ...prev!, role: selectedOption.value }));
+
+  const handleSelectChange = (selectedOption: string) => {
+    setEditedData((prev) => ({ ...prev!, role: selectedOption }));
   };
 
   const handleSave = async () => {
@@ -120,7 +126,12 @@ export default function AccountList() {
   return (
     <div className="p-5">
       <div className="w-full rounded px-5 bg-white">
-        <AccountListSearch searchInput={searchInput!} handleReset={handleReset} handleSearch={handleSearch} handleSearchChange={handleSearchChange} />
+        <AccountListSearch
+          searchInput={searchInput!}
+          handleReset={handleReset}
+          handleSearch={handleSearch}
+          handleSearchChange={handleSearchChange}
+        />
         <AccountListTable
           accounts={accounts}
           options={options}

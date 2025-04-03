@@ -2,15 +2,15 @@
 
 import ProjectModal from "./ProjectModal";
 import DevlogCheckModal from "./DevlogCheckModal";
-import { Task } from "@/app/main/projectList/page";
+import { Member, ProjectList, Task } from "@/app/main/projectList/page";
 import { useState } from "react";
 import ProjectCard from "./ProjectCard";
 
 interface ProjectListProps {
-  projects: any[];
+  projects: ProjectList[];
   tasks: Task[];
   defaultTasks: Task[];
-  members: any[];
+  members: Member[];
   memberRole: string;
   userId: string;
 }
@@ -32,9 +32,9 @@ export default function ProjectListComponent({ projects, tasks, defaultTasks, me
   };
   return (
     <>
-      {projects.map((project: any) => {
-        const memberProject = members.filter((member: any) => member.project_id === project.id);
-        const projectTask = tasks.filter((task: any) => task.project_id === project.id);
+      {projects.map((project: ProjectList) => {
+        const memberProject = members.filter((member: Member) => member.project_id === project.id);
+        const projectTask = tasks.filter((task: Task) => task.project_id === project.id);
         return (
           <div key={project.id}>
             <ProjectCard
