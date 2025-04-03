@@ -3,7 +3,7 @@
 import { Button, Input } from "antd";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import "@ant-design/v5-patch-for-react-19";
 
 export default function LoginForm() {
