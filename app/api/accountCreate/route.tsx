@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
 import db from "../connectdb/db";
+import { RowDataPacket } from "mysql2/promise";
 
 export async function GET() {
   try {
-    const [role]: any = await db.query("SELECT role FROM account WHERE role != 'Admin' GROUP BY role");
+    interface RoleData extends RowDataPacket {
+      role: string;
+    }
 
-    const formattedRoles = role.map((row: any) => ({
+    const [roles] = await db.query<RoleData[]>("SELECT role FROM account WHERE role != 'Admin' GROUP BY role");
+
+    const formattedRoles = roles.map((row) => ({
       value: row.role.toLowerCase(),
       label: row.role,
     }));

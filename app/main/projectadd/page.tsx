@@ -19,7 +19,7 @@ export default function AddProject() {
     start_date: null,
     end_date: null,
     description: "",
-    members: [] as Number[],
+    members: [] as number[],
   });
 
   useEffect(() => {

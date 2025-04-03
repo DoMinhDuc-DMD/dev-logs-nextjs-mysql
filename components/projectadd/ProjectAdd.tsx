@@ -15,7 +15,7 @@ interface ProjectAdd {
     start_date: null;
     end_date: null;
     description: string;
-    members: Number[];
+    members: number[];
   };
 }
 
@@ -25,7 +25,7 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
     start_date: null,
     end_date: null,
     description: "",
-    members: [] as Number[],
+    members: [] as number[],
   });
   const [tasks, setTasks] = useState<{ task_name: string; task_name_index: number }[]>([{ task_name: "", task_name_index: 0 }]);
   const [messageApi, contextHolder] = message.useMessage();

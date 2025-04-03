@@ -10,7 +10,7 @@ interface ProjectAddButtons {
     start_date: null;
     end_date: null;
     description: string;
-    members: Number[];
+    members: number[];
   };
   tasks: { task_name: string; task_name_index: number }[];
 }
