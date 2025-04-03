@@ -31,7 +31,6 @@ export default function AccountList() {
     employee_work_password: string;
     role: string;
   } | null>(null);
-  const [role, setRole] = useState<string | null>(null);
   const [options, setOptions] = useState<Option[]>([]);
 
   const fetchAccount = async () => {
@@ -60,7 +59,6 @@ export default function AccountList() {
       router.replace("/main/notYourRight");
     }
 
-    setRole(userRole);
     fetchAccount();
   }, [router]);
 

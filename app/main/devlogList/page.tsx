@@ -71,7 +71,7 @@ export default function DevlogList() {
       }
     };
     fetchData();
-  }, [router]);
+  }, [router, date]);
 
   const handleSearch = (value: string) => {
     if (!value) {
