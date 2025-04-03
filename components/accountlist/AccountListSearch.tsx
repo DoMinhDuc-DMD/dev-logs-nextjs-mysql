@@ -12,12 +12,7 @@ interface AccountListSearchProps {
   handleReset: () => void;
 }
 
-export default function AccountListSearch({
-  searchInput,
-  handleReset,
-  handleSearch,
-  handleSearchChange,
-}: AccountListSearchProps) {
+export default function AccountListSearch({ searchInput, handleReset, handleSearch, handleSearchChange }: AccountListSearchProps) {
   return (
     <div className="flex py-5 gap-x-5 justify-end">
       <Button icon={<RestoreIcon />} onClick={handleReset}></Button>
