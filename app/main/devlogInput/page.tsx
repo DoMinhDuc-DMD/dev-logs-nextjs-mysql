@@ -54,7 +54,7 @@ export default function Form() {
       }
     }
     fetchProjectTask();
-  }, []);
+  }, [router]);
 
   const handleInputNumberChange = (value: number | null) => {
     if (value !== null) {

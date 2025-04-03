@@ -8,6 +8,6 @@ export default function AccountForm() {
 
   useEffect(() => {
     router.replace("/auth");
-  }, []);
+  }, [router]);
   return <div>Redirecting to login...</div>;
 }

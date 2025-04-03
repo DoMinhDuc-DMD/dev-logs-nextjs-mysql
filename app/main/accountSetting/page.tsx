@@ -43,7 +43,7 @@ export default function AccountSetting() {
       }
     }
     fetchInfo();
-  }, []);
+  }, [router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

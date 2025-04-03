@@ -3,7 +3,7 @@
 import { Button, Input } from "antd";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import "@ant-design/v5-patch-for-react-19";
 
 export default function LoginForm() {
@@ -29,7 +29,7 @@ export default function LoginForm() {
 
       router.replace("/main");
     } catch (error) {
-      setMessage("Login Failed!");
+      console.error(error);
     }
   }
 

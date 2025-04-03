@@ -70,7 +70,7 @@ export default function ProjectList() {
       setMember(data.members ?? []);
     }
     fetchData();
-  }, []);
+  }, [router]);
 
   return (
     <div className="p-5">

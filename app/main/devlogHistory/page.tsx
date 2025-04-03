@@ -63,7 +63,7 @@ export default function DevlogHistory() {
       }
     }
     fetchDevlog();
-  }, []);
+  }, [router]);
 
   const gridCols =
     {

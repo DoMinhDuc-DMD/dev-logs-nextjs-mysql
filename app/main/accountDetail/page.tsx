@@ -46,7 +46,7 @@ export default function AccountDetail() {
       }
     }
     fetchInfo();
-  }, []);
+  }, [router]);
 
   return (
     <div className="p-5">

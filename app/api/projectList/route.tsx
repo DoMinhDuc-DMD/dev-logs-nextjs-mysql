@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Hành động không hợp lệ!" }, { status: 400 });
     }
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }

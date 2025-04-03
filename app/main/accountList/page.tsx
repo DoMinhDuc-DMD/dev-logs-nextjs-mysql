@@ -62,7 +62,7 @@ export default function AccountList() {
 
     setRole(userRole);
     fetchAccount();
-  }, [role]);
+  }, [router]);
 
   const handleAdjust = (account: Account) => {
     setEditingId(account.id);

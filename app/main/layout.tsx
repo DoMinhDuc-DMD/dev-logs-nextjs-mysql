@@ -54,7 +54,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       setNotification(res.data);
     }
     fetchData();
-  }, []);
+  }, [router]);
 
   const filteredNotice = notification.filter((item) => item.employee_id === Number(userId));
 
@@ -65,7 +65,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <div className="w-[300px]">
           <div>{dayjs(new Date(item.date)).format("HH:mm, DD/MM/YYYY")}</div>
           <div className="text-red-500">
-            Leader báo nhập devlog cho dự án "{item.project_name}" lần thứ {item.notice_count}!
+            Leader báo nhập devlog cho dự án {item.project_name} lần thứ {item.notice_count}!
           </div>
         </div>
       </Link>

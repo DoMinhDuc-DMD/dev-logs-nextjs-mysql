@@ -1,7 +1,7 @@
 "use client";
 
 import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, scales } from "chart.js";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
@@ -97,7 +97,7 @@ export default function Main() {
       }
     }
     fetchDevlog();
-  }, []);
+  }, [router]);
 
   return (
     <div className="p-5 flex justify-center">

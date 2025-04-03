@@ -20,6 +20,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(accounts[0]);
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }

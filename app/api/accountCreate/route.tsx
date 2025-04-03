@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Đăng ký thành công" }, { status: 201 });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }

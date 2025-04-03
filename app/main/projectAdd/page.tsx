@@ -47,7 +47,7 @@ export default function AddProject() {
       }
     }
     fetchData();
-  }, []);
+  }, [router]);
 
   return <ProjectAdd devs={dev} projects={project} />;
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "../connectdb/db";
-import { ResultSetHeader, RowDataPacket } from "mysql2";
+import { ResultSetHeader } from "mysql2";
 
 export async function GET() {
   try {

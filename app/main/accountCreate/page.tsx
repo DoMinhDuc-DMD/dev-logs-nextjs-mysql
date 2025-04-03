@@ -32,11 +32,11 @@ export default function CreateAccount() {
         const data = res.data;
         setOptions(data.roles);
       } catch (error) {
-        console.error("Lỗi lấy danh sách role.");
+        console.error("Lỗi lấy danh sách role: ", error);
       }
     }
     fetchRoles();
-  }, []);
+  }, [router]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -54,7 +54,7 @@ export default function CreateAccount() {
         router.push("/main/accountlist");
       }, 1000);
     } catch (error) {
-      setMessage("Lỗi hệ thống");
+      console.error("Lỗi tạo tài khoản: ", error);
     }
   }
 
@@ -73,7 +73,12 @@ export default function CreateAccount() {
         <label className="block text-left" htmlFor="role">
           Select Role
         </label>
-        <Select options={options} placeholder="Select role" style={{ height: 43 }} onChange={(selected) => setSelectedRole(selected || null)} />
+        <Select
+          options={options}
+          placeholder="Select role"
+          style={{ height: 43 }}
+          onChange={(selected) => setSelectedRole(selected || null)}
+        />
         {message && <p className="text-center text-red-500">{message}</p>}
         <Button className="w-30 py-2 mx-auto" type="primary" htmlType="submit">
           Register
