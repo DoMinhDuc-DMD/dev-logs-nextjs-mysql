@@ -35,6 +35,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/api/auth/route.tsx",
+    "app/api/accountList/route.tsx",
+    "app/api/devlogList/route.tsx",
     "app/api/projectList/route.tsx",
     "app/api/projectAdd/route.tsx",
     "next.config.mjs",

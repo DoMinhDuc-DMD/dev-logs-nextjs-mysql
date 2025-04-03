@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
-import DeglogListModal from "../../../components/devlogList/DevlogListModal";
+import DevlogListModal from "../../../components/devlogList/DevlogListModal";
 import DevlogListTable from "../../../components/devlogList/DevlogListTable";
 import DevlogListSearch from "../../../components/devlogList/DevlogListSearch";
 
@@ -87,7 +87,7 @@ export default function DevlogList() {
       <div className="w-full rounded px-5 bg-white">
         <DevlogListSearch searchInput={searchInput} handleSearch={handleSearch} handleSearchChange={handleSearchChange} handleReset={handleReset} />
         <DevlogListTable data={data} openModal={openModal} />
-        <DeglogListModal selectedDevlog={selectedDevlog} closeModal={closeModal} />
+        <DevlogListModal selectedDevlog={selectedDevlog} closeModal={closeModal} />
       </div>
     </div>
   );

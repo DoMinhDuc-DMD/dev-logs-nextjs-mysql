@@ -7,7 +7,7 @@ interface DevlogListModalProps {
   closeModal: () => void;
 }
 
-export default function DeglogListModal({ selectedDevlog, closeModal }: DevlogListModalProps) {
+export default function DevlogListModal({ selectedDevlog, closeModal }: DevlogListModalProps) {
   return (
     <Modal width={"50%"} title="Chi tiết devlog" open={!!selectedDevlog} onOk={closeModal} onCancel={closeModal}>
       {selectedDevlog && (
