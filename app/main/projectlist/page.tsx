@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
-import ProjectListComponent from "@/components/projectList/ProjectList";
+import ProjectListComponent from "../../../components/projectList/ProjectList";
 
 export interface Task {
   id: number;

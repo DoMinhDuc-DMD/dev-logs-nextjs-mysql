@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
-import AccountListTable from "@/components/accountList/AccountListTable";
-import AccountListSearch from "@/components/accountList/AccountListSearch";
+import AccountListTable from "../../../components/accountList/AccountListTable";
+import AccountListSearch from "../../../components/accountList/AccountListSearch";
 
 export interface Account {
   id: number;
