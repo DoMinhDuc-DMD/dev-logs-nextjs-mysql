@@ -37,7 +37,7 @@
     "app/api/auth/route.tsx",
     "app/api/projectList/route.tsx",
     "app/api/projectAdd/route.tsx",
-    "next.config.cjs",
+    "next.config.mjs",
     "app/api/connectdb/db.tsx",
     "app/api/accountSetting/route.tsx",
     ".next/types/app/api/accountcreate/route.tsx",
