@@ -50,3 +50,4 @@ export async function PUT(req: NextRequest) {
     console.error("Lỗi cập nhật tài khoản:", error);
   }
 }
+export const dynamic = "force-dynamic";

@@ -1,10 +1,11 @@
 import mysql from "mysql2/promise";
 
 const db = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "devlog_manage",
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "devlog_manage",
 });
 
 export default db;
+export const dynamic = "force-dynamic";

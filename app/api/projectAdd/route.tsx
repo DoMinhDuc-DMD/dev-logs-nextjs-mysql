@@ -41,3 +41,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Lỗi server khi lưu dữ liệu" }, { status: 500 });
   }
 }
+export const dynamic = "force-dynamic";
