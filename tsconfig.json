@@ -35,7 +35,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/api/auth/route.tsx",
-    "next.config.mjs",
+    "next.config.js",
     "app/api/connectdb/db.tsx",
     "app/api/accountSetting/route.tsx",
     ".next/types/app/api/accountcreate/route.tsx",
