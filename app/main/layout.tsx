@@ -50,7 +50,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     }
 
     async function fetchData() {
-      const res = await axios.get("https://dev-logs-nextjs-mysql.vercel.app/api/layout");
+      const res = await axios.get("/api/layout");
       setNotification(res.data);
     }
     fetchData();
@@ -61,7 +61,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const items: MenuProps["items"] = filteredNotice.map((item) => ({
     key: item.id,
     label: (
-      <Link href={"https://dev-logs-nextjs-mysql.vercel.app/main/devlogInput"}>
+      <Link href={"/main/devlogInput"}>
         <div className="w-[300px]">
           <div>{dayjs(new Date(item.date)).format("HH:mm, DD/MM/YYYY")}</div>
           <div className="text-red-500">
@@ -77,46 +77,46 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <div className="sidebar w-[15%] h-[100vh] bg-white">
         <div className="pt-50">
           <ul>
-            <Link href="https://dev-logs-nextjs-mysql.vercel.app/main">
+            <Link href="/main">
               <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Trang tổng quan</li>
             </Link>
             {/* Admin only */}
             {role === "Admin" && (
-              <Link href="https://dev-logs-nextjs-mysql.vercel.app/main/accountCreate">
+              <Link href="/main/accountCreate">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Tạo tài khoản</li>
               </Link>
             )}
             {/* Admin and HR */}
             {(role === "Admin" || role === "HR") && (
-              <Link href="https://dev-logs-nextjs-mysql.vercel.app/main/accountList">
+              <Link href="/main/accountList">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách tài khoản</li>
               </Link>
             )}
             {/* Admin and HR and Leader */}
             {role !== "Developer" && (
-              <Link href="https://dev-logs-nextjs-mysql.vercel.app/main/devlogList">
+              <Link href="/main/devlogList">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách devlog</li>
               </Link>
             )}
             {/* Leader only */}
             {role === "Leader" && (
-              <Link href="https://dev-logs-nextjs-mysql.vercel.app/main/projectAdd">
+              <Link href="/main/projectAdd">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Tạo mới dự án</li>
               </Link>
             )}
             {/* Leader and Dev */}
             {(role === "Leader" || role === "Developer") && (
               <>
-                <Link href="https://dev-logs-nextjs-mysql.vercel.app/main/projectList">
+                <Link href="/main/projectList">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách dự án</li>
                 </Link>
-                <Link href="https://dev-logs-nextjs-mysql.vercel.app/main/devlogInput">
+                <Link href="/main/devlogInput">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Nhập devlogs</li>
                 </Link>
-                <Link href="https://dev-logs-nextjs-mysql.vercel.app/main/devlogHistory">
+                <Link href="/main/devlogHistory">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Lịch sử nhập devlog</li>
                 </Link>
-                <Link href="https://dev-logs-nextjs-mysql.vercel.app/main/dashboard">
+                <Link href="/main/dashboard">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Thống kê devlog</li>
                 </Link>
               </>
@@ -130,7 +130,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <div className="p-3 hover:bg-gray-400 cursor-pointer" onClick={handleToggle}>
               <MenuTwoToneIcon fontSize="small" />
             </div>
-            <Link href="https://dev-logs-nextjs-mysql.vercel.app/main" className="p-3 cursor-pointer hover:bg-gray-400">
+            <Link href="/main" className="p-3 cursor-pointer hover:bg-gray-400">
               Trang chủ
             </Link>
           </div>
@@ -142,10 +142,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 </Badge>
               </div>
             </Dropdown>
-            <Link
-              href="https://dev-logs-nextjs-mysql.vercel.app/main/accountSetting"
-              className="w-[150px] text-center p-3 cursor-pointer hover:bg-gray-400"
-            >
+            <Link href="/main/accountSetting" className="w-[150px] text-center p-3 cursor-pointer hover:bg-gray-400">
               {userName}
             </Link>
           </div>
