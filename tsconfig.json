@@ -45,12 +45,13 @@
     ".next/types/app/api/layout/route.tsx",
     ".next/types/app/api/projectadd/route.tsx",
     ".next/types/app/api/projectlist/route.tsx",
-    "app/api/accountSetting/route.tsx",
-    "app/api/auth/route.tsx",
-    "app/api/connectdb/db.tsx",
+    "app/api/accountSetting/route.ts",
+    "app/api/auth/route.ts",
+    "app/api/connectdb/db.ts",
     "next-env.d.ts",
     "next.config.js",
-    "dist/types/**/*.ts"
+    "dist/types/**/*.ts",
+    "app/api/dashboard/route.ts"
   ],
   "exclude": [
     "node_modules"
