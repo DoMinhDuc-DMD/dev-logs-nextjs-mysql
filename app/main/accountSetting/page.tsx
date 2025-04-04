@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 
+export const dynamic = "force-dynamic";
+
 export default function AccountSetting() {
   const router = useRouter();
   const [info, setInfo] = useState({
@@ -33,7 +35,7 @@ export default function AccountSetting() {
           router.replace("/auth");
           return;
         }
-        const res = await axios.get("/api/accountSetting");
+        const res = await axios.get("http://localhost:3000/api/accountSetting");
 
         const data = res.data.filter((item: { id: number }) => item.id === Number(userId));
 

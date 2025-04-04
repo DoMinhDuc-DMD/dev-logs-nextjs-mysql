@@ -13,6 +13,8 @@ interface DevlogHistory {
   task_name_index: number;
 }
 
+export const dynamic = "force-dynamic";
+
 export default function DevlogHistory() {
   const router = useRouter();
   const [devlogList, setDevlogList] = useState<DevlogHistory[]>([]);
@@ -53,7 +55,7 @@ export default function DevlogHistory() {
 
     async function fetchDevlog() {
       try {
-        const res = await axios.get("/api/devlogHistory");
+        const res = await axios.get("http://localhost:3000/api/devlogHistory");
         const data = await res.data;
         const filteredData = data.filter((devlog: DevlogHistory) => devlog.account_id === Number(userId));
 

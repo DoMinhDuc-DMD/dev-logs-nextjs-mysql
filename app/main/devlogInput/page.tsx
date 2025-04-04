@@ -8,6 +8,8 @@ import TextArea from "antd/es/input/TextArea";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 
+export const dynamic = "force-dynamic";
+
 export default function Form() {
   const router = useRouter();
 
@@ -42,7 +44,7 @@ export default function Form() {
 
     async function fetchProjectTask() {
       try {
-        const res = await axios.get("/api/devlogInput");
+        const res = await axios.get("http://localhost:3000/api/devlogInput");
         const data = await res.data;
 
         const filteredProject = data.formattedProject.filter((project: { accountId: number }) => project.accountId === Number(userId));

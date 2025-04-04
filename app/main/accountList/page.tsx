@@ -19,6 +19,8 @@ export interface Option {
   value: string;
 }
 
+export const dynamic = "force-dynamic";
+
 export default function AccountList() {
   const router = useRouter();
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -35,7 +37,7 @@ export default function AccountList() {
 
   const fetchAccount = async () => {
     try {
-      const res = await axios.get("/api/accountList");
+      const res = await axios.get("http://localhost:3000/api/accountList");
       const data = res.data;
 
       setAccounts(data.accounts);
@@ -82,7 +84,7 @@ export default function AccountList() {
   const handleSave = async () => {
     if (!editingId || !editedData) return;
     try {
-      await axios.put("/api/accountList", {
+      await axios.put("http://localhost:3000/api/accountList", {
         id: editingId,
         email: editedData?.employee_work_email,
         password: editedData?.employee_work_password,

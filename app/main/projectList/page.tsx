@@ -30,6 +30,8 @@ export interface Member {
   devlog_date: string;
 }
 
+export const dynamic = "force-dynamic";
+
 export default function ProjectList() {
   const router = useRouter();
   const [project, setProject] = useState<ProjectList[]>([]);
@@ -56,7 +58,7 @@ export default function ProjectList() {
     setUserId(userId);
 
     async function fetchData() {
-      const res = await axios.get("/api/projectList");
+      const res = await axios.get("http://localhost:3000/api/projectList");
       const data = res.data ?? {};
 
       const filteredProject = data.projects.filter((project: ProjectList) =>

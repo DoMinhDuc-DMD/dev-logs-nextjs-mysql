@@ -24,6 +24,8 @@ export interface DevlogList {
   task_name: string;
 }
 
+export const dynamic = "force-dynamic";
+
 export default function DevlogList() {
   const router = useRouter();
   const [data, setData] = useState<DevlogList[]>([]);
@@ -54,7 +56,7 @@ export default function DevlogList() {
 
     const fetchData = async () => {
       try {
-        const res = await axios.get("/api/devlogList");
+        const res = await axios.get("http://localhost:3000/api/devlogList");
         const data = await res.data;
 
         const filteredDevlogs = data.devlogs.filter(

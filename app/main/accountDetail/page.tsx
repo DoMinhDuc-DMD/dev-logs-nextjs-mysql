@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 
+export const dynamic = "force-dynamic";
+
 export default function AccountDetail() {
   const router = useRouter();
   const [info, setInfo] = useState({
@@ -37,7 +39,7 @@ export default function AccountDetail() {
 
     async function fetchInfo() {
       try {
-        const res = await axios.get(`/api/accountDetail?id=${userId}`);
+        const res = await axios.get(`http://localhost:3000/api/accountDetail?id=${userId}`);
         const data = res.data;
 
         setInfo(data);

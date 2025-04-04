@@ -25,6 +25,8 @@ interface DevlogList {
   total_hours: number;
 }
 
+export const dynamic = "force-dynamic";
+
 export default function Main() {
   const router = useRouter();
   const [devlogList, setDevlogList] = useState<DevlogList[]>([]);
@@ -86,7 +88,7 @@ export default function Main() {
 
     async function fetchDevlog() {
       try {
-        const res = await axios.get("/api/dashboard");
+        const res = await axios.get("http://localhost:3000/api/dashboard");
 
         const data = await res.data;
         const filteredData = data.filter((devlog: { account_id: number }) => devlog.account_id === Number(userId));

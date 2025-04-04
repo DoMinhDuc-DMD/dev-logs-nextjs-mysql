@@ -71,7 +71,7 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
     }
 
     try {
-      await axios.post("/api/projectList", { action: "updateTasks", updatedTasks, newProjectTasks });
+      await axios.post("http://localhost:3000/api/projectList", { action: "updateTasks", updatedTasks, newProjectTasks });
       messageApi.info("Cập nhật thành công");
 
       setNewTask([]);
