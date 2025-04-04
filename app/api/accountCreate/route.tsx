@@ -39,4 +39,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }
-export const dynamic = "force-dynamic";

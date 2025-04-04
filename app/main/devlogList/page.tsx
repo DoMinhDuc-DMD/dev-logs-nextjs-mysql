@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
-import DevlogListModal from "../../../components/devlogList/DevlogListModal";
-import DevlogListTable from "../../../components/devlogList/DevlogListTable";
-import DevlogListSearch from "../../../components/devlogList/DevlogListSearch";
+import DevlogListModal from "../../components/devlogList/DevlogListModal";
+import DevlogListTable from "../../components/devlogList/DevlogListTable";
+import DevlogListSearch from "../../components/devlogList/DevlogListSearch";
 
 export interface DevlogList {
   id: number;
