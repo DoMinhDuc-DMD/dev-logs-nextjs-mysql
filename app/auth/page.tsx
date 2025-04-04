@@ -18,7 +18,7 @@ export default function LoginForm() {
     const password = formData.get("password");
 
     try {
-      const res = await axios.post("/api/auth", { email, password });
+      const res = await axios.post("https://dev-logs-nextjs-mysql.vercel.app/api/auth", { email, password });
       const data = res.data;
       setMessage(data.message);
 
@@ -27,7 +27,7 @@ export default function LoginForm() {
       sessionStorage.setItem("userRole", data.userRole);
       sessionStorage.setItem("userName", data.userName);
 
-      router.replace("/main");
+      router.replace("https://dev-logs-nextjs-mysql.vercel.app/main");
     } catch (error) {
       console.error(error);
     }
