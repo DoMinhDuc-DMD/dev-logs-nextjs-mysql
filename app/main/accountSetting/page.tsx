@@ -35,7 +35,7 @@ export default function AccountSetting() {
           router.replace("/auth");
           return;
         }
-        const res = await axios.get("http://localhost:3000/api/accountSetting");
+        const res = await axios.get("/api/accountSetting");
 
         const data = res.data.filter((item: { id: number }) => item.id === Number(userId));
 

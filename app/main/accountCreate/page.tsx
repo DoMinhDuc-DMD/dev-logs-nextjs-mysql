@@ -30,7 +30,7 @@ export default function CreateAccount() {
 
     async function fetchRoles() {
       try {
-        const res = await axios.get("http://localhost:3000/api/accountCreate");
+        const res = await axios.get("/api/accountCreate");
         const data = res.data;
         setOptions(data.roles);
       } catch (error) {
@@ -48,7 +48,7 @@ export default function CreateAccount() {
     const password = formData.get("password");
 
     try {
-      const res = await axios.post("http://localhost:3000/api/accountCreate", { email, password, role: selectedRole });
+      const res = await axios.post("/api/accountCreate", { email, password, role: selectedRole });
       const data = await res.data;
 
       setMessage(data.message);

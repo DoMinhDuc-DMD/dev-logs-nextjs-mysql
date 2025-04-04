@@ -19,8 +19,6 @@ interface Notification {
   date: string;
 }
 
-export const dynamic = "force-dynamic";
-
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
@@ -52,7 +50,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     }
 
     async function fetchData() {
-      const res = await axios.get("http://localhost:3000/api/layout");
+      const res = await axios.get("/api/layout");
       setNotification(res.data);
     }
     fetchData();

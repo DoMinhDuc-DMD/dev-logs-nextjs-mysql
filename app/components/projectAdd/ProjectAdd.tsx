@@ -35,7 +35,7 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
 
   const handleAddProject = async () => {
     try {
-      await axios.post("http://localhost:3000/api/projectAdd", {
+      await axios.post("/api/projectAdd", {
         project,
         tasks: tasks.filter((t) => t.task_name.trim() !== ""),
       });

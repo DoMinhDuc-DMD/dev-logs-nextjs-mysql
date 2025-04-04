@@ -39,7 +39,7 @@ export default function AddProject() {
 
     async function fetchData() {
       try {
-        const res = await axios.get<Dev[]>("http://localhost:3000/api/projectAdd");
+        const res = await axios.get<Dev[]>("/api/projectAdd");
         setDev(Array.isArray(res.data) ? res.data : []);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);

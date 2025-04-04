@@ -56,7 +56,7 @@ export default function DevlogList() {
 
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/devlogList");
+        const res = await axios.get("/api/devlogList");
         const data = await res.data;
 
         const filteredDevlogs = data.devlogs.filter(

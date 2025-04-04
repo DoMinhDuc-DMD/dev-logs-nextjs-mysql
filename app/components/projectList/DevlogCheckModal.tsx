@@ -28,7 +28,7 @@ export default function DevlogCheckModal({
 
   const handleNotice = async (accountId: number, memberName: string) => {
     try {
-      await axios.post("http://localhost:3000/api/projectList", { action: "noticeDevlog", userId, accountId, projectId: project.id, date });
+      await axios.post("/api/projectList", { action: "noticeDevlog", userId, accountId, projectId: project.id, date });
 
       messageApi.info(`Đã thông báo tới ${memberName}`);
     } catch (error) {
