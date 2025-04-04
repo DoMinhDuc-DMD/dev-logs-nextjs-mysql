@@ -18,13 +18,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Sai mật khẩu" }, { status: 401 });
     }
 
-    return NextResponse.json({
-      message: "Đăng nhập thành công",
-      userId: user.id,
-      isLogin: true,
-      userRole: user.role,
-      userName: user.employee_name,
-    });
+    return NextResponse.json(
+      {
+        message: "Đăng nhập thành công",
+        userId: user.id,
+        isLogin: true,
+        userRole: user.role,
+        userName: user.employee_name,
+      },
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*", // Chấp nhận mọi origin (có thể thay thế bằng origin cụ thể)
+          "Access-Control-Allow-Methods": "GET, POST, OPTIONS", // Cho phép các method
+          "Access-Control-Allow-Headers": "Content-Type", // Cho phép các headers
+        },
+      }
+    );
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
