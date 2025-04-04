@@ -30,14 +30,9 @@
     }
   },
   "include": [
-    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/api/auth/route.tsx",
-    "next.config.js",
-    "app/api/connectdb/db.tsx",
-    "app/api/accountSetting/route.tsx",
     ".next/types/app/api/accountcreate/route.tsx",
     ".next/types/app/api/accountdetail/route.tsx",
     ".next/types/app/api/accountlist/route.tsx",
@@ -49,7 +44,13 @@
     ".next/types/app/api/devloglist/route.tsx",
     ".next/types/app/api/layout/route.tsx",
     ".next/types/app/api/projectadd/route.tsx",
-    ".next/types/app/api/projectlist/route.tsx"
+    ".next/types/app/api/projectlist/route.tsx",
+    "app/api/accountSetting/route.tsx",
+    "app/api/auth/route.tsx",
+    "app/api/connectdb/db.tsx",
+    "next-env.d.ts",
+    "next.config.js",
+    "dist/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
