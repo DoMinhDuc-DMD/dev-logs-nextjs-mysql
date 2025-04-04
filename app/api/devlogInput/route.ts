@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import db from "../connectdb/db";
 import { RowDataPacket } from "mysql2";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const [project] = await db.query<RowDataPacket[]>(

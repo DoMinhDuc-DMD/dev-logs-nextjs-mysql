@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import db from "../connectdb/db";
 import { RowDataPacket } from "mysql2/promise";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const [roles] = await db.query<RowDataPacket[]>("SELECT role FROM account WHERE role != 'Admin' GROUP BY role");

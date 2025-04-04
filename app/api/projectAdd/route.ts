@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import db from "../connectdb/db";
 import { ResultSetHeader } from "mysql2";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const [accounts] = await db.query("SELECT id, employee_name FROM account WHERE role = 'Developer'");

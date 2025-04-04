@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import db from "../connectdb/db";
 import { RowDataPacket } from "mysql2";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json();
@@ -28,12 +30,6 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*", // Chấp nhận mọi origin (có thể thay thế bằng origin cụ thể)
-          "Access-Control-Allow-Methods": "GET, POST, OPTIONS", // Cho phép các method
-          "Access-Control-Allow-Headers": "Content-Type", // Cho phép các headers
-        },
       }
     );
   } catch (error) {
