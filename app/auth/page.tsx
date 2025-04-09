@@ -6,8 +6,6 @@ import { FormEvent, useState } from "react";
 import axios from "axios";
 import "@ant-design/v5-patch-for-react-19";
 
-export const dynamic = "force-dynamic";
-
 export default function LoginForm() {
   const router = useRouter();
   const [message, setMessage] = useState("");

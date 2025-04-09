@@ -7,8 +7,6 @@ import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 
-export const dynamic = "force-dynamic";
-
 export default function AccountSetting() {
   const router = useRouter();
   const [info, setInfo] = useState({

@@ -26,8 +26,6 @@ interface DevlogList {
   total_hours: number;
 }
 
-export const dynamic = "force-dynamic";
-
 export default function Main() {
   const router = useRouter();
   const [devlogList, setDevlogList] = useState<DevlogList[]>([]);

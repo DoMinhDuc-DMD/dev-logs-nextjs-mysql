@@ -3,8 +3,6 @@ import { openDB } from "../sqlite/sqlitedb";
 import { Database } from "sqlite";
 import { RowDataPacket } from "mysql2";
 
-export const dynamic = "force-dynamic";
-
 export async function GET() {
     try {
         const db: Database = await openDB();

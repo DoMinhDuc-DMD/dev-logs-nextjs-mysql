@@ -20,8 +20,6 @@ export interface Option {
   value: string;
 }
 
-export const dynamic = "force-dynamic";
-
 export default function AccountList() {
   const router = useRouter();
   const [accounts, setAccounts] = useState<Account[]>([]);

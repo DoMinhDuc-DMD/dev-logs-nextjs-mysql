@@ -25,8 +25,6 @@ export interface DevlogList {
   task_name: string;
 }
 
-export const dynamic = "force-dynamic";
-
 export default function DevlogList() {
   const router = useRouter();
   const [data, setData] = useState<DevlogList[]>([]);

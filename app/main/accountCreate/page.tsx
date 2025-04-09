@@ -7,8 +7,6 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 
-export const dynamic = "force-dynamic";
-
 export default function CreateAccount() {
   const router = useRouter();
   const [message, setMessage] = useState("");
