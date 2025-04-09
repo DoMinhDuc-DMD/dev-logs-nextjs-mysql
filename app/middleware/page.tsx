@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-function useAuthGuard(allowedRoles: Array<string>) {
+function useAuthGuard(allowedRole: Array<string>) {
   const router = useRouter();
 
   useEffect(() => {
@@ -15,10 +15,10 @@ function useAuthGuard(allowedRoles: Array<string>) {
       return;
     }
 
-    if (!allowedRoles.includes(userRole)) {
+    if (!allowedRole.includes(userRole)) {
       router.replace("/main/notYourRight");
     }
-  }, [allowedRoles, router]);
+  }, [allowedRole, router]);
 }
 
 export default useAuthGuard;
