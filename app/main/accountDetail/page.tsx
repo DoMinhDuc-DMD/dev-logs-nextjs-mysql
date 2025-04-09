@@ -5,7 +5,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
-import middleware from "@/app/middleware/page";
+import useAuthGuard from "@/app/middleware/page";
 
 export default function AccountDetail() {
   const router = useRouter();
@@ -24,7 +24,7 @@ export default function AccountDetail() {
   });
 
   useEffect(() => {
-    middleware(router, ["Admin", "HR"]);
+    useAuthGuard(["Admin", "HR"]);
     const userId = new URLSearchParams(window.location.search).get("id");
 
     async function fetchInfo() {

@@ -1,6 +1,6 @@
 "use client";
 
-import middleware from "@/app/middleware/page";
+import useAuthGuard from "@/app/middleware/page";
 import { Button, Input, Select } from "antd";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -16,7 +16,7 @@ export default function CreateAccount() {
   const [selectedRole, setSelectedRole] = useState<number>();
 
   useEffect(() => {
-    middleware(router, ["Admin"]);
+    useAuthGuard(["Admin"]);
 
     async function fetchRoles() {
       try {

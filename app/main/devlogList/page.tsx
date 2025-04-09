@@ -8,7 +8,7 @@ import "@ant-design/v5-patch-for-react-19";
 import DevlogListModal from "../../components/devlogList/DevlogListModal";
 import DevlogListTable from "../../components/devlogList/DevlogListTable";
 import DevlogListSearch from "../../components/devlogList/DevlogListSearch";
-import middleware from "@/app/middleware/page";
+import useAuthGuard from "@/app/middleware/page";
 
 export interface DevlogList {
   id: number;
@@ -44,7 +44,7 @@ export default function DevlogList() {
 
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
-    middleware(router, ["Admin", "HR", "Leader"]);
+    useAuthGuard(["Admin", "HR", "Leader"]);
 
     const fetchData = async () => {
       try {

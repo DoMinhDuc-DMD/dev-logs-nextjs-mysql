@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import axios from "axios";
-import middleware from "@/app/middleware/page";
+import useAuthGuard from "@/app/middleware/page";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -76,7 +76,7 @@ export default function Main() {
 
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
-    middleware(router, ["Leader", "Developer"]);
+    useAuthGuard(["Leader", "Developer"]);
 
     async function fetchDevlog() {
       try {

@@ -6,7 +6,7 @@ import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import AccountListSearch from "../../components/accountList/AccountListSearch";
 import AccountListTable from "../../components/accountList/AccountListTable";
-import middleware from "@/app/middleware/page";
+import useAuthGuard from "@/app/middleware/page";
 
 export interface Account {
   id: number;
@@ -50,7 +50,7 @@ export default function AccountList() {
   };
 
   useEffect(() => {
-    middleware(router, ["Admin", "HR"]);
+    useAuthGuard(["Admin", "HR"]);
 
     fetchAccount();
   }, [router]);

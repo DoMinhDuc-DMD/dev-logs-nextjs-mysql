@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import ProjectAdd from "../../components/projectAdd/ProjectAdd";
-import middleware from "@/app/middleware/page";
+import useAuthGuard from "@/app/middleware/page";
 
 export interface Dev {
   id: number;
@@ -25,7 +25,7 @@ export default function AddProject() {
 
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
-    middleware(router, ["Leader"]);
+    useAuthGuard(["Leader"]);
 
     setProject((prev) => ({ ...prev, members: [Number(userId)] }));
 

@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
-import middleware from "@/app/middleware/page";
+import useAuthGuard from "@/app/middleware/page";
 
 export default function Form() {
   const router = useRouter();
@@ -30,7 +30,7 @@ export default function Form() {
 
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
-    middleware(router, ["Leader", "Developer"]);
+    useAuthGuard(["Leader", "Developer"]);
 
     async function fetchProjectTask() {
       try {

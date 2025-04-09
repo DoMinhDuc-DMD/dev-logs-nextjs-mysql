@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import ProjectListComponent from "../../components/projectList/ProjectList";
-import middleware from "@/app/middleware/page";
+import useAuthGuard from "@/app/middleware/page";
 
 export interface ProjectList {
   id: number;
@@ -44,7 +44,7 @@ export default function ProjectList() {
     const userRole = sessionStorage.getItem("userRole") || "";
     const userId = sessionStorage.getItem("userId") || "";
 
-    middleware(router, ["Leader", "Developer"]);
+    useAuthGuard(["Leader", "Developer"]);
     setMemberRole(userRole);
     setUserId(userId);
 

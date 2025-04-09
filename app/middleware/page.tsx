@@ -1,15 +1,22 @@
+"use client";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export default function middleware(router: ReturnType<typeof useRouter>, allowedRoles: string[]) {
-  const userId = sessionStorage.getItem("userId");
-  const loggedIn = sessionStorage.getItem("isLogin");
-  const userRole = sessionStorage.getItem("userRole");
+export default function useAuthGuard(allowedRoles: string[]) {
+  const router = useRouter();
 
-  if (!userRole || !userId || !loggedIn) {
-    router.replace("/auth");
-    return;
-  }
-  if (!allowedRoles.includes(userRole)) {
-    router.replace("/main/notYourRight");
-  }
+  useEffect(() => {
+    const userId = sessionStorage.getItem("userId");
+    const loggedIn = sessionStorage.getItem("isLogin");
+    const userRole = sessionStorage.getItem("userRole");
+
+    if (!userRole || !userId || !loggedIn) {
+      router.replace("/auth");
+      return;
+    }
+
+    if (!allowedRoles.includes(userRole)) {
+      router.replace("/main/notYourRight");
+    }
+  }, [allowedRoles, router]);
 }

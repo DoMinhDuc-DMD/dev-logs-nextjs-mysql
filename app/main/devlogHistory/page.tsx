@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import { DatePicker } from "antd";
 import axios from "axios";
-import middleware from "@/app/middleware/page";
+import useAuthGuard from "@/app/middleware/page";
 
 interface DevlogHistory {
   account_id: number;
@@ -41,7 +41,7 @@ export default function DevlogHistory() {
 
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
-    middleware(router, ["Leader", "Developer"]);
+    useAuthGuard(["Leader", "Developer"]);
 
     async function fetchDevlog() {
       try {
