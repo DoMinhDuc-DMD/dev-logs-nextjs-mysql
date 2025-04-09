@@ -5,6 +5,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
+import middleware from "@/app/middleware/page";
 
 export default function AccountDetail() {
   const router = useRouter();
@@ -23,17 +24,8 @@ export default function AccountDetail() {
   });
 
   useEffect(() => {
-    const userRole = sessionStorage.getItem("userRole");
-    const loggedIn = sessionStorage.getItem("isLogin");
+    middleware(router, ["Admin", "HR"]);
     const userId = new URLSearchParams(window.location.search).get("id");
-
-    if (!userRole || !userId || !loggedIn) {
-      router.replace("/auth");
-      return;
-    }
-    if (userRole !== "Admin" && userRole !== "HR") {
-      router.replace("/main/notYourRight");
-    }
 
     async function fetchInfo() {
       try {

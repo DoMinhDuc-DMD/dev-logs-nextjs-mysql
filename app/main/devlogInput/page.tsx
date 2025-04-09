@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
+import middleware from "@/app/middleware/page";
 
 export default function Form() {
   const router = useRouter();
@@ -28,17 +29,8 @@ export default function Form() {
   const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
-    const userRole = sessionStorage.getItem("userRole");
     const userId = sessionStorage.getItem("userId");
-    const loggedIn = sessionStorage.getItem("isLogin");
-
-    if (!userRole || !userId || !loggedIn) {
-      router.replace("/auth");
-      return;
-    }
-    if (userRole !== "Leader" && userRole !== "Developer") {
-      router.replace("/main/notYourRight");
-    }
+    middleware(router, ["Leader", "Developer"]);
 
     async function fetchProjectTask() {
       try {

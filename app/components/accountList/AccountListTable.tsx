@@ -60,7 +60,7 @@ export default function AccountListTable({
       key: "employee_work_password",
       width: "25%",
       align: "center" as const,
-      render: (record: Account) =>
+      render: (_: unknown, record: Account) =>
         editingId === record.id ? (
           <Input name="employee_work_password" value={editedData?.employee_work_password || ""} onChange={handleChange} />
         ) : (

@@ -95,7 +95,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             {/* Admin and HR and Leader */}
             {role !== "Developer" && (
               <Link href="/main/devlogList">
-                <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách devlog</li>
+                <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách dev nhập devlog</li>
               </Link>
             )}
             {/* Leader only */}

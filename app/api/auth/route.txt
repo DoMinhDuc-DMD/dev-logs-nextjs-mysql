@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openDB } from "../sqlite/sqlitedb";
-import { Database } from "sqlite";
+import db from "../connectdb/db";
+import { RowDataPacket } from "mysql2";
 
 export const dynamic = "force-dynamic";
 
@@ -8,20 +8,15 @@ export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json();
 
-    const db: Database = await openDB();
+    const [rows] = await db.query<RowDataPacket[]>("SELECT * FROM account WHERE employee_work_email = ?", [email]);
 
-    const user = await db.get(
-      "SELECT account.*, role.role_name AS role FROM account, role WHERE account.role_id = role.id AND employee_work_email = ?",
-      email
-    );
-
-    await db.close();
-
-    if (!user) {
+    if (!rows || rows.length === 0) {
       return NextResponse.json({ message: "Email không tồn tại" }, { status: 401 });
     }
 
-    if (password !== user.employee_work_password) {
+    const user = rows[0];
+
+    if (password !== rows[0].employee_work_password) {
       return NextResponse.json({ message: "Sai mật khẩu" }, { status: 401 });
     }
 
@@ -38,7 +33,7 @@ export async function POST(req: NextRequest) {
       }
     );
   } catch (error) {
-    console.error("Lỗi server:", error);
+    console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }

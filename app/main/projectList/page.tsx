@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import ProjectListComponent from "../../components/projectList/ProjectList";
+import middleware from "@/app/middleware/page";
 
 export interface ProjectList {
   id: number;
@@ -42,32 +43,28 @@ export default function ProjectList() {
   useEffect(() => {
     const userRole = sessionStorage.getItem("userRole") || "";
     const userId = sessionStorage.getItem("userId") || "";
-    const loggedIn = sessionStorage.getItem("isLogin") || "";
 
-    if (!userRole || !userId || !loggedIn) {
-      router.replace("/auth");
-      return;
-    }
-    if (userRole !== "Leader" && userRole !== "Developer") {
-      router.replace("/main/notYourRight");
-      return;
-    }
+    middleware(router, ["Leader", "Developer"]);
     setMemberRole(userRole);
     setUserId(userId);
 
     async function fetchData() {
-      const res = await axios.get("/api/projectList");
-      const data = res.data ?? {};
+      try {
+        const res = await axios.get("/api/projectList");
+        const data = res.data ?? {};
 
-      const filteredProject = data.projects.filter((project: ProjectList) =>
-        data.members.some((member: Member) => member.account_id === Number(userId) && member.project_id === project.id)
-      );
+        const filteredProject = data.projects.filter((project: ProjectList) =>
+          data.members.some((member: Member) => member.account_id === Number(userId) && member.project_id === project.id)
+        );
 
-      setProject(filteredProject);
-      setTask(data.tasks ?? []);
-      setDefaultTask(data.tasks ?? []);
+        setProject(filteredProject);
+        setTask(data.tasks ?? []);
+        setDefaultTask(data.tasks ?? []);
 
-      setMember(data.members ?? []);
+        setMember(data.members ?? []);
+      } catch (error) {
+        console.log("Lỗi khi lấy dữ liệu: ", error);
+      }
     }
     fetchData();
   }, [router]);

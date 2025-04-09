@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import axios from "axios";
+import middleware from "@/app/middleware/page";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -74,17 +75,8 @@ export default function Main() {
   };
 
   useEffect(() => {
-    const userRole = sessionStorage.getItem("userRole");
     const userId = sessionStorage.getItem("userId");
-    const loggedIn = sessionStorage.getItem("isLogin");
-
-    if (!userRole || !userId || !loggedIn) {
-      router.replace("/auth");
-      return;
-    }
-    if (userRole !== "Developer" && userRole !== "Leader") {
-      router.replace("/main/notYourRight");
-    }
+    middleware(router, ["Leader", "Developer"]);
 
     async function fetchDevlog() {
       try {

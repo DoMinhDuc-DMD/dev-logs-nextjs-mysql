@@ -6,6 +6,7 @@ import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import AccountListSearch from "../../components/accountList/AccountListSearch";
 import AccountListTable from "../../components/accountList/AccountListTable";
+import middleware from "@/app/middleware/page";
 
 export interface Account {
   id: number;
@@ -49,17 +50,7 @@ export default function AccountList() {
   };
 
   useEffect(() => {
-    const userRole = sessionStorage.getItem("userRole");
-    const userId = sessionStorage.getItem("userId");
-    const loggedIn = sessionStorage.getItem("isLogin");
-
-    if (!userRole || !userId || !loggedIn) {
-      router.replace("/auth");
-      return;
-    }
-    if (userRole !== "Admin" && userRole !== "HR") {
-      router.replace("/main/notYourRight");
-    }
+    middleware(router, ["Admin", "HR"]);
 
     fetchAccount();
   }, [router]);

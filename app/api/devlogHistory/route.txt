@@ -1,17 +1,14 @@
 import { NextResponse } from "next/server";
-import { openDB } from "../sqlite/sqlitedb";
+import db from "../connectdb/db";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const db = await openDB();
   try {
-    const devlogData = await db.all(`SELECT devlog.hours, devlog.date, devlog.account_id, task.task_name_index 
+    const [devlogData] = await db.query(`SELECT devlog.hours, devlog.date, devlog.account_id, task.task_name_index 
             FROM devlog 
             JOIN task ON task.id = devlog.task_id`);
-    
-    await db.close();
-    
+
     return NextResponse.json(devlogData);
   } catch (error) {
     console.error(error);

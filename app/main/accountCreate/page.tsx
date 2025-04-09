@@ -1,9 +1,11 @@
 "use client";
 
+import middleware from "@/app/middleware/page";
 import { Button, Input, Select } from "antd";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
+import "@ant-design/v5-patch-for-react-19";
 
 export const dynamic = "force-dynamic";
 
@@ -11,27 +13,16 @@ export default function CreateAccount() {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [options, setOptions] = useState<{ value: string; label: string }[]>([]);
-  const [selectedRole, setSelectedRole] = useState<string | null>(null);
+  const [selectedRole, setSelectedRole] = useState<number>();
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const userRole = sessionStorage.getItem("userRole");
-      const userId = sessionStorage.getItem("userId");
-      const loggedIn = sessionStorage.getItem("isLogin");
-
-      if (!userRole || !userId || !loggedIn) {
-        router.replace("/auth");
-        return;
-      }
-      if (userRole !== "Admin") {
-        router.replace("/main/notYourRight");
-      }
-    }
+    middleware(router, ["Admin"]);
 
     async function fetchRoles() {
       try {
         const res = await axios.get("/api/accountCreate");
         const data = res.data;
+
         setOptions(data.roles);
       } catch (error) {
         console.error("Lỗi lấy danh sách role: ", error);
@@ -53,7 +44,7 @@ export default function CreateAccount() {
 
       setMessage(data.message);
       setTimeout(() => {
-        router.push("/main/accountlist");
+        router.push("/main/accountList");
       }, 1000);
     } catch (error) {
       console.error("Lỗi tạo tài khoản: ", error);
@@ -75,12 +66,7 @@ export default function CreateAccount() {
         <label className="block text-left" htmlFor="role">
           Select Role
         </label>
-        <Select
-          options={options}
-          placeholder="Select role"
-          style={{ height: 43 }}
-          onChange={(selected) => setSelectedRole(selected || null)}
-        />
+        <Select options={options} placeholder="Select role" style={{ height: 43 }} onChange={(selected) => setSelectedRole(selected)} />
         {message && <p className="text-center text-red-500">{message}</p>}
         <Button className="w-30 py-2 mx-auto" type="primary" htmlType="submit">
           Register

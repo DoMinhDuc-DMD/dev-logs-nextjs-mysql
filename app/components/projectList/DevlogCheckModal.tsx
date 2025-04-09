@@ -35,9 +35,9 @@ export default function DevlogCheckModal({
       console.log(error);
     }
 
-    setDisabled((prev) => ({ ...prev, [memberName]: true }));
+    setDisabled((prev) => ({ ...prev, [accountId]: true }));
     setTimeout(() => {
-      setDisabled((prev) => ({ ...prev, [memberName]: false }));
+      setDisabled((prev) => ({ ...prev, [accountId]: false }));
     }, 10000);
   };
 
