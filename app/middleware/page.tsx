@@ -1,6 +1,6 @@
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useRouter } from "next/navigation";
 
-export default function middleware(router: AppRouterInstance, allowwedRoles: string[]) {
+export default function middleware(router: ReturnType<typeof useRouter>, allowedRoles: string[]) {
   const userId = sessionStorage.getItem("userId");
   const loggedIn = sessionStorage.getItem("isLogin");
   const userRole = sessionStorage.getItem("userRole");
@@ -9,7 +9,7 @@ export default function middleware(router: AppRouterInstance, allowwedRoles: str
     router.replace("/auth");
     return;
   }
-  if (!allowwedRoles.includes(userRole)) {
+  if (!allowedRoles.includes(userRole)) {
     router.replace("/main/notYourRight");
   }
 }
