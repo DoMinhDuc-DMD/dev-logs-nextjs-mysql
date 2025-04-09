@@ -1,6 +1,6 @@
 "use client";
 
-import useAuthGuard from "@/app/middleware/page";
+import useAuthGuard from "@/app/hooks/useAuthGuard";
 import { Button, Input, Select } from "antd";
 import axios from "axios";
 import { useRouter } from "next/navigation";

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import ProjectAdd from "../../components/projectAdd/ProjectAdd";
-import useAuthGuard from "@/app/middleware/page";
+import useAuthGuard from "@/app/hooks/useAuthGuard";
 
 export interface Dev {
   id: number;

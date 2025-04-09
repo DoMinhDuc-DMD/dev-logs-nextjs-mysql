@@ -5,7 +5,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
-import useAuthGuard from "@/app/middleware/page";
+import useAuthGuard from "@/app/hooks/useAuthGuard";
 
 export default function AccountDetail() {
   const router = useRouter();

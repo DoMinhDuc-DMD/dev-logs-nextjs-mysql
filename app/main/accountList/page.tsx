@@ -6,7 +6,7 @@ import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import AccountListSearch from "../../components/accountList/AccountListSearch";
 import AccountListTable from "../../components/accountList/AccountListTable";
-import useAuthGuard from "@/app/middleware/page";
+import useAuthGuard from "@/app/hooks/useAuthGuard";
 
 export interface Account {
   id: number;
