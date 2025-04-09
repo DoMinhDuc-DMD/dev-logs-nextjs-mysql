@@ -2,15 +2,13 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-type AllowedRole = "Admin" | "HR" | "Leader" | "Developer";
-
-export default function useAuthGuard(allowedRoles: AllowedRole[]) {
+function useAuthGuard(allowedRoles: Array<string>) {
   const router = useRouter();
 
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
     const loggedIn = sessionStorage.getItem("isLogin");
-    const userRole = sessionStorage.getItem("userRole") as AllowedRole;
+    const userRole = sessionStorage.getItem("userRole");
 
     if (!userRole || !userId || !loggedIn) {
       router.replace("/auth");
@@ -22,3 +20,5 @@ export default function useAuthGuard(allowedRoles: AllowedRole[]) {
     }
   }, [allowedRoles, router]);
 }
+
+export default useAuthGuard;
