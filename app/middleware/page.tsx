@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function useAuthGuard(allowedRoles: string[]) {
+export default function useAuthGuard(allowedRoles: string[]): void {
   const router = useRouter();
 
   useEffect(() => {
