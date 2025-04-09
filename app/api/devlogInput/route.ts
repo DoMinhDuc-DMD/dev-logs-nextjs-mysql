@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openDB } from "../sqlite/sqlitedb";
+import { RowDataPacket } from "mysql2";
 
 export const dynamic = "force-dynamic";
 
@@ -13,13 +14,13 @@ export async function GET() {
 
     await db.close();
 
-    const formattedProject = project.map((row:any) => ({
+    const formattedProject = project.map((row:RowDataPacket) => ({
       value: row.id,
       label: row.project_name,
       accountId: row.account_id,
     }));
 
-    const formattedTask = task.map((row:any) => ({
+    const formattedTask = task.map((row:RowDataPacket) => ({
       value: row.id,
       label: row.task_name,
       projectId: row.project_id,

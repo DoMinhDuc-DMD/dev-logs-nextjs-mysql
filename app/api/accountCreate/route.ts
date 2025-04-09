@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openDB } from "../sqlite/sqlitedb";
 import { Database } from "sqlite";
+import { RowDataPacket } from "mysql2";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +12,7 @@ export async function GET() {
 
         await db. close();
   
-        const formattedRoles = roles.map((row:any) => ({
+        const formattedRoles = roles.map((row:RowDataPacket) => ({
             value: row.role_name,
             label: row.role_name,
         }));
