@@ -42,9 +42,10 @@ export default function DevlogList() {
     setSelectedDevlog(null);
   };
 
+  useAuthGuard(["Admin", "HR", "Leader"]);
+
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
-    useAuthGuard(["Admin", "HR", "Leader"]);
 
     const fetchData = async () => {
       try {

@@ -39,9 +39,10 @@ export default function DevlogHistory() {
     setSelectedMonth(date ? date.format("YYYY-MM") : dayjs(`${currentYear}-${currentMonth}`).format("YYYY-MM"));
   };
 
+  useAuthGuard(["Leader", "Developer"]);
+
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
-    useAuthGuard(["Leader", "Developer"]);
 
     async function fetchDevlog() {
       try {

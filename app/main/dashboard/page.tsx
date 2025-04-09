@@ -74,9 +74,10 @@ export default function Main() {
     },
   };
 
+  useAuthGuard(["Leader", "Developer"]);
+
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
-    useAuthGuard(["Leader", "Developer"]);
 
     async function fetchDevlog() {
       try {

@@ -40,11 +40,12 @@ export default function ProjectList() {
   const [memberRole, setMemberRole] = useState("");
   const [userId, setUserId] = useState("");
 
+  useAuthGuard(["Leader", "Developer"]);
+
   useEffect(() => {
     const userRole = sessionStorage.getItem("userRole") || "";
     const userId = sessionStorage.getItem("userId") || "";
 
-    useAuthGuard(["Leader", "Developer"]);
     setMemberRole(userRole);
     setUserId(userId);
 

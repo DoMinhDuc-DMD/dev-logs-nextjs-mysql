@@ -23,8 +23,9 @@ export default function AccountDetail() {
     role: "",
   });
 
+  useAuthGuard(["Admin", "HR"]);
+
   useEffect(() => {
-    useAuthGuard(["Admin", "HR"]);
     const userId = new URLSearchParams(window.location.search).get("id");
 
     async function fetchInfo() {

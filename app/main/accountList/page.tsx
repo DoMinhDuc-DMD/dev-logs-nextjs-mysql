@@ -49,9 +49,9 @@ export default function AccountList() {
     }
   };
 
-  useEffect(() => {
-    useAuthGuard(["Admin", "HR"]);
+  useAuthGuard(["Admin", "HR"]);
 
+  useEffect(() => {
     fetchAccount();
   }, [router]);
 

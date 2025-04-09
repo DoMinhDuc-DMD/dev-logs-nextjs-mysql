@@ -28,9 +28,10 @@ export default function Form() {
   const isButtonDisabled = !formData.date || !formData.hours || !formData.project || !formData.task;
   const [messageApi, contextHolder] = message.useMessage();
 
+  useAuthGuard(["Leader", "Developer"]);
+
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
-    useAuthGuard(["Leader", "Developer"]);
 
     async function fetchProjectTask() {
       try {

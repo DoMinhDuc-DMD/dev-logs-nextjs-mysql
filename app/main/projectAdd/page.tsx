@@ -23,9 +23,10 @@ export default function AddProject() {
     members: [] as number[],
   });
 
+  useAuthGuard(["Leader"]);
+
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
-    useAuthGuard(["Leader"]);
 
     setProject((prev) => ({ ...prev, members: [Number(userId)] }));
 

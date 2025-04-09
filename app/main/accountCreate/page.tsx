@@ -15,9 +15,9 @@ export default function CreateAccount() {
   const [options, setOptions] = useState<{ value: string; label: string }[]>([]);
   const [selectedRole, setSelectedRole] = useState<number>();
 
-  useEffect(() => {
-    useAuthGuard(["Admin"]);
+  useAuthGuard(["Admin"]);
 
+  useEffect(() => {
     async function fetchRoles() {
       try {
         const res = await axios.get("/api/accountCreate");
