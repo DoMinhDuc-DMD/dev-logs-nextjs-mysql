@@ -101,7 +101,10 @@ export default function Form() {
     const res = await axios.post("/api/devlogInput", { ...formData, userId });
     const data = await res.data;
     messageApi.info(data.message);
-    window.location.reload();
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 3000);
   };
 
   return (
