@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
 import { openDB } from "../sqlite/sqlitedb";
 
-export const dynamic = "force-dynamic";
-
 export async function GET(req: NextRequest) {
   try {
     const db = await openDB();

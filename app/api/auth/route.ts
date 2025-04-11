@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { openDB } from "../sqlite/sqlitedb";
 import { Database } from "sqlite";
 
-export const dynamic = "force-dynamic";
-
 export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json();
