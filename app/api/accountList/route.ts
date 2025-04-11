@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { openDB } from "../sqlite/sqlitedb";
 import { RowDataPacket } from "mysql2";
 
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {

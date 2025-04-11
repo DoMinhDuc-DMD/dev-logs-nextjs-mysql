@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openDB } from "../sqlite/sqlitedb";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const db = await openDB();
