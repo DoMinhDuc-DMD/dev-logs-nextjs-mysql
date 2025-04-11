@@ -43,8 +43,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Cập nhật thành công" }, { status: 200 });
     } else if (action === "noticeDevlog") {
       const existedNotice = await db.get(
-        `SELECT * FROM notice_devlog WHERE leader_id = ? AND employee_id = ? AND project_id = ? AND DATE(date) = DATE(?)`,
-        [userId, accountId, projectId, date]
+        `SELECT * FROM notice_devlog WHERE leader_id = ? AND employee_id = ? AND project_id = ?`,
+        [userId, accountId, projectId]
       );
 
       if (existedNotice) {
