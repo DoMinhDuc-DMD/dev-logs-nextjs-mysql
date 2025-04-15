@@ -35,7 +35,7 @@ export default function AccountSetting() {
         }
         const res = await axios.get("/api/accountSetting");
 
-        const data = res.data.filter((item: { id: number }) => item.id === Number(userId));
+        const data = res.data.account.filter((item: { id: number }) => item.id === Number(userId));
 
         setInfo(data[0]);
       } catch (error) {

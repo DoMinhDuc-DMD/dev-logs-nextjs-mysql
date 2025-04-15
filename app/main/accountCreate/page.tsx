@@ -1,7 +1,7 @@
 "use client";
 
 import useAuthGuard from "@/app/hooks/useAuthGuard";
-import { Button, Input, Select } from "antd";
+import { Button, Input, message, Select } from "antd";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
@@ -9,9 +9,9 @@ import "@ant-design/v5-patch-for-react-19";
 
 export default function CreateAccount() {
   const router = useRouter();
-  const [message, setMessage] = useState("");
   const [options, setOptions] = useState<{ value: string; label: string }[]>([]);
   const [selectedRole, setSelectedRole] = useState<number>();
+  const [messageApi, contextHolder] = message.useMessage();
 
   useAuthGuard(["Admin"]);
 
@@ -38,38 +38,38 @@ export default function CreateAccount() {
 
     try {
       const res = await axios.post("/api/accountCreate", { email, password, role: selectedRole });
-      const data = await res.data;
-
-      setMessage(data.message);
+      messageApi.info(res.data.message);
       setTimeout(() => {
         router.push("/main/accountList");
-      }, 1000);
+      }, 500);
     } catch (error) {
       console.error("Lỗi tạo tài khoản: ", error);
     }
   }
 
   return (
-    <form className="w-130 my-10 mx-auto rounded bg-white p-5 shadow-lg w-[400px]" onSubmit={handleSubmit}>
-      <h2 className="text-center text-xl font-semibold mb-5">Register New Account</h2>
-      <div className="flex flex-col gap-y-4">
-        <label className="block text-left" htmlFor="email">
-          Account
-        </label>
-        <Input style={{ padding: 10 }} placeholder="Enter email" type="email" name="email" />
-        <label className="block text-left" htmlFor="password">
-          Password
-        </label>
-        <Input style={{ padding: 10 }} placeholder="Enter password" type="password" name="password" />
-        <label className="block text-left" htmlFor="role">
-          Select Role
-        </label>
-        <Select options={options} placeholder="Select role" style={{ height: 43 }} onChange={(selected) => setSelectedRole(selected)} />
-        {message && <p className="text-center text-red-500">{message}</p>}
-        <Button className="w-30 py-2 mx-auto" type="primary" htmlType="submit">
-          Register
-        </Button>
-      </div>
-    </form>
+    <>
+      {contextHolder}
+      <form className="w-130 my-10 mx-auto rounded bg-white p-5 shadow-lg w-[400px]" onSubmit={handleSubmit}>
+        <h2 className="text-center text-xl font-semibold mb-5">Register New Account</h2>
+        <div className="flex flex-col gap-y-4">
+          <label className="block text-left" htmlFor="email">
+            Account
+          </label>
+          <Input style={{ padding: 10 }} placeholder="Enter email" type="email" name="email" />
+          <label className="block text-left" htmlFor="password">
+            Password
+          </label>
+          <Input style={{ padding: 10 }} placeholder="Enter password" type="password" name="password" />
+          <label className="block text-left" htmlFor="role">
+            Select Role
+          </label>
+          <Select options={options} placeholder="Select role" style={{ height: 43 }} onChange={(selected) => setSelectedRole(selected)} />
+          <Button className="w-30 py-2 mx-auto" type="primary" htmlType="submit">
+            Register
+          </Button>
+        </div>
+      </form>
+    </>
   );
 }

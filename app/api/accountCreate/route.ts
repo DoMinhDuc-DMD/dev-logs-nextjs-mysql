@@ -1,18 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openDB } from "../sqlite/sqlitedb";
-import { Database } from "sqlite";
-import { RowDataPacket } from "mysql2";
+import prisma from "../connectprisma/prisma";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
     try {
-        const db: Database = await openDB();
-        const roles = await db.all("SELECT * FROM role WHERE id != 1");
-
-        await db. close();
+        const roles = await prisma.role.findMany({
+          where: {
+            role_name: {
+              not: "Admin"
+            }
+          }
+        });
   
-        const formattedRoles = roles.map((row:RowDataPacket) => ({
+        const formattedRoles = roles.map((row) => ({
             value: row.role_name,
             label: row.role_name,
         }));
@@ -25,34 +26,50 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-    try {
-      const { email, password, role } = await req.json();
-      const db: Database = await openDB();
-  
-      if (!email || !password || !role) {
-        return NextResponse.json({ message: "Vui lòng nhập đầy đủ thông tin" }, { status: 400 });
-      }
-  
-      const existingUser = await db.get("SELECT * FROM account WHERE employee_work_email = ?", email);
-      if (existingUser) {
-        return NextResponse.json({ message: "Email đã tồn tại" },{status:400});
-      }
+  try {
+    const { email, password, role } = await req.json();
 
-      const roleRow = await db.get(`SELECT id FROM role WHERE role_name = ?`, role);
-
-      if (!roleRow) {
-        return NextResponse.json({ message: "Role không hợp lệ" }, { status: 400 });
-      }
-      
-      const role_id = roleRow.id;
-      
-      await db.run("INSERT INTO account (employee_work_email,employee_work_password,role_id) VALUES (?,?,?)", [email, password, role_id]);
-
-      await db.close();
-  
-      return NextResponse.json({ message: "Đăng ký thành công" }, { status: 201 });
-    } catch (error) {
-      console.error(error);
-      return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
+    if (!email || !password || !role) {
+      return NextResponse.json({ message: "Vui lòng nhập đầy đủ thông tin" }, { status: 400 });
     }
+
+    const existingUser = await prisma.account.findFirst({
+      where:{
+        employee_work_email: email,
+      },
+    }
+    );
+
+    if (existingUser) {
+      return NextResponse.json({ message: "Email đã tồn tại" }, { status: 400 });
+    }
+
+    const roleRows = await prisma.role.findFirst(
+      {
+        where:{
+          role_name: role,
+        },
+      }
+    );
+
+    if (!roleRows) {
+      return NextResponse.json({ message: "Role không hợp lệ" }, { status: 400 });
+    }
+
+    const role_id = roleRows.id;
+
+    await prisma.account.create({
+      data: 
+        {
+          employee_work_email: email,
+          employee_work_password: password,
+          role_id: role_id,
+        },
+    });
+
+    return NextResponse.json({ message: "Đăng ký thành công" }, { status: 201 });
+  } catch (error) {
+    console.error("Lỗi server khi đăng ký:", error);
+    return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
+  }
 }

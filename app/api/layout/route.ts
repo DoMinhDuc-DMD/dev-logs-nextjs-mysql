@@ -1,19 +1,37 @@
 import { NextResponse } from "next/server";
-import { openDB } from "../sqlite/sqlitedb";
+import prisma from "../connectprisma/prisma";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const db = await openDB();
-    
-    const notices = await db.all(
-      `SELECT notice_devlog.*, project.project_name FROM notice_devlog 
-        INNER JOIN project ON notice_devlog.project_id = project.id 
-        ORDER BY notice_devlog.date DESC`
-    );
 
-    return NextResponse.json(notices, { status: 200 });
+    const notices = await prisma.notice_devlog.findMany({
+      orderBy: [
+        {
+          date: 'desc'
+        }
+      ],
+      include: {
+        project: {
+          select: {
+            project_name: true,
+          }
+        }
+      }
+    });
+
+    const noticeData = notices.map((notice) => ({
+      id: notice.id,
+      project_name: notice.project.project_name,
+      date: notice.date,
+      employee_id: notice.employee_id,
+      leader_id: notice.leader_id,
+      project_id: notice.project_id,
+      notice_count: notice.notice_count 
+    }))
+
+    return NextResponse.json(noticeData, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });

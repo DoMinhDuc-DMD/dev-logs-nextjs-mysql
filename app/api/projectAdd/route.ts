@@ -1,16 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openDB } from "../sqlite/sqlitedb";
+import db from "../connectdb/db";
+import { ResultSetHeader } from "mysql2";
+import prisma from "../connectprisma/prisma";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const db = await openDB();
-    const accounts = await db.all(`SELECT account.id, account.employee_name, role.role_name FROM account, role WHERE role.role_name = 'Developer' AND account.role_id = role.id`);
 
-    await db.close();
+    const accounts = await prisma.account.findMany({
+      where: {
+        role: {
+          role_name: "Developer",
+        }
+      },
+      include: {
+        role: {
+          select: {
+            role_name: true,
+          },
+        }
+      }
+    });
 
-    return NextResponse.json(accounts);
+    const accountData = accounts.map((account) => ({
+      ...account,
+      role: account.role?.role_name,
+    }))
+
+    return NextResponse.json(accountData);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
@@ -19,28 +37,37 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const db = await openDB();
     const { project, tasks } = await req.json();
 
-    const projectResult = await db.run(
-      "INSERT INTO project (project_name,description,start_date,end_date) VALUES (?,?,?,?)",
-      [project.project_name, project.description, project.start_date, project.end_date]
-    );
-
-    const project_id = projectResult.lastID;
+    const projectResult = await prisma.project.create({
+      data: {
+        project_name: project.project_name,
+        description: project.description,
+        start_date: new Date(project.start_date),
+        end_date: new Date(project.end_date)
+      }
+    })
+    
+    const project_id = projectResult.id;
+    
     for (const task of tasks) {
-      await db.run("INSERT INTO task (task_name,project_id,task_name_index) VALUES (?,?,?)", [
-        task.task_name,
-        project_id,
-        task.task_name_index,
-      ]);
+      await prisma.task.create({
+        data: {
+          task_name: task.task_name,
+          project_id: project_id,
+          task_name_index: task.task_name_index
+        }
+      })
     }
 
     for (const member of project.members) {
-      await db.run("INSERT INTO member_project (account_id,project_id) VALUES (?,?)", [member, project_id]);
+      await prisma.member_project.create({
+        data: {
+          account_id: member,
+          project_id: project_id
+        }
+      })
     }
-
-    await db.close();
 
     return NextResponse.json({ message: "Thêm dự án thành công" }, { status: 200 });
   } catch (error) {

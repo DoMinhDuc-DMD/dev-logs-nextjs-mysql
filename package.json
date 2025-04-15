@@ -16,6 +16,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.8",
     "@mui/x-date-pickers": "^7.28.0",
+    "@prisma/client": "^6.6.0",
     "antd": "^5.24.3",
     "antd-button-color": "^1.0.4",
     "antd-style": "^3.7.1",
@@ -53,6 +54,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
+    "prisma": "^6.6.0",
     "tailwindcss": "^4.0.14",
     "typescript": "^5"
   },

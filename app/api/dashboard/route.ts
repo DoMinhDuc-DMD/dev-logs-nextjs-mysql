@@ -1,16 +1,24 @@
 import { NextResponse } from "next/server";
-import { openDB } from "../sqlite/sqlitedb";
+import prisma from "../connectprisma/prisma";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const db = await openDB();
-    const devlogData = await db.all(`SELECT SUM(hours) AS total_hours, date, account_id FROM devlog GROUP BY date, account_id`);
+    const devlogData = await prisma.devlog.groupBy({
+      by: ['date','account_id'],
+      _sum: {
+        hours: true,
+      }
+    });
 
-    await db.close();
+    const formattedData = devlogData.map((data)=>({
+      account_id: data.account_id,
+      date: data.date,
+      total_hours: data._sum.hours
+    }))
 
-    return NextResponse.json(devlogData);
+    return NextResponse.json(formattedData);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });

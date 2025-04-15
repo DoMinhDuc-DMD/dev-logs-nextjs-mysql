@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openDB } from "../sqlite/sqlitedb";
-import { Database } from "sqlite";
+import prisma from "../connectprisma/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -8,14 +7,14 @@ export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json();
 
-    const db: Database = await openDB();
-
-    const user = await db.get(
-      "SELECT account.*, role.role_name AS role FROM account, role WHERE account.role_id = role.id AND employee_work_email = ?",
-      email
-    );
-
-    await db.close();
+    const user = await prisma.account.findFirst({
+      where:{
+        employee_work_email: email,
+      },
+      include:{
+        role: true,
+      },
+    });
 
     if (!user) {
       return NextResponse.json({ message: "Email không tồn tại" }, { status: 401 });
@@ -30,7 +29,7 @@ export async function POST(req: NextRequest) {
         message: "Đăng nhập thành công",
         userId: user.id,
         isLogin: true,
-        userRole: user.role,
+        userRole: user.role.role_name,
         userName: user.employee_name,
       },
       {

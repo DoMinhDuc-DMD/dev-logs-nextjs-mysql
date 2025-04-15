@@ -1,15 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openDB } from "../sqlite/sqlitedb";
+import prisma from "../connectprisma/prisma";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const db = await openDB();
-    const account = await db.all("SELECT account.*, role.role_name AS role FROM account, role WHERE account.role_id = role.id");
+    const account = await prisma.account.findMany({
+      include:{
+        role: {
+          select:{
+            role_name: true,
+          }
+        }
+      }
+    })
 
-    await db.close();
-    return NextResponse.json(account);
+    const formattedAccount = account.map((acc) => ({
+      ...acc,
+      role: acc.role?.role_name
+    }))
+
+    return NextResponse.json({account: formattedAccount});
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
@@ -18,7 +29,6 @@ export async function GET() {
 
 export async function PUT(req: NextRequest) {
   try {
-    const db = await openDB();
     const {
       employee_name,
       employee_work_email,
@@ -35,27 +45,26 @@ export async function PUT(req: NextRequest) {
     if (!userId) {
       return NextResponse.json({ message: "Thiếu userId" }, { status: 400 });
     }
-    await db.run(
-      "UPDATE account SET employee_name = ?, employee_birthday = ?, employee_bank_account = ?, employee_private_email = ?,employee_phone_number = ?,employee_citizen_identification = ?,employee_work_email = ?,employee_work_password = ?,employee_license_plate = ? WHERE id = ?",
-      [
-        employee_name,
-        employee_birthday,
-        employee_bank_account,
-        employee_private_email,
-        employee_phone_number,
-        employee_citizen_identification,
-        employee_work_email,
-        employee_work_password,
-        employee_license_plate,
-        userId,
-      ]
-    );
 
-    await db.close();
+    await prisma.account.update({
+      where: {
+        id: Number(userId),
+      },
+      data: {
+        employee_name: employee_name,
+        employee_birthday: new Date(employee_birthday),
+        employee_bank_account: employee_bank_account,
+        employee_private_email: employee_private_email,
+        employee_phone_number: employee_phone_number,
+        employee_citizen_identification:employee_citizen_identification,
+        employee_work_email: employee_work_email,
+        employee_work_password: employee_work_password,
+        employee_license_plate: employee_license_plate,
+      }
+    })
 
     return NextResponse.json({ message: "Cập nhật thành công" }, { status: 200 });
   } catch (error) {
-    console.error(error);
     console.error("Lỗi cập nhật tài khoản:", error);
   }
 }

@@ -1,19 +1,39 @@
 import { NextResponse } from "next/server";
-import { openDB } from "../sqlite/sqlitedb";
+import db from "../connectdb/db";
+import prisma from "../connectprisma/prisma";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const db = await openDB();
   try {
-    const devlogData = await db.all(`SELECT devlog.hours, devlog.date, devlog.account_id, task.task_name_index 
-            FROM devlog 
-            JOIN task ON task.id = devlog.task_id
-            ORDER BY devlog.date, task.task_name_index`);
+    const devlogData = await prisma.devlog.findMany({
+      orderBy: [
+        {
+          date: 'desc',
+        },
+        {
+          task: {
+            task_name_index: 'asc'
+          }
+        }
+      ],
+      include:{
+        task: {
+          select: {
+            task_name_index: true,
+          }
+        }
+      }
+    });
     
-    await db.close();
+    const formattedData = devlogData.map((data)=>({
+      account_id: data.account_id,
+      hours: data.hours,
+      date: data.date,
+      task_name_index: data.task.task_name_index
+    }))
     
-    return NextResponse.json(devlogData);
+    return NextResponse.json(formattedData);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });

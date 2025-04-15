@@ -1,23 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openDB } from "../sqlite/sqlitedb";
+import dayjs from "dayjs";
+import prisma from "../connectprisma/prisma";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const db = await openDB();
-    const projects = await db.all("SELECT * FROM project");
-    const tasks = await db.all("SELECT * FROM task");
-    const members = await db.all(`SELECT mp.account_id, mp.project_id, a.employee_name, a.employee_work_email, d.date AS devlog_date
-                                        FROM member_project mp
-                                        INNER JOIN account a ON mp.account_id = a.id
-                                        LEFT JOIN (
-                                            SELECT account_id, project_id, date
-                                            FROM devlog
-                                            GROUP BY account_id, project_id
-                                        ) d ON d.account_id = mp.account_id AND d.project_id = mp.project_id`);
+    const projects = await prisma.project.findMany();
+    const tasks = await prisma.task.findMany();
 
-    await db.close();
+    const memberProjects = await prisma.member_project.findMany({
+      select:{
+        account_id: true,
+        project_id: true,
+        account:{
+          select:{
+            employee_name: true,
+            employee_work_email: true,
+          }
+        }
+      }
+    });
+
+    const devlogs = await prisma.devlog.findMany({
+      select:{
+        account_id: true,
+        project_id: true,
+        date: true,
+      },
+      distinct: ['account_id', 'project_id'],
+    })
+
+    const members = memberProjects.map((mp)=>{
+      const matchedDevlog = devlogs.find((d) => d.account_id === mp.account_id && d.project_id === mp.project_id)
+
+      return{
+        account_id: mp.account_id,
+        project_id: mp.project_id,
+        employee_name: mp.account.employee_name,
+        employee_work_email: mp.account.employee_work_email,
+        devlog_date: matchedDevlog?.date || null
+      }
+    });
+
     return NextResponse.json({ projects, tasks, members }, { status: 200 });
   } catch (error) {
     console.error(error);
@@ -27,37 +52,73 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const db = await openDB();
     const { action, updatedTasks, newProjectTasks, userId, accountId, projectId, date } = await req.json();
 
     if (action === "updateTasks") {
       for (const task of updatedTasks) {
-        await db.run(`UPDATE task SET task_name = ?, task_name_index = ? WHERE id = ?`, 
-          [task.task_name, task.task_name_index, task.id]);
+        await prisma.task.update({
+          where: {
+            id: task.id,
+          },
+          data:{
+            task_name: task.task_name,
+            task_name_index: task.task_name_index
+          }
+        });
       }
       for (const task of newProjectTasks) {
-        await db.run(`INSERT INTO task (task_name, project_id, task_name_index) VALUES (?, ?, ?)`, 
-          [task.task_name,task.project_id,task.task_name_index,]);
+        await prisma.task.create({
+          data: {
+            task_name: task.task_name,
+            project_id: task.project_id,
+            task_name_index: task.task_name_index
+          }
+        });
       }
 
       return NextResponse.json({ message: "Cập nhật thành công" }, { status: 200 });
     } else if (action === "noticeDevlog") {
-      const existedNotice = await db.get(
-        `SELECT * FROM notice_devlog WHERE leader_id = ? AND employee_id = ? AND project_id = ?`,
-        [userId, accountId, projectId]
-      );
+      const startOfDay = dayjs(date).startOf("day").format("YYYY-MM-DD HH:mm:ss");
+      const endOfDay = dayjs(date).endOf("day").format("YYYY-MM-DD HH:mm:ss");
+
+      const existedNotice = await prisma.notice_devlog.findFirst({
+        where: {
+          leader_id: Number(userId),
+          employee_id: accountId,
+          project_id: projectId,
+          date: {
+            gte: new Date(startOfDay),
+            lte: new Date(endOfDay)
+          }
+        }
+      })
 
       if (existedNotice) {
-        await db.run(
-          `UPDATE notice_devlog SET notice_count = notice_count + 1, date = ? WHERE leader_id = ? AND employee_id = ? AND project_id = ?`,
-          [date, userId, accountId, projectId]
-        );
+        await prisma.notice_devlog.update({
+          where: {
+            id: existedNotice.id,
+            leader_id: Number(userId),
+            employee_id: accountId,
+            project_id: projectId,
+          },
+          data: {
+            notice_count: {
+              increment: 1,
+            },
+            date: new Date(date),
+          },
+        })
       } else {
-        await db.run(`INSERT INTO notice_devlog (leader_id, employee_id, project_id, date, notice_count) VALUES (?,?,?,?,?)`, 
-          [userId,accountId,projectId,date,1,]);
+        await prisma.notice_devlog.create({
+          data:{
+            leader_id: Number(userId),
+            employee_id: accountId,
+            project_id: projectId,
+            date: new Date(date),
+            notice_count: 1
+          }
+        })
       }
-
-      await db.close();
 
       return NextResponse.json({ message: "Thông báo đã gửi" }, { status: 200 });
     } else {

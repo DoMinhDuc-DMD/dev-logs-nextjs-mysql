@@ -50,13 +50,14 @@ export default function DevlogList() {
         const res = await axios.get("/api/devlogList");
         const data = await res.data;
 
-        const filteredDevlogs = data.devlogs.filter(
+        const filteredDevlogs = data.devlogData.filter(
           (item: DevlogList) =>
             dayjs(item.date).format("DD-MM-YYYY") === date &&
             data.leaderProjects.some(
               (project: DevlogList) => project.account_id === Number(userId) && project.project_id === item.project_id
             )
         );
+
         setData(filteredDevlogs);
         setOriginalData(filteredDevlogs);
       } catch (error) {

@@ -39,9 +39,9 @@ export default function AccountList() {
       const res = await axios.get("/api/accountList");
       const data = res.data;
 
-      setAccounts(data.accounts);
-      setOriginalData(data.accounts);
-      setOptions(data.formattedRole);
+      setAccounts(data.account);
+      setOriginalData(data.account);
+      setOptions(data.role);
     } catch (error) {
       console.log("Lỗi lấy danh sách tài khoản: ", error);
     }

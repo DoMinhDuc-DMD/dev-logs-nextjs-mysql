@@ -38,7 +38,9 @@ export default function Form() {
         const res = await axios.get("/api/devlogInput");
         const data = await res.data;
 
-        const filteredProject = data.formattedProject.filter((project: { accountId: number }) => project.accountId === Number(userId));
+        const filteredProject = data.formattedProject.filter((project: { accountId: number[] }) =>
+          project.accountId.includes(Number(userId))
+        );
 
         setProject(filteredProject);
         setTask(data.formattedTask);

@@ -4,6 +4,7 @@ import { Button, Input } from "antd";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
 
@@ -31,16 +32,15 @@ export default function AccountDetail() {
     async function fetchInfo() {
       try {
         const res = await axios.get(`/api/accountDetail?id=${userId}`);
-        const data = res.data;
 
-        setInfo(data);
+        setInfo(res.data);
       } catch (error) {
         console.log("Lỗi lấy thông tin tài khoản: ", error);
       }
     }
     fetchInfo();
   }, [router]);
-
+  console.log(info);
   return (
     <div className="p-5">
       <div className="rounded bg-white text-center py-5">
@@ -54,7 +54,7 @@ export default function AccountDetail() {
             <label htmlFor="employee_name">Họ và tên:</label>
             <Input name="employee_name" value={info?.employee_name || ""} readOnly />
             <label htmlFor="employee_birthday">Ngày sinh:</label>
-            <Input name="employee_birthday" value={info?.employee_birthday} readOnly />
+            <Input name="employee_birthday" value={dayjs(info?.employee_birthday).format("DD/MM/YYYY")} readOnly />
             <label htmlFor="employee_bank_account">Số tài khoản TCB:</label>
             <Input name="employee_bank_account" value={info?.employee_bank_account || ""} readOnly />
             <label htmlFor="employee_private_email">Email cá nhân:</label>

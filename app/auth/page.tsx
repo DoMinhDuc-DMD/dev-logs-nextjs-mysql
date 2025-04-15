@@ -27,7 +27,9 @@ export default function LoginForm() {
       sessionStorage.setItem("userRole", data.userRole);
       sessionStorage.setItem("userName", data.userName);
 
-      router.replace("/main");
+      setTimeout(() => {
+        router.replace("/main");
+      }, 1000);
     } catch (error) {
       console.error(error);
     }
