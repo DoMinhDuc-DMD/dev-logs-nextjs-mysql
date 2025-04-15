@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RowDataPacket } from "mysql2";
-import db from "../connectdb/db";
 import prisma from "../connectprisma/prisma";
 
 export const dynamic = "force-dynamic";

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import db from "../connectdb/db";
 import prisma from "../connectprisma/prisma";
 
 export const dynamic = "force-dynamic";

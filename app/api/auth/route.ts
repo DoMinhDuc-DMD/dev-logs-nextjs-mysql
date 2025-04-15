@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
         userId: user.id,
         isLogin: true,
         userRole: user.role.role_name,
-        userName: user.employee_name,
       },
       {
         status: 200,

@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import ProjectListComponent from "../../components/projectList/ProjectList";
-import useAuthGuard from "@/app/hooks/useAuthGuard";
+import useAuthGuard from "../../hooks/useAuthGuard";
 
 export interface ProjectList {
   id: number;
@@ -42,37 +42,36 @@ export default function ProjectList() {
 
   useAuthGuard(["Leader", "Developer"]);
 
-  useEffect(() => {
-    const userRole = sessionStorage.getItem("userRole") || "";
-    const userId = sessionStorage.getItem("userId") || "";
+  const fetchData = useCallback(async (currentUserId: string) => {
+    try {
+      const res = await axios.get("/api/projectList");
+      const data = res.data ?? {};
 
-    setMemberRole(userRole);
-    setUserId(userId);
+      const filteredProject = data.projects.filter((project: ProjectList) =>
+        data.members.some((member: Member) => member.account_id === Number(currentUserId) && member.project_id === project.id)
+      );
 
-    async function fetchData() {
-      try {
-        const res = await axios.get("/api/projectList");
-        const data = res.data ?? {};
-
-        const filteredProject = data.projects.filter((project: ProjectList) =>
-          data.members.some((member: Member) => member.account_id === Number(userId) && member.project_id === project.id)
-        );
-
-        setProject(filteredProject);
-        setTask(data.tasks ?? []);
-        setDefaultTask(data.tasks ?? []);
-
-        setMember(data.members ?? []);
-      } catch (error) {
-        console.log("Lỗi khi lấy dữ liệu: ", error);
-      }
+      setProject(filteredProject);
+      setTask(data.tasks ?? []);
+      setDefaultTask(data.tasks ?? []);
+      setMember(data.members ?? []);
+    } catch (error) {
+      console.log("Lỗi khi lấy dữ liệu: ", error);
     }
-    fetchData();
-  }, [router]);
+  }, []);
+
+  useEffect(() => {
+    const role = sessionStorage.getItem("userRole") || "";
+    const id = sessionStorage.getItem("userId") || "";
+
+    setMemberRole(role);
+    setUserId(id);
+    fetchData(id);
+  }, [router, fetchData]);
 
   return (
     <div className="p-5">
-      <div className="w-full h-[85vh] p-5 rounded bg-white ">
+      <div className="w-full h-[85vh] p-5 rounded bg-white">
         <div className="text-center mb-3">Danh sách các dự án</div>
         <div className="h-[95%] border rounded overflow-y-auto">
           <ProjectListComponent
@@ -82,6 +81,7 @@ export default function ProjectList() {
             members={member}
             memberRole={memberRole}
             userId={userId}
+            fetchData={() => fetchData(userId)}
           />
         </div>
       </div>

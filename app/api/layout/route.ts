@@ -5,7 +5,12 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-
+    const accounts = await prisma.account.findMany({
+      select:{
+        id:true,
+        employee_name:true,
+      }
+    });
     const notices = await prisma.notice_devlog.findMany({
       orderBy: [
         {
@@ -31,7 +36,7 @@ export async function GET() {
       notice_count: notice.notice_count 
     }))
 
-    return NextResponse.json(noticeData, { status: 200 });
+    return NextResponse.json({accounts, noticeData}, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });

@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RowDataPacket } from "mysql2";
-import db from "../connectdb/db";
 import prisma from "../connectprisma/prisma";
 
 export const dynamic = "force-dynamic";
@@ -50,13 +48,27 @@ export async function PUT(req: NextRequest) {
   try {
     const { id, email, password, role } = await req.json();
 
-    const [rows] = await db.query<RowDataPacket[]>("SELECT id FROM role WHERE role_name = ?", [role]);
-    const role_id = rows[0]?.id;
-    
+    const rows = await prisma.role.findFirst({
+      where: {
+        role_name: role,
+      },
+      select:{
+        id: true
+      }
+    });
 
-    await db.query(`UPDATE account SET employee_work_email = ?, employee_work_password = ?, role_id = ? WHERE id = ?`, 
-      [email,password,role_id,id]
-    );
+    const role_id = rows?.id;
+    
+    await prisma.account.update({
+      where:{
+        id: Number(id),
+      },
+      data:{
+        employee_work_email: email,
+        employee_work_password: password,
+        role_id: role_id
+      }
+    })
 
     return NextResponse.json({ message: "Cập nhật thành công" }, { status: 200 });
   } catch (error) {

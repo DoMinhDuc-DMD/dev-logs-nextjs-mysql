@@ -1,10 +1,10 @@
 "use client";
 
+import { useState } from "react";
+import { Member, ProjectList, Task } from "../../main/projectList/page";
+import ProjectCard from "./ProjectCard";
 import ProjectModal from "./ProjectModal";
 import DevlogCheckModal from "./DevlogCheckModal";
-import { Member, ProjectList, Task } from "@/app/main/projectList/page";
-import { useState } from "react";
-import ProjectCard from "./ProjectCard";
 
 interface ProjectListProps {
   projects: ProjectList[];
@@ -13,9 +13,10 @@ interface ProjectListProps {
   members: Member[];
   memberRole: string;
   userId: string;
+  fetchData: () => void;
 }
 
-export default function ProjectListComponent({ projects, tasks, defaultTasks, members, memberRole, userId }: ProjectListProps) {
+export default function ProjectListComponent({ projects, tasks, defaultTasks, members, memberRole, userId, fetchData }: ProjectListProps) {
   const [isOpenProjectModal, setIsOpenProjectModal] = useState<{ [key: number]: boolean }>({});
   const [isOpenDevlogCheckModal, setIsOpenDevlogCheckModal] = useState<{ [key: number]: boolean }>({});
 
@@ -53,6 +54,7 @@ export default function ProjectListComponent({ projects, tasks, defaultTasks, me
               memberRole={memberRole}
               isOpenProjectModal={isOpenProjectModal}
               handleCloseModal={handleCloseModal}
+              fetchData={fetchData}
             />
             <DevlogCheckModal
               project={project}

@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import db from "../connectdb/db";
-import { ResultSetHeader } from "mysql2";
 import prisma from "../connectprisma/prisma";
 
 export const dynamic = "force-dynamic";

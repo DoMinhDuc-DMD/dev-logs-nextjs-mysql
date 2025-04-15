@@ -22,8 +22,8 @@ interface Notification {
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
-  const [userName, setUserName] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string[]>([]);
   const [notification, setNotification] = useState<Notification[]>([]);
 
   const handleToggle = () => {
@@ -37,9 +37,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     if (typeof window !== "undefined") {
       const loggedIn = sessionStorage.getItem("isLogin");
       const userRole = sessionStorage.getItem("userRole");
-      const userName = sessionStorage.getItem("userName");
       const userId = sessionStorage.getItem("userId");
-      setUserName(userName);
       setUserId(userId);
 
       if (!loggedIn) {
@@ -51,11 +49,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
     async function fetchData() {
       const res = await axios.get("/api/layout");
-      setNotification(res.data);
+
+      setUserName(res.data.accounts);
+      setNotification(res.data.noticeData);
     }
     fetchData();
   }, [router]);
 
+  const filteredAccount = userName.filter((item: any) => item.id === Number(userId)).map((t: any) => t.employee_name);
   const filteredNotice = notification.filter((item) => item.employee_id === Number(userId));
 
   const items: MenuProps["items"] = filteredNotice.map((item) => ({
@@ -143,7 +144,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               </div>
             </Dropdown>
             <Link href="/main/accountSetting" className="w-[150px] text-center p-3 cursor-pointer hover:bg-gray-400">
-              {userName}
+              {filteredAccount}
             </Link>
           </div>
         </div>

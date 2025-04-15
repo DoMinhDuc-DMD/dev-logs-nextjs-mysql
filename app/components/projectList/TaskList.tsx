@@ -12,9 +12,10 @@ interface TaskList {
   defaultTasks: Task[];
   memberRole: string;
   handleCloseModal: (projectId: number) => void;
+  fetchData: () => void;
 }
 
-export default function TaskList({ projectId, tasks, newTasks, defaultTasks, memberRole, handleCloseModal }: TaskList) {
+export default function TaskList({ projectId, tasks, newTasks, defaultTasks, memberRole, handleCloseModal, fetchData }: TaskList) {
   const [task, setTask] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState<Task[]>([]);
   const [defaultTask, setDefaultTask] = useState<Task[]>([]);
@@ -76,6 +77,7 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
 
       setNewTask([]);
       handleCloseModal(projectId);
+      fetchData();
     } catch (error) {
       console.error("Lỗi cập nhật dự án:", error);
       messageApi.info("Đã xảy ra lỗi khi cập nhật dự án. Vui lòng kiểm tra lại.");

@@ -12,6 +12,7 @@ interface ProjectModalProps {
   memberRole: string;
   isOpenProjectModal: { [key: number]: boolean };
   handleCloseModal: (projectId: number) => void;
+  fetchData: () => void;
 }
 
 export default function ProjectModal({
@@ -22,6 +23,7 @@ export default function ProjectModal({
   memberRole,
   isOpenProjectModal,
   handleCloseModal,
+  fetchData,
 }: ProjectModalProps) {
   return (
     <Modal
@@ -38,6 +40,7 @@ export default function ProjectModal({
         defaultTasks={defaultTasks}
         memberRole={memberRole}
         handleCloseModal={handleCloseModal}
+        fetchData={fetchData}
       />
     </Modal>
   );

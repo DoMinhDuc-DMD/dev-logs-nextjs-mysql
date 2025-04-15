@@ -1,7 +1,7 @@
 "use client";
 
-import { Member, ProjectList, Task } from "@/app/main/projectList/page";
 import { Button } from "antd";
+import { Member, ProjectList, Task } from "../../main/projectList/page";
 
 interface ProjectCardProps {
   project: ProjectList;

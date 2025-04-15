@@ -67,6 +67,9 @@ export default function AccountSetting() {
 
       await axios.put("/api/accountSetting/", { ...info, userId });
       messageApi.info("Cập nhật thông tin tài khoản thành công!");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       console.log("Lỗi cập nhật thông tin tài khoản: ", error);
     }
@@ -76,7 +79,6 @@ export default function AccountSetting() {
     sessionStorage.removeItem("userId");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("isLogin");
-    sessionStorage.removeItem("userName");
     router.replace("/auth");
   };
 
