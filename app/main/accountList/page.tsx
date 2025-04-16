@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
-import AccountListSearch from "../../components/AccountList/AccountListSearch";
-import AccountListTable from "../../components/AccountList/AccountListTable";
+import AccountListSearch from "@/app/components/AccountList/AccountListSearch";
+import AccountListTable from "@/app/components/AccountList/AccountListTable";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
 import { notification } from "antd";
 
