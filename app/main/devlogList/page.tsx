@@ -9,7 +9,6 @@ import DevlogListModal from "../../components/DevlogList/DevlogListModal";
 import DevlogListTable from "../../components/DevlogList/DevlogListTable";
 import DevlogListSearch from "../../components/DevlogList/DevlogListSearch";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
-import { DatePicker } from "antd";
 
 export interface DevlogList {
   id: number;

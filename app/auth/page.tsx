@@ -11,7 +11,7 @@ export default function LoginForm() {
   const [api, contextHolder] = notification.useNotification();
   const [disabled, setDisabled] = useState(false);
 
-  const openNotification = (msg: string, des: string, stt: number) => {
+  const openNotification = (msg: string, des: string, stt: number) =>
     stt === 200
       ? api.success({
           message: msg,
@@ -33,7 +33,6 @@ export default function LoginForm() {
             borderRadius: 10,
           },
         });
-  };
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

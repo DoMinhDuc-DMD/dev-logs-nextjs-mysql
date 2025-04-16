@@ -14,7 +14,7 @@ export default function CreateAccount() {
   const [api, contextHolder] = notification.useNotification();
   const [disabled, setDisabled] = useState(false);
 
-  const openNotification = (msg: string, stt: number) => {
+  const openNotification = (msg: string, stt: number) =>
     stt === 201
       ? api.success({
           message: msg,
@@ -34,7 +34,6 @@ export default function CreateAccount() {
             borderRadius: 10,
           },
         });
-  };
 
   useAuthGuard(["Admin"]);
 

@@ -21,7 +21,7 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
   const [defaultTask, setDefaultTask] = useState<Task[]>([]);
   const [api, contextHolder] = notification.useNotification();
 
-  const openNotification = (msg: string, stt: number) => {
+  const openNotification = (msg: string, stt: number) =>
     stt === 201
       ? api.success({
           message: msg,
@@ -41,7 +41,6 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
             borderRadius: 10,
           },
         });
-  };
 
   useEffect(() => {
     setTask(tasks);

@@ -30,7 +30,7 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
   const [disabled, setDisabled] = useState(false);
   const [api, contextHolder] = notification.useNotification();
 
-  const openNotification = (msg: string, stt: number) => {
+  const openNotification = (msg: string, stt: number) =>
     stt === 201
       ? api.success({
           message: msg,
@@ -50,7 +50,6 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
             borderRadius: 10,
           },
         });
-  };
 
   useEffect(() => {
     setProject(projects);

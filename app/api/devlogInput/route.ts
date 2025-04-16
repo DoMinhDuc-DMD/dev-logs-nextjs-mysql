@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../ConnectPrisma/prisma";
 import { openDB } from "../sqlite/sqlitedb";
 
 export const dynamic = "force-dynamic";

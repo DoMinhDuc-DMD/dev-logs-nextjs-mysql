@@ -28,7 +28,7 @@ export default function Form() {
   const isButtonDisabled = !formData.date || !formData.hours || !formData.project || !formData.task;
   const [disabled, setDisabled] = useState(false);
   const [api, contextHolder] = notification.useNotification();
-  const openNotification = (msg: string, stt: number) => {
+  const openNotification = (msg: string, stt: number) =>
     stt === 201
       ? api.success({
           message: msg,
@@ -48,7 +48,6 @@ export default function Form() {
             borderRadius: 10,
           },
         });
-  };
 
   useAuthGuard(["Leader", "Developer"]);
 
