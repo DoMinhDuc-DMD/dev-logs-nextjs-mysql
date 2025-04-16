@@ -43,7 +43,7 @@ export default function LoginForm() {
     const password = formData.get("password");
 
     try {
-      const res = await axios.post("/api/auth", { email, password });
+      const res = await axios.post("/api/Auth", { email, password });
       const data = res.data;
       openNotification(data.message, data.description, data.status);
 

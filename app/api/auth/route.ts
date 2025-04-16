@@ -1,20 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../connectprisma/prisma";
+import { openDB } from "../sqlite/sqlitedb";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
+    const db = await openDB();
     const { email, password } = await req.json();
 
-    const user = await prisma.account.findFirst({
-      where:{
-        employee_work_email: email,
-      },
-      include:{
-        role: true,
-      },
-    });
+    const user = await db.get(
+      `SELECT account.*, role.role_name AS role FROM account, role WHERE account.role_id = role.id AND employee_work_email = ?`,
+      email
+    )
 
     if (!user || password !== user.employee_work_password) {
       return NextResponse.json(
@@ -31,12 +28,11 @@ export async function POST(req: NextRequest) {
         message: "Đăng nhập thành công",
         description: "Đăng nhập hệ thống Devlog Manage",
         userId: user.id,
-        userRole: user.role.role_name,
+        userRole: user.role,
         status: 200
       }
     );
   } catch (error) {
     console.error("Lỗi server:", error);
-    return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Task } from "@/app/main/projectList/page";
+import { Task } from "@/app/main/ProjectList/page";
 import { Button, Input, notification } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -94,7 +94,7 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
     }
 
     try {
-      const res = await axios.post("/api/projectList", { action: "updateTasks", updatedTasks, newProjectTasks });
+      const res = await axios.post("/api/ProjectList", { action: "updateTasks", updatedTasks, newProjectTasks });
       openNotification(res.data.message, res.data.status);
 
       setNewTask([]);

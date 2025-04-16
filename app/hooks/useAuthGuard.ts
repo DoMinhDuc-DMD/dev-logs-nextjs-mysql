@@ -11,12 +11,12 @@ function useAuthGuard(allowedRoles: Array<string>) {
     const userRole = sessionStorage.getItem("userRole");
 
     if (!userRole || !userId || !loggedIn) {
-      router.replace("/auth");
+      router.replace("/Auth");
       return;
     }
 
     if (!allowedRoles.includes(userRole)) {
-      router.replace("/main/notYourRight");
+      router.replace("/main/NotYourRight");
     }
   }, [allowedRoles, router]);
 }

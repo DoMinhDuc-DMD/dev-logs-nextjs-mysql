@@ -1,38 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../connectprisma/prisma";
+import { openDB } from "../sqlite/sqlitedb";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   try {
+    const db = await openDB();
     const searchParams = new URL(req.url).searchParams;
     const userId = Number(searchParams.get("id"));
 
-    const account = await prisma.account.findUnique({
-      where: {
-        id: userId,
-      },
-      include: {
-        role: {
-          select: {
-            role_name: true,
-          },
-        },
-      },
-    });
+    const account = await db.get(`SELECT account.*, role.role_name AS role FROM account, role WHERE account.role_id = role.id AND account.id = ?`, [userId])
+    
+    await db.close();
 
     if (!account) {
       return NextResponse.json({ message: "Không tìm thấy tài khoản" }, { status: 404 });
     }
 
-    const response = {
-      ...account,
-      role: account.role?.role_name
-    }
-
-    return NextResponse.json(response);
+    return NextResponse.json(account);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }

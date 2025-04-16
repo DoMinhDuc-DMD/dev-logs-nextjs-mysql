@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
-import AccountListSearch from "../../components/accountList/AccountListSearch";
-import AccountListTable from "../../components/accountList/AccountListTable";
+import AccountListSearch from "../../components/AccountList/AccountListSearch";
+import AccountListTable from "../../components/AccountList/AccountListTable";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
 import { notification } from "antd";
 
@@ -50,7 +50,7 @@ export default function AccountList() {
 
   const fetchAccount = async () => {
     try {
-      const res = await axios.get("/api/accountList");
+      const res = await axios.get("/api/AccountList");
       const data = res.data;
 
       setAccounts(data.account);
@@ -102,7 +102,7 @@ export default function AccountList() {
     }
 
     try {
-      const res = await axios.put("/api/accountList", {
+      const res = await axios.put("/api/AccountList", {
         id: editingId,
         email: editedData?.employee_work_email,
         password: editedData?.employee_work_password,

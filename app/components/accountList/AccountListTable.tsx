@@ -1,6 +1,6 @@
 "use client";
 
-import { Account, Option } from "@/app/main/accountList/page";
+import { Account, Option } from "@/app/main/AccountList/page";
 import { Button, Input, Table, Select } from "antd";
 import { useRouter } from "next/navigation";
 import { ChangeEvent } from "react";
@@ -89,7 +89,7 @@ export default function AccountListTable({
           </Button>
         ) : (
           <div className="flex gap-x-2 justify-center">
-            <Button onClick={() => router.push(`/main/accountDetail?id=${record.id}`)} type="primary">
+            <Button onClick={() => router.push(`/main/AccountDetail?id=${record.id}`)} type="primary">
               Detail
             </Button>
             <Button onClick={() => handleAdjust(record)} variant="solid" color="cyan">

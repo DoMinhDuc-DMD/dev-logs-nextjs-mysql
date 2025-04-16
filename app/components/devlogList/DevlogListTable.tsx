@@ -1,6 +1,6 @@
 "use client";
 
-import { DevlogList } from "@/app/main/devlogList/page";
+import { DevlogList } from "@/app/main/DevlogList/page";
 import { Button, Table } from "antd";
 
 interface DevlogListTableProps {

@@ -41,7 +41,7 @@ export default function CreateAccount() {
   useEffect(() => {
     async function fetchRoles() {
       try {
-        const res = await axios.get("/api/accountCreate");
+        const res = await axios.get("/api/AccountCreate");
         const data = res.data;
 
         setOptions(data.roles);
@@ -60,13 +60,13 @@ export default function CreateAccount() {
     const password = formData.get("password");
 
     try {
-      const res = await axios.post("/api/accountCreate", { email, password, role: selectedRole });
+      const res = await axios.post("/api/AccountCreate", { email, password, role: selectedRole });
       openNotification(res.data.message, res.data.status);
 
       if (res.data.status === 201) {
         setDisabled(true);
         setTimeout(() => {
-          router.push("/main/accountList");
+          router.push("/main/AccountList");
         }, 1000);
       }
     } catch (error) {

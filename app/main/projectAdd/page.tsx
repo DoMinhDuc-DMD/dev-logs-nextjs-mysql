@@ -4,12 +4,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
-import ProjectAdd from "../../components/projectAdd/ProjectAdd";
+import ProjectAdd from "../../components/ProjectAdd/ProjectAdd";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
 
 export interface Dev {
   id: number;
   employee_name: string;
+  employee_work_email: string;
 }
 
 export default function AddProject() {
@@ -32,7 +33,7 @@ export default function AddProject() {
 
     async function fetchData() {
       try {
-        const res = await axios.get<Dev[]>("/api/projectAdd");
+        const res = await axios.get<Dev[]>("/api/ProjectAdd");
         setDev(Array.isArray(res.data) ? res.data : []);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);

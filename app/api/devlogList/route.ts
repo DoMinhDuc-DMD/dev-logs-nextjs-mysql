@@ -1,56 +1,26 @@
 import { NextResponse } from "next/server";
-import prisma from "../connectprisma/prisma";
+import { openDB } from "../sqlite/sqlitedb";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const devlogs = await prisma.devlog.findMany({
-      orderBy: [
-        {
-          id: 'desc'
-        }
-      ],
-      include: {
-        account: {
-          select: {
-            employee_work_email: true,
-            employee_code: true,
-          }
-        },
-        project:{
-          select: {
-            project_name: true,
-          }
-        },
-        task: {
-          select: {
-            task_name: true
-          }
-        }
-      }
-    })
+    const db = await openDB();
+    const devlogs = await db.all(`SELECT devlog.*, account.employee_work_email, account.employee_code, 
+                                  project.project_name, task.task_name FROM devlog
+                                    INNER JOIN account ON account.id = devlog.account_id
+                                    INNER JOIN project ON project.id = devlog.project_id
+                                    INNER JOIN task ON task.id = devlog.task_id
+                                    GROUP BY devlog.date, account.id, project.id, task.id
+                                    ORDER BY devlog.id DESC`
+                                )
 
-    const devlogData = devlogs.map((data) => ({
-      id: data.id,
-      hours: data.hours,
-      overtime: data.overtime,
-      date: new Date(data.date),
-      note: data.note,
-      account_id: data.account_id,
-      employee_code: data.account.employee_code,
-      employee_work_email: data.account.employee_work_email,
-      project_id: data.project_id,
-      project_name: data.project.project_name,
-      task_id: data.task_id,
-      task_name: data.task.task_name
-    }))
+    const leaderProjects = await db.all(`SELECT * FROM member_project`);
 
-    const leaderProjects = await prisma.member_project.findMany();
+    await db.close();
 
-    return NextResponse.json({ devlogData, leaderProjects });
+    return NextResponse.json({ devlogs, leaderProjects });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }

@@ -57,12 +57,10 @@ export default function Form() {
 
     async function fetchProjectTask() {
       try {
-        const res = await axios.get("/api/devlogInput");
+        const res = await axios.get("/api/DevlogInput");
         const data = await res.data;
 
-        const filteredProject = data.formattedProject.filter((project: { accountId: number[] }) =>
-          project.accountId.includes(Number(userId))
-        );
+        const filteredProject = data.formattedProject.filter((project) => project.accountId === Number(userId));
 
         setProject(filteredProject);
         setTask(data.formattedTask);
@@ -122,7 +120,7 @@ export default function Form() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const userId = sessionStorage.getItem("userId");
-    const res = await axios.post("/api/devlogInput", { ...formData, userId });
+    const res = await axios.post("/api/DevlogInput", { ...formData, userId });
 
     openNotification(res.data.message, res.data.status);
 

@@ -5,7 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
-import { Dev } from "@/app/main/projectAdd/page";
+import { Dev } from "@/app/main/ProjectAdd/page";
 
 interface ProjectAdd {
   devs: Dev[];
@@ -58,7 +58,7 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
 
   const handleAddProject = async () => {
     try {
-      const res = await axios.post("/api/projectAdd", {
+      const res = await axios.post("/api/ProjectAdd", {
         project,
         tasks: tasks.filter((t) => t.task_name.trim() !== ""),
       });
@@ -159,10 +159,12 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
                 <label htmlFor="select_dev">Thành viên tham gia:</label>
                 {devs.length > 0 && (
                   <Select
+                    optionFilterProp="label"
+                    listHeight={200}
                     style={{ width: "50%", height: 40 }}
                     placeholder="Select member"
                     mode="multiple"
-                    options={devs.map((devs) => ({ value: devs.id, label: devs.employee_name }))}
+                    options={devs.map((devs) => ({ value: devs.id, label: devs.employee_name || devs.employee_work_email }))}
                     onChange={handleSelectChange}
                     disabled={disabled}
                   />

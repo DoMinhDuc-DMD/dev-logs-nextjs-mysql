@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
-import DevlogListModal from "../../components/devlogList/DevlogListModal";
-import DevlogListTable from "../../components/devlogList/DevlogListTable";
-import DevlogListSearch from "../../components/devlogList/DevlogListSearch";
+import DevlogListModal from "../../components/DevlogList/DevlogListModal";
+import DevlogListTable from "../../components/DevlogList/DevlogListTable";
+import DevlogListSearch from "../../components/DevlogList/DevlogListSearch";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
 import { DatePicker } from "antd";
 
@@ -32,7 +32,7 @@ export default function DevlogList() {
   const [originalData, setOriginalData] = useState([]);
   const [selectedDevlog, setSelectedDevlog] = useState<DevlogList | null>(null);
   const [searchInput, setSearchInput] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [selectedDate, setSelectedDate] = useState(dayjs(new Date()).format("YYYY-MM-DD"));
 
   const openModal = (devlog: DevlogList) => {
     setSelectedDevlog(devlog);
@@ -48,10 +48,10 @@ export default function DevlogList() {
 
     const fetchData = async () => {
       try {
-        const res = await axios.get("/api/devlogList");
+        const res = await axios.get("/api/DevlogList");
         const data = await res.data;
 
-        const filteredDevlogs = data.devlogData.filter(
+        const filteredDevlogs = data.devlogs.filter(
           (item: DevlogList) =>
             dayjs(item.date).format("YYYY-MM-DD") === selectedDate &&
             data.leaderProjects.some(
@@ -68,8 +68,9 @@ export default function DevlogList() {
     fetchData();
   }, [router, selectedDate]);
 
-  const handleSelectDate = (date: dayjs.Dayjs) => {
-    setSelectedDate(date ? dayjs(date).format("YYYY-MM-DD") : dayjs(new Date()).format("YYYY-MM-DD"));
+  const handleSelectDate = (date: dayjs.Dayjs | null) => {
+    setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
+    setSearchInput("");
   };
 
   const handleSearch = (value: string) => {
@@ -95,21 +96,21 @@ export default function DevlogList() {
   };
   const handleReset = () => {
     setSearchInput("");
+    setSelectedDate(dayjs(new Date()).format("YYYY-MM-DD"));
     setData(originalData);
   };
 
   return (
     <div className="p-5">
       <div className="w-full rounded px-5 bg-white">
-        <div className="w-full flex py-5 justify-between">
-          <DatePicker onChange={handleSelectDate} />
-          <DevlogListSearch
-            searchInput={searchInput}
-            handleSearch={handleSearch}
-            handleSearchChange={handleSearchChange}
-            handleReset={handleReset}
-          />
-        </div>
+        <DevlogListSearch
+          searchInput={searchInput}
+          selectedDate={selectedDate}
+          handleSelectDate={handleSelectDate}
+          handleSearch={handleSearch}
+          handleSearchChange={handleSearchChange}
+          handleReset={handleReset}
+        />
         <DevlogListTable data={data} openModal={openModal} />
         <DevlogListModal selectedDevlog={selectedDevlog} closeModal={closeModal} />
       </div>

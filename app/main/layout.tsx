@@ -19,11 +19,17 @@ interface Notification {
   date: string;
 }
 
+interface UserName {
+  id: number;
+  employee_name: string;
+  employee_work_email: string;
+}
+
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [userName, setUserName] = useState<string[]>([]);
+  const [userName, setUserName] = useState<UserName[]>([]);
   const [notification, setNotification] = useState<Notification[]>([]);
 
   const handleToggle = () => {
@@ -41,28 +47,31 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       setUserId(userId);
 
       if (!loggedIn) {
-        router.replace("/auth");
+        router.replace("/Auth");
       } else {
         setRole(userRole);
       }
     }
 
     async function fetchData() {
-      const res = await axios.get("/api/layout");
+      const res = await axios.get("/api/Layout");
 
       setUserName(res.data.accounts);
-      setNotification(res.data.noticeData);
+      setNotification(res.data.notices);
     }
     fetchData();
   }, [router]);
 
-  const filteredAccount = userName.filter((item: any) => item.id === Number(userId)).map((t: any) => t.employee_name);
+  const filteredAccount = userName
+    .filter((acc: UserName) => acc.id === Number(userId))
+    .map((acc: UserName) => acc.employee_name || acc.employee_work_email);
+
   const filteredNotice = notification.filter((item) => item.employee_id === Number(userId));
 
   const items: MenuProps["items"] = filteredNotice.map((item) => ({
     key: item.id,
     label: (
-      <Link href={"/main/devlogInput"}>
+      <Link href={"/main/DevlogInput"}>
         <div className="w-[300px]">
           <div>{dayjs(new Date(item.date)).format("HH:mm, DD/MM/YYYY")}</div>
           <div className="text-red-500">
@@ -83,41 +92,41 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             </Link>
             {/* Admin only */}
             {role === "Admin" && (
-              <Link href="/main/accountCreate">
+              <Link href="/main/AccountCreate">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Tạo tài khoản</li>
               </Link>
             )}
             {/* Admin and HR */}
             {(role === "Admin" || role === "HR") && (
-              <Link href="/main/accountList">
+              <Link href="/main/AccountList">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách tài khoản</li>
               </Link>
             )}
             {/* Admin and HR and Leader */}
             {role !== "Developer" && (
-              <Link href="/main/devlogList">
+              <Link href="/main/DevlogList">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách dev nhập devlog</li>
               </Link>
             )}
             {/* Leader only */}
             {role === "Leader" && (
-              <Link href="/main/projectAdd">
+              <Link href="/main/ProjectAdd">
                 <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Tạo mới dự án</li>
               </Link>
             )}
             {/* Leader and Dev */}
             {(role === "Leader" || role === "Developer") && (
               <>
-                <Link href="/main/projectList">
+                <Link href="/main/ProjectList">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Danh sách dự án</li>
                 </Link>
-                <Link href="/main/devlogInput">
+                <Link href="/main/DevlogInput">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Nhập devlogs</li>
                 </Link>
-                <Link href="/main/devlogHistory">
+                <Link href="/main/DevlogHistory">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Lịch sử nhập devlog</li>
                 </Link>
-                <Link href="/main/dashboard">
+                <Link href="/main/Dashboard">
                   <li className="py-2 pl-3 cursor-pointer hover:bg-gray-400">Thống kê devlog</li>
                 </Link>
               </>
@@ -143,7 +152,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 </Badge>
               </div>
             </Dropdown>
-            <Link href="/main/accountSetting" className="w-[150px] text-center p-3 cursor-pointer hover:bg-gray-400">
+            <Link href="/main/AccountSetting" className="w-[150px] text-center p-3 cursor-pointer hover:bg-gray-400">
               {filteredAccount}
             </Link>
           </div>

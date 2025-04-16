@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Member, ProjectList, Task } from "../../main/projectList/page";
+import { Member, ProjectList, Task } from "../../main/ProjectList/page";
 import ProjectCard from "./ProjectCard";
 import ProjectModal from "./ProjectModal";
 import DevlogCheckModal from "./DevlogCheckModal";

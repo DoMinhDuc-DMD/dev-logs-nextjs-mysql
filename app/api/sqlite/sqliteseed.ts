@@ -1,4 +1,5 @@
-import { openDB } from "./sqlitedb.ts";
+import { openDB } from "./sqlitedb"
+
 
 async function setup(){
     const db = await openDB();

@@ -44,10 +44,10 @@ export default function AccountSetting() {
       try {
         const userId = sessionStorage.getItem("userId");
         if (!userId) {
-          router.replace("/auth");
+          router.replace("/Auth");
           return;
         }
-        const res = await axios.get("/api/accountSetting");
+        const res = await axios.get("/api/AccountSetting");
 
         const data = res.data.account.filter((item: { id: number }) => item.id === Number(userId));
 
@@ -78,11 +78,11 @@ export default function AccountSetting() {
     try {
       const userId = sessionStorage.getItem("userId");
       if (!userId) {
-        router.replace("/auth");
+        router.replace("/Auth");
         return;
       }
 
-      const res = await axios.put("/api/accountSetting/", { ...info, userId });
+      const res = await axios.put("/api/AccountSetting/", { ...info, userId });
       openNotification(res.data.message);
 
       setTimeout(() => {
@@ -97,7 +97,7 @@ export default function AccountSetting() {
     sessionStorage.removeItem("userId");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("isLogin");
-    router.replace("/auth");
+    router.replace("/Auth");
   };
 
   return (

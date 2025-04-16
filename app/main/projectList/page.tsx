@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
-import ProjectListComponent from "../../components/projectList/ProjectList";
+import ProjectListComponent from "../../components/ProjectList/ProjectList";
 import useAuthGuard from "../../hooks/useAuthGuard";
 
 export interface ProjectList {
@@ -44,8 +44,8 @@ export default function ProjectList() {
 
   const fetchData = useCallback(async (currentUserId: string) => {
     try {
-      const res = await axios.get("/api/projectList");
-      const data = res.data ?? {};
+      const res = await axios.get("/api/ProjectList");
+      const data = res.data;
 
       const filteredProject = data.projects.filter((project: ProjectList) =>
         data.members.some((member: Member) => member.account_id === Number(currentUserId) && member.project_id === project.id)

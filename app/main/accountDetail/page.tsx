@@ -31,7 +31,7 @@ export default function AccountDetail() {
 
     async function fetchInfo() {
       try {
-        const res = await axios.get(`/api/accountDetail?id=${userId}`);
+        const res = await axios.get(`/api/AccountDetail?id=${userId}`);
 
         setInfo(res.data);
       } catch (error) {
@@ -54,7 +54,11 @@ export default function AccountDetail() {
             <label htmlFor="employee_name">Họ và tên:</label>
             <Input name="employee_name" value={info?.employee_name || ""} readOnly />
             <label htmlFor="employee_birthday">Ngày sinh:</label>
-            <Input name="employee_birthday" value={dayjs(info?.employee_birthday).format("DD/MM/YYYY")} readOnly />
+            <Input
+              name="employee_birthday"
+              value={info?.employee_birthday ? dayjs(info?.employee_birthday).format("DD/MM/YYYY") : ""}
+              readOnly
+            />
             <label htmlFor="employee_bank_account">Số tài khoản TCB:</label>
             <Input name="employee_bank_account" value={info?.employee_bank_account || ""} readOnly />
             <label htmlFor="employee_private_email">Email cá nhân:</label>
