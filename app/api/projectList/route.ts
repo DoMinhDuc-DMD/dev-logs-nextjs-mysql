@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
 import prisma from "../connectprisma/prisma";
-import { match } from "assert";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +32,7 @@ export async function GET() {
         project_id: true,
         date: true,
       },
-    })
+    });
 
     const members = memberProjects.map((mp)=>{
       const matchedDevlog = devlogs.find((d) => d.account_id === mp.account_id && d.project_id === mp.project_id)

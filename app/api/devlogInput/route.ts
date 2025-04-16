@@ -3,7 +3,6 @@ import prisma from "../connectprisma/prisma";
 
 export const dynamic = "force-dynamic";
 
-
 export async function GET() {
   try {
     const projectData = await prisma.project.findMany({

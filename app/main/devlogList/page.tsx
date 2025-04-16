@@ -9,6 +9,7 @@ import DevlogListModal from "../../components/devlogList/DevlogListModal";
 import DevlogListTable from "../../components/devlogList/DevlogListTable";
 import DevlogListSearch from "../../components/devlogList/DevlogListSearch";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
+import { DatePicker } from "antd";
 
 export interface DevlogList {
   id: number;
@@ -29,9 +30,9 @@ export default function DevlogList() {
   const router = useRouter();
   const [data, setData] = useState<DevlogList[]>([]);
   const [originalData, setOriginalData] = useState([]);
-  const date = dayjs(new Date()).format("DD-MM-YYYY");
   const [selectedDevlog, setSelectedDevlog] = useState<DevlogList | null>(null);
   const [searchInput, setSearchInput] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
 
   const openModal = (devlog: DevlogList) => {
     setSelectedDevlog(devlog);
@@ -52,7 +53,7 @@ export default function DevlogList() {
 
         const filteredDevlogs = data.devlogData.filter(
           (item: DevlogList) =>
-            dayjs(item.date).format("DD-MM-YYYY") === date &&
+            dayjs(item.date).format("YYYY-MM-DD") === selectedDate &&
             data.leaderProjects.some(
               (project: DevlogList) => project.account_id === Number(userId) && project.project_id === item.project_id
             )
@@ -65,7 +66,11 @@ export default function DevlogList() {
       }
     };
     fetchData();
-  }, [router, date]);
+  }, [router, selectedDate]);
+
+  const handleSelectDate = (date: dayjs.Dayjs) => {
+    setSelectedDate(date ? dayjs(date).format("YYYY-MM-DD") : dayjs(new Date()).format("YYYY-MM-DD"));
+  };
 
   const handleSearch = (value: string) => {
     if (!value) {
@@ -96,12 +101,15 @@ export default function DevlogList() {
   return (
     <div className="p-5">
       <div className="w-full rounded px-5 bg-white">
-        <DevlogListSearch
-          searchInput={searchInput}
-          handleSearch={handleSearch}
-          handleSearchChange={handleSearchChange}
-          handleReset={handleReset}
-        />
+        <div className="w-full flex py-5 justify-between">
+          <DatePicker onChange={handleSelectDate} />
+          <DevlogListSearch
+            searchInput={searchInput}
+            handleSearch={handleSearch}
+            handleSearchChange={handleSearchChange}
+            handleReset={handleReset}
+          />
+        </div>
         <DevlogListTable data={data} openModal={openModal} />
         <DevlogListModal selectedDevlog={selectedDevlog} closeModal={closeModal} />
       </div>

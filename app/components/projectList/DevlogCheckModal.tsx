@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, message, Modal, notification, Table } from "antd";
+import { Button, Modal, notification, Table } from "antd";
 import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
 import { useState } from "react";
 import axios from "axios";
