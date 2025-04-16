@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
-import useAuthGuard from "@/app/hooks/useAuthGuard";
+import useAuthGuard from "@/hooks/useAuthGuard";
 
 export default function AccountDetail() {
   const router = useRouter();

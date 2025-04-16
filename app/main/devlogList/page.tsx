@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
-import DevlogListModal from "@/app/components/DevlogList/DevlogListModal";
-import DevlogListTable from "@/app/components/DevlogList/DevlogListTable";
-import DevlogListSearch from "@/app/components/DevlogList/DevlogListSearch";
-import useAuthGuard from "@/app/hooks/useAuthGuard";
+import useAuthGuard from "@/hooks/useAuthGuard";
+import DevlogListModal from "@/components/DevlogList/DevlogListModal";
+import DevlogListSearch from "@/components/DevlogList/DevlogListSearch";
+import DevlogListTable from "@/components/DevlogList/DevlogListTable";
 
 export interface DevlogList {
   id: number;

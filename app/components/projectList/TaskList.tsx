@@ -1,6 +1,6 @@
 "use client";
 
-import { Task } from "@/app/main/ProjectList/page";
+import { Task } from "@/main/ProjectList/page";
 import { Button, Input, notification } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import axios from "axios";
-import useAuthGuard from "@/app/hooks/useAuthGuard";
+import useAuthGuard from "@/hooks/useAuthGuard";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 

@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
-import useAuthGuard from "@/app/hooks/useAuthGuard";
+import useAuthGuard from "@/hooks/useAuthGuard";
 
 export default function Form() {
   const router = useRouter();

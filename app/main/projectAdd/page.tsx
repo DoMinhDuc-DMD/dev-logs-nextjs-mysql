@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
-import ProjectAdd from "../../components/ProjectAdd/ProjectAdd";
-import useAuthGuard from "@/app/hooks/useAuthGuard";
+import ProjectAdd from "@/components/ProjectAdd/ProjectAdd";
+import useAuthGuard from "@/hooks/useAuthGuard";
 
 export interface Dev {
   id: number;
