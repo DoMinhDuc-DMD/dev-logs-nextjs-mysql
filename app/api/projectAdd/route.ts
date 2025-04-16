@@ -37,6 +37,15 @@ export async function POST(req: NextRequest) {
   try {
     const { project, tasks } = await req.json();
 
+    const existedProject = await prisma.project.findFirst({
+      where: {
+        project_name: project.project_name
+      }
+    });
+    if (existedProject) {
+      return NextResponse.json({message: "Tên dự án đã tồn tại!", status: 400});
+    }
+
     const projectResult = await prisma.project.create({
       data: {
         project_name: project.project_name,
@@ -67,7 +76,7 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    return NextResponse.json({ message: "Thêm dự án thành công" }, { status: 200 });
+    return NextResponse.json({ message: "Thêm dự án thành công!", status: 201 });
   } catch (error) {
     console.error("Lỗi khi lưu dữ liệu:", error);
     return NextResponse.json({ message: "Lỗi server khi lưu dữ liệu" }, { status: 500 });

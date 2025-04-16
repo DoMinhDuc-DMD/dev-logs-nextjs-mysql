@@ -7,6 +7,7 @@ import axios from "axios";
 import AccountListSearch from "../../components/accountList/AccountListSearch";
 import AccountListTable from "../../components/accountList/AccountListTable";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
+import { notification } from "antd";
 
 export interface Account {
   id: number;
@@ -33,6 +34,19 @@ export default function AccountList() {
     role: string;
   } | null>(null);
   const [options, setOptions] = useState<Option[]>([]);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (msg: string) => {
+    api.success({
+      message: msg,
+      placement: "topRight",
+      duration: 2,
+      style: {
+        width: 400,
+        borderRadius: 10,
+      },
+    });
+  };
 
   const fetchAccount = async () => {
     try {
@@ -72,15 +86,32 @@ export default function AccountList() {
 
   const handleSave = async () => {
     if (!editingId || !editedData) return;
+
+    const original = originalData.find((data) => data.id === editingId);
+    if (!original) return;
+
+    const isChanged =
+      original.employee_work_email !== editedData.employee_work_email ||
+      original.employee_work_password !== editedData.employee_work_password ||
+      original.role !== editedData.role;
+
+    if (!isChanged) {
+      setEditingId(null);
+      setEditedData(null);
+      return;
+    }
+
     try {
-      await axios.put("/api/accountList", {
+      const res = await axios.put("/api/accountList", {
         id: editingId,
         email: editedData?.employee_work_email,
         password: editedData?.employee_work_password,
         role: editedData?.role,
       });
 
-      await fetchAccount();
+      openNotification(res.data.message);
+
+      fetchAccount();
       setEditingId(null);
       setEditedData(null);
     } catch (error) {
@@ -113,25 +144,28 @@ export default function AccountList() {
   };
 
   return (
-    <div className="p-5">
-      <div className="w-full rounded px-5 bg-white">
-        <AccountListSearch
-          searchInput={searchInput!}
-          handleReset={handleReset}
-          handleSearch={handleSearch}
-          handleSearchChange={handleSearchChange}
-        />
-        <AccountListTable
-          accounts={accounts}
-          options={options}
-          editingId={editingId}
-          handleAdjust={handleAdjust}
-          handleChange={handleChange}
-          handleSelectChange={handleSelectChange}
-          handleSave={handleSave}
-          editedData={editedData}
-        />
+    <>
+      {contextHolder}
+      <div className="p-5">
+        <div className="w-full rounded px-5 bg-white">
+          <AccountListSearch
+            searchInput={searchInput!}
+            handleReset={handleReset}
+            handleSearch={handleSearch}
+            handleSearchChange={handleSearchChange}
+          />
+          <AccountListTable
+            accounts={accounts}
+            options={options}
+            editingId={editingId}
+            handleAdjust={handleAdjust}
+            handleChange={handleChange}
+            handleSelectChange={handleSelectChange}
+            handleSave={handleSave}
+            editedData={editedData}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

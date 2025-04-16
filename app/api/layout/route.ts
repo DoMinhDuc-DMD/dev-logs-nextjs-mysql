@@ -7,8 +7,8 @@ export async function GET() {
   try {
     const accounts = await prisma.account.findMany({
       select:{
-        id:true,
-        employee_name:true,
+        id: true,
+        employee_name: true,
       }
     });
     const notices = await prisma.notice_devlog.findMany({

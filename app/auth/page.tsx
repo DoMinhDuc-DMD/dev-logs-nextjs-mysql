@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Input } from "antd";
+import { Button, Input, notification } from "antd";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import axios from "axios";
@@ -8,7 +8,32 @@ import "@ant-design/v5-patch-for-react-19";
 
 export default function LoginForm() {
   const router = useRouter();
-  const [message, setMessage] = useState("");
+  const [api, contextHolder] = notification.useNotification();
+  const [disabled, setDisabled] = useState(false);
+
+  const openNotification = (msg: string, des: string, stt: number) => {
+    stt === 200
+      ? api.success({
+          message: msg,
+          description: des,
+          placement: "topRight",
+          duration: 2,
+          style: {
+            width: 400,
+            borderRadius: 10,
+          },
+        })
+      : api.error({
+          message: msg,
+          description: des,
+          placement: "topRight",
+          duration: 2,
+          style: {
+            width: 400,
+            borderRadius: 10,
+          },
+        });
+  };
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -20,37 +45,42 @@ export default function LoginForm() {
     try {
       const res = await axios.post("/api/auth", { email, password });
       const data = res.data;
-      setMessage(data.message);
+      openNotification(data.message, data.description, data.status);
 
-      sessionStorage.setItem("userId", data.userId);
-      sessionStorage.setItem("isLogin", "true");
-      sessionStorage.setItem("userRole", data.userRole);
+      if (data.status === 200) {
+        setDisabled(true);
+        sessionStorage.setItem("userId", data.userId);
+        sessionStorage.setItem("isLogin", "true");
+        sessionStorage.setItem("userRole", data.userRole);
 
-      setTimeout(() => {
-        router.replace("/main");
-      }, 1000);
+        setTimeout(() => {
+          router.replace("/main");
+        }, 1000);
+      }
     } catch (error) {
       console.error(error);
     }
   }
 
   return (
-    <form className="w-130 my-10 mx-auto rounded bg-white p-5 shadow-lg w-[400px]" onSubmit={handleSubmit}>
-      <h2 className="text-center text-xl font-semibold mb-5">Login System</h2>
-      <div className="flex flex-col gap-y-4">
-        <label className="block text-left" htmlFor="email">
-          Account
-        </label>
-        <Input style={{ padding: 10 }} placeholder="Enter email" type="email" name="email" />
-        <label className="block text-left" htmlFor="password">
-          Password
-        </label>
-        <Input style={{ padding: 10 }} placeholder="Enter password" type="password" name="password" />
-        {message && <p className="text-center text-red-500">{message}</p>}
-        <Button className="w-30 py-2 mx-auto" type="primary" htmlType="submit">
-          Login
-        </Button>
-      </div>
-    </form>
+    <>
+      {contextHolder}
+      <form className="w-130 mt-30 mx-auto rounded bg-white p-5 shadow-lg w-[400px]" onSubmit={handleSubmit}>
+        <h2 className="text-center text-xl font-semibold mb-5">Login System</h2>
+        <div className="flex flex-col gap-y-4">
+          <label className="block text-left" htmlFor="email">
+            Account
+          </label>
+          <Input style={{ padding: 10 }} placeholder="Enter email" type="email" name="email" disabled={disabled} />
+          <label className="block text-left" htmlFor="password">
+            Password
+          </label>
+          <Input style={{ padding: 10 }} placeholder="Enter password" type="password" name="password" disabled={disabled} />
+          <Button className="w-30 py-2 mx-auto" type="primary" htmlType="submit" disabled={disabled}>
+            Login
+          </Button>
+        </div>
+      </form>
+    </>
   );
 }

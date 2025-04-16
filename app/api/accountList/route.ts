@@ -70,7 +70,7 @@ export async function PUT(req: NextRequest) {
       }
     })
 
-    return NextResponse.json({ message: "Cập nhật thành công" }, { status: 200 });
+    return NextResponse.json({ message: "Cập nhật thành công!", status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });

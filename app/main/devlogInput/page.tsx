@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { DatePicker, Button, Checkbox, CheckboxChangeEvent, InputNumber, message, Select } from "antd";
+import { DatePicker, Button, Checkbox, CheckboxChangeEvent, InputNumber, message, Select, notification } from "antd";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import "@ant-design/v5-patch-for-react-19";
@@ -26,7 +26,29 @@ export default function Form() {
     task: 0,
   });
   const isButtonDisabled = !formData.date || !formData.hours || !formData.project || !formData.task;
-  const [messageApi, contextHolder] = message.useMessage();
+  const [disabled, setDisabled] = useState(false);
+  const [api, contextHolder] = notification.useNotification();
+  const openNotification = (msg: string, stt: number) => {
+    stt === 201
+      ? api.success({
+          message: msg,
+          placement: "topRight",
+          duration: 2,
+          style: {
+            width: 400,
+            borderRadius: 10,
+          },
+        })
+      : api.error({
+          message: msg,
+          placement: "topRight",
+          duration: 2,
+          style: {
+            width: 400,
+            borderRadius: 10,
+          },
+        });
+  };
 
   useAuthGuard(["Leader", "Developer"]);
 
@@ -101,12 +123,13 @@ export default function Form() {
     e.preventDefault();
     const userId = sessionStorage.getItem("userId");
     const res = await axios.post("/api/devlogInput", { ...formData, userId });
-    const data = await res.data;
-    messageApi.info(data.message);
 
+    openNotification(res.data.message, res.data.status);
+
+    setDisabled(true);
     setTimeout(() => {
       window.location.reload();
-    }, 3000);
+    }, 2000);
   };
 
   return (
@@ -123,6 +146,7 @@ export default function Form() {
                 optionFilterProp="label"
                 options={project}
                 onChange={handleSelectProject}
+                disabled={disabled}
               />
               <Select
                 showSearch
@@ -131,17 +155,17 @@ export default function Form() {
                 optionFilterProp="label"
                 options={filteredTask}
                 onChange={handleSelectTask}
-                disabled={!selectedProject}
+                disabled={!selectedProject || disabled}
               />
               <div className="flex items-center gap-x-6">
                 <label htmlFor="hours">Số giờ</label>
-                <InputNumber value={formData.hours} min={1} max={24} onChange={handleInputNumberChange} type="number" />
+                <InputNumber value={formData.hours} min={1} max={24} onChange={handleInputNumberChange} type="number" disabled={disabled} />
                 <label htmlFor="overtime">OT</label>
-                <Checkbox name="overtime" id="overtime" onChange={handleCheckBoxChange}></Checkbox>
+                <Checkbox name="overtime" id="overtime" onChange={handleCheckBoxChange} disabled={disabled}></Checkbox>
               </div>
             </div>
-            <TextArea name="note" rows={4} placeholder="Ghi chú" onChange={handleTextAreaChange} />
-            <Button onClick={handleSubmit} type="primary" className="mt-5" disabled={isButtonDisabled}>
+            <TextArea name="note" rows={4} placeholder="Ghi chú" onChange={handleTextAreaChange} disabled={disabled} />
+            <Button onClick={handleSubmit} type="primary" className="mt-5" disabled={isButtonDisabled || disabled}>
               Add devlog
             </Button>
           </div>

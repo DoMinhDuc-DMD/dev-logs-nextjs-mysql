@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, DatePicker, Input, message } from "antd";
+import { Button, DatePicker, Input, notification } from "antd";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -23,7 +23,21 @@ export default function AccountSetting() {
     employee_license_plate: "",
     role: "",
   });
-  const [messageApi, contextHolder] = message.useMessage();
+  const [originalInfo, setOriginalInfo] = useState<typeof info | null>(null);
+
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (msg: string) => {
+    api.success({
+      message: msg,
+      placement: "topRight",
+      duration: 2,
+      style: {
+        width: 400,
+        borderRadius: 10,
+      },
+    });
+  };
 
   useEffect(() => {
     async function fetchInfo() {
@@ -38,6 +52,7 @@ export default function AccountSetting() {
         const data = res.data.account.filter((item: { id: number }) => item.id === Number(userId));
 
         setInfo(data[0]);
+        setOriginalInfo(data[0]);
       } catch (error) {
         console.log("Lỗi lấy thông tin tài khoản: ", error);
       }
@@ -57,6 +72,8 @@ export default function AccountSetting() {
     }));
   };
 
+  const isInfoChanged = JSON.stringify(info) !== JSON.stringify(originalInfo);
+
   const handleUpdate = async () => {
     try {
       const userId = sessionStorage.getItem("userId");
@@ -65,8 +82,9 @@ export default function AccountSetting() {
         return;
       }
 
-      await axios.put("/api/accountSetting/", { ...info, userId });
-      messageApi.info("Cập nhật thông tin tài khoản thành công!");
+      const res = await axios.put("/api/accountSetting/", { ...info, userId });
+      openNotification(res.data.message);
+
       setTimeout(() => {
         window.location.reload();
       }, 1000);
@@ -123,7 +141,7 @@ export default function AccountSetting() {
             </div>
           </div>
           <div className="flex gap-x-3 justify-center w-full">
-            <Button onClick={handleUpdate} type="primary">
+            <Button onClick={handleUpdate} type="primary" disabled={!isInfoChanged}>
               Update
             </Button>
             <Button onClick={handleLogout} color="danger" variant="solid">

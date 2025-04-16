@@ -40,11 +40,11 @@ export default function AccountDetail() {
     }
     fetchInfo();
   }, [router]);
-  console.log(info);
+
   return (
     <div className="p-5">
       <div className="rounded bg-white text-center py-5">
-        <p>Account Detail of {info?.employee_name}</p>
+        <p>Account Detail of {info.employee_name || info.employee_work_email}</p>
         <div className="w-[60%] mx-auto grid grid-cols-2 p-5 text-left gap-10">
           <div>
             <label htmlFor="employee_id">Mã nhân viên:</label>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, DatePicker, Input, message, Select } from "antd";
+import { Button, DatePicker, Input, message, notification, Select } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
@@ -27,7 +27,30 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
     members: [] as number[],
   });
   const [tasks, setTasks] = useState<{ task_name: string; task_name_index: number }[]>([{ task_name: "", task_name_index: 0 }]);
-  const [messageApi, contextHolder] = message.useMessage();
+  const [disabled, setDisabled] = useState(false);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (msg: string, stt: number) => {
+    stt === 201
+      ? api.success({
+          message: msg,
+          placement: "topRight",
+          duration: 2,
+          style: {
+            width: 400,
+            borderRadius: 10,
+          },
+        })
+      : api.error({
+          message: msg,
+          placement: "topRight",
+          duration: 2,
+          style: {
+            width: 400,
+            borderRadius: 10,
+          },
+        });
+  };
 
   useEffect(() => {
     setProject(projects);
@@ -35,16 +58,19 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
 
   const handleAddProject = async () => {
     try {
-      await axios.post("/api/projectAdd", {
+      const res = await axios.post("/api/projectAdd", {
         project,
         tasks: tasks.filter((t) => t.task_name.trim() !== ""),
       });
 
-      messageApi.info("Thêm dự án thành công!");
-      window.location.reload();
+      openNotification(res.data.message, res.data.status);
+
+      setDisabled(true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error("Lỗi thêm dự án:", error);
-      messageApi.info("Đã xảy ra lỗi khi thêm dự án. Vui lòng kiểm tra lại.");
     }
   };
 
@@ -98,10 +124,10 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
           <h1 className="text-2xl font-bold">Thêm dự án</h1>
           <div className="flex justify-between items-center my-3">
             <div className="flex gap-x-3">
-              <Button type="primary" onClick={handleAddTasks} disabled={tasks.length === 6}>
+              <Button type="primary" onClick={handleAddTasks} disabled={tasks.length === 6 || disabled}>
                 Thêm task
               </Button>
-              <Button color="danger" variant="solid" onClick={handleRemoveTasks} disabled={tasks.length === 1}>
+              <Button color="danger" variant="solid" onClick={handleRemoveTasks} disabled={tasks.length === 1 || disabled}>
                 Giảm task
               </Button>
             </div>
@@ -113,7 +139,7 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
             <div>
               <div className="flex items-center justify-between py-1">
                 <label htmlFor="project_name">Tên dự án:</label>
-                <Input name="project_name" style={{ width: "70%", padding: "8px" }} onChange={handleChange} />
+                <Input name="project_name" style={{ width: "70%", padding: "8px" }} onChange={handleChange} disabled={disabled} />
               </div>
               {tasks.map((t, index) => (
                 <div key={index} className="flex items-center justify-between my-2">
@@ -123,6 +149,7 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
                     style={{ width: "70%", padding: "8px" }}
                     value={t.task_name}
                     onChange={(e) => handleTasksChange(index, e.target.value)}
+                    disabled={disabled}
                   />
                 </div>
               ))}
@@ -137,19 +164,28 @@ export default function ProjectAdd({ devs, projects }: ProjectAdd) {
                     mode="multiple"
                     options={devs.map((devs) => ({ value: devs.id, label: devs.employee_name }))}
                     onChange={handleSelectChange}
+                    disabled={disabled}
                   />
                 )}
               </div>
               <div className="flex items-center justify-between my-2">
                 <label htmlFor="start_date">Thời gian bắt đầu:</label>
-                <DatePicker style={{ width: "50%", padding: "8px" }} onChange={(date) => handleDateChange("start_date", date)} />
+                <DatePicker
+                  style={{ width: "50%", padding: "8px" }}
+                  onChange={(date) => handleDateChange("start_date", date)}
+                  disabled={disabled}
+                />
               </div>
               <div className="flex items-center justify-between my-2">
                 <label htmlFor="end_date">Thời gian kết thúc (dự kiến):</label>
-                <DatePicker style={{ width: "50%", padding: "8px" }} onChange={(date) => handleDateChange("end_date", date)} />
+                <DatePicker
+                  style={{ width: "50%", padding: "8px" }}
+                  onChange={(date) => handleDateChange("end_date", date)}
+                  disabled={disabled}
+                />
               </div>
               <label htmlFor="description">Mô tả dự án:</label>
-              <TextArea rows={8} name="description" placeholder="Nhập mô tả dự án..." onChange={handleChange} />
+              <TextArea rows={8} name="description" placeholder="Nhập mô tả dự án..." onChange={handleChange} disabled={disabled} />
             </div>
           </div>
         </div>

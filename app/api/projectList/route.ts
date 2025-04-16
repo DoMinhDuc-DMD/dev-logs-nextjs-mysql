@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
 import prisma from "../connectprisma/prisma";
+import { match } from "assert";
 
 export const dynamic = "force-dynamic";
 
@@ -23,12 +24,15 @@ export async function GET() {
     });
 
     const devlogs = await prisma.devlog.findMany({
+      orderBy:{
+        date: 'desc'
+      },
+      distinct: ['account_id','project_id','date'],
       select:{
         account_id: true,
         project_id: true,
         date: true,
       },
-      distinct: ['account_id', 'project_id'],
     })
 
     const members = memberProjects.map((mp)=>{
@@ -43,10 +47,9 @@ export async function GET() {
       }
     });
 
-    return NextResponse.json({ projects, tasks, members }, { status: 200 });
+    return NextResponse.json({ projects, tasks, members, devlogs }, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }
 
@@ -76,7 +79,7 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      return NextResponse.json({ message: "Cập nhật thành công" }, { status: 200 });
+      return NextResponse.json({ message: "Cập nhật thành công!", status: 201 });
     } else if (action === "noticeDevlog") {
       const startOfDay = dayjs(date).startOf("day").format("YYYY-MM-DD HH:mm:ss");
       const endOfDay = dayjs(date).endOf("day").format("YYYY-MM-DD HH:mm:ss");
@@ -126,6 +129,5 @@ export async function POST(req: NextRequest) {
     }
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }

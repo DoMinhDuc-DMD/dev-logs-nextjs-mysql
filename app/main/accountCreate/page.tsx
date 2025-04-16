@@ -1,7 +1,7 @@
 "use client";
 
 import useAuthGuard from "@/app/hooks/useAuthGuard";
-import { Button, Input, message, Select } from "antd";
+import { Button, Input, notification, Select } from "antd";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
@@ -10,8 +10,31 @@ import "@ant-design/v5-patch-for-react-19";
 export default function CreateAccount() {
   const router = useRouter();
   const [options, setOptions] = useState<{ value: string; label: string }[]>([]);
-  const [selectedRole, setSelectedRole] = useState<number>();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [selectedRole, setSelectedRole] = useState<string>();
+  const [api, contextHolder] = notification.useNotification();
+  const [disabled, setDisabled] = useState(false);
+
+  const openNotification = (msg: string, stt: number) => {
+    stt === 201
+      ? api.success({
+          message: msg,
+          placement: "topRight",
+          duration: 2,
+          style: {
+            width: 400,
+            borderRadius: 10,
+          },
+        })
+      : api.error({
+          message: msg,
+          placement: "topRight",
+          duration: 2,
+          style: {
+            width: 400,
+            borderRadius: 10,
+          },
+        });
+  };
 
   useAuthGuard(["Admin"]);
 
@@ -38,10 +61,14 @@ export default function CreateAccount() {
 
     try {
       const res = await axios.post("/api/accountCreate", { email, password, role: selectedRole });
-      messageApi.info(res.data.message);
-      setTimeout(() => {
-        router.push("/main/accountList");
-      }, 500);
+      openNotification(res.data.message, res.data.status);
+
+      if (res.data.status === 201) {
+        setDisabled(true);
+        setTimeout(() => {
+          router.push("/main/accountList");
+        }, 1000);
+      }
     } catch (error) {
       console.error("Lỗi tạo tài khoản: ", error);
     }
@@ -56,16 +83,22 @@ export default function CreateAccount() {
           <label className="block text-left" htmlFor="email">
             Account
           </label>
-          <Input style={{ padding: 10 }} placeholder="Enter email" type="email" name="email" />
+          <Input style={{ padding: 10 }} placeholder="Enter email" type="email" name="email" disabled={disabled} />
           <label className="block text-left" htmlFor="password">
             Password
           </label>
-          <Input style={{ padding: 10 }} placeholder="Enter password" type="password" name="password" />
+          <Input style={{ padding: 10 }} placeholder="Enter password" type="password" name="password" disabled={disabled} />
           <label className="block text-left" htmlFor="role">
             Select Role
           </label>
-          <Select options={options} placeholder="Select role" style={{ height: 43 }} onChange={(selected) => setSelectedRole(selected)} />
-          <Button className="w-30 py-2 mx-auto" type="primary" htmlType="submit">
+          <Select
+            options={options}
+            placeholder="Select role"
+            style={{ height: 43 }}
+            onChange={(selected) => setSelectedRole(selected)}
+            disabled={disabled}
+          />
+          <Button className="w-30 py-2 mx-auto" type="primary" htmlType="submit" disabled={disabled}>
             Register
           </Button>
         </div>

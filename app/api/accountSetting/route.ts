@@ -18,7 +18,7 @@ export async function GET() {
     const formattedAccount = account.map((acc) => ({
       ...acc,
       role: acc.role?.role_name
-    }))
+    }));
 
     return NextResponse.json({account: formattedAccount});
   } catch (error) {
@@ -63,7 +63,7 @@ export async function PUT(req: NextRequest) {
       }
     })
 
-    return NextResponse.json({ message: "Cập nhật thành công" }, { status: 200 });
+    return NextResponse.json({ message: "Cập nhật thành công!" }, { status: 200 });
   } catch (error) {
     console.error("Lỗi cập nhật tài khoản:", error);
   }

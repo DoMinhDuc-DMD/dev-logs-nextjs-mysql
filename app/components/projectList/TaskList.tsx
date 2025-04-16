@@ -1,7 +1,7 @@
 "use client";
 
 import { Task } from "@/app/main/projectList/page";
-import { Button, Input, message } from "antd";
+import { Button, Input, message, notification } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -19,7 +19,29 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
   const [task, setTask] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState<Task[]>([]);
   const [defaultTask, setDefaultTask] = useState<Task[]>([]);
-  const [messageApi, contextHolder] = message.useMessage();
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (msg: string, stt: number) => {
+    stt === 201
+      ? api.success({
+          message: msg,
+          placement: "topRight",
+          duration: 2,
+          style: {
+            width: 400,
+            borderRadius: 10,
+          },
+        })
+      : api.error({
+          message: msg,
+          placement: "topRight",
+          duration: 2,
+          style: {
+            width: 400,
+            borderRadius: 10,
+          },
+        });
+  };
 
   useEffect(() => {
     setTask(tasks);
@@ -67,20 +89,19 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
 
     const hasEmptyTask = [...updatedTasks, ...newProjectTasks].some((t) => t.task_name.trim() == "");
     if (hasEmptyTask) {
-      messageApi.info("Tên task không được để trống");
+      openNotification("Tên task không được để trống", 400);
       return;
     }
 
     try {
-      await axios.post("/api/projectList", { action: "updateTasks", updatedTasks, newProjectTasks });
-      messageApi.info("Cập nhật thành công");
+      const res = await axios.post("/api/projectList", { action: "updateTasks", updatedTasks, newProjectTasks });
+      openNotification(res.data.message, res.data.status);
 
       setNewTask([]);
       handleCloseModal(projectId);
       fetchData();
     } catch (error) {
       console.error("Lỗi cập nhật dự án:", error);
-      messageApi.info("Đã xảy ra lỗi khi cập nhật dự án. Vui lòng kiểm tra lại.");
     }
   };
 

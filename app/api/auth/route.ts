@@ -16,23 +16,23 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    if (!user) {
-      return NextResponse.json({ message: "Email không tồn tại" }, { status: 401 });
-    }
-
-    if (password !== user.employee_work_password) {
-      return NextResponse.json({ message: "Sai mật khẩu" }, { status: 401 });
+    if (!user || password !== user.employee_work_password) {
+      return NextResponse.json(
+        { 
+          message: "Email hoặc mật khẩu không đúng!", 
+          description: "Vui lòng kiểm tra lại", 
+          status: 401 
+        }
+      );
     }
 
     return NextResponse.json(
       {
         message: "Đăng nhập thành công",
+        description: "Đăng nhập hệ thống Devlog Manage",
         userId: user.id,
-        isLogin: true,
         userRole: user.role.role_name,
-      },
-      {
-        status: 200,
+        status: 200
       }
     );
   } catch (error) {
