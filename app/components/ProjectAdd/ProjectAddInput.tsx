@@ -55,9 +55,10 @@ export default function ProjectAddInput({
                 style={{ width: "50%", height: 40 }}
                 placeholder="Select member"
                 mode="multiple"
-                options={devs.map((devs) => ({ value: devs.id, label: devs.employee_name || devs.employee_work_email }))}
+                options={devs.map((devs) => ({ value: devs.id, label: devs.employee_name }))}
                 onChange={handleSelectChange}
                 disabled={disabled}
+                maxTagCount={"responsive"}
               />
             )}
           </div>
