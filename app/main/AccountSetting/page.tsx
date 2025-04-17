@@ -14,21 +14,18 @@ export default function AccountSetting() {
     employee_name: "",
     employee_code: "",
     employee_work_email: "",
-    employee_work_password: "",
     employee_private_email: "",
     employee_phone_number: "",
     employee_birthday: "",
     employee_bank_account: "",
     employee_citizen_identification: "",
     employee_license_plate: "",
-    role: "",
   });
   const [originalInfo, setOriginalInfo] = useState<typeof info | null>(null);
-
   const [api, contextHolder] = notification.useNotification();
 
   const openNotification = (msg: string) => {
-    api.success({
+    api.info({
       message: msg,
       placement: "topRight",
       duration: 2,
@@ -49,7 +46,7 @@ export default function AccountSetting() {
         }
         const res = await axios.get("/api/AccountSetting");
 
-        const data = res.data.account.filter((item: { id: number }) => item.id === Number(userId));
+        const data = res.data.filter((item: { id: number }) => item.id === Number(userId));
 
         setInfo(data[0]);
         setOriginalInfo(data[0]);
@@ -72,14 +69,11 @@ export default function AccountSetting() {
     }));
   };
 
-  const isInfoChanged = JSON.stringify(info) !== JSON.stringify(originalInfo);
-
   const handleUpdate = async () => {
     try {
       const userId = sessionStorage.getItem("userId");
       if (!userId) {
-        router.replace("/Auth");
-        return;
+        return router.replace("/Auth");
       }
 
       const res = await axios.put("/api/AccountSetting/", { ...info, userId });
@@ -100,6 +94,8 @@ export default function AccountSetting() {
     router.replace("/Auth");
   };
 
+  const isInfoChanged = JSON.stringify(info) !== JSON.stringify(originalInfo);
+
   return (
     <>
       {contextHolder}
@@ -110,8 +106,6 @@ export default function AccountSetting() {
             <div>
               <label htmlFor="employee_id">Mã nhân viên:</label>
               <Input name="employee_id" value={info?.employee_code || ""} readOnly />
-              <label htmlFor="role">Chức vụ/Vị trí:</label>
-              <Input name="role" value={info.role || ""} readOnly />
               <label htmlFor="employee_name">Họ và tên:</label>
               <Input name="employee_name" value={info?.employee_name || ""} onChange={handleChange} />
               <label htmlFor="employee_birthday">Ngày sinh:</label>
@@ -134,8 +128,6 @@ export default function AccountSetting() {
               <Input name="employee_citizen_identification" value={info?.employee_citizen_identification || ""} onChange={handleChange} />
               <label htmlFor="employee_work_email">Email:</label>
               <Input name="employee_work_email" value={info?.employee_work_email || ""} onChange={handleChange} />
-              <label htmlFor="employee_work_password">Mật khẩu:</label>
-              <Input name="employee_work_password" value={info?.employee_work_password || ""} onChange={handleChange} />
               <label htmlFor="employee_license_plate">Biển số xe:</label>
               <Input name="employee_license_plate" value={info?.employee_license_plate || ""} onChange={handleChange} />
             </div>

@@ -8,6 +8,7 @@ export async function GET() {
       const db = await openDB();
 
       const roles = await db.all("SELECT * FROM role WHERE role_name != 'Admin'");
+      const account = await db.all("SELECT * FROM account");
 
       await db.close();
 
@@ -15,8 +16,8 @@ export async function GET() {
           value: row.role_name,
           label: row.role_name,
       }));
-  
-      return NextResponse.json({ roles: formattedRoles });
+
+      return NextResponse.json({ roles: formattedRoles, account });
     } 
     catch (error) {
         console.error("Lỗi lấy danh sách role: ", error);
@@ -25,32 +26,27 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password, role } = await req.json();
     const db = await openDB();
-
-    if (!email || !password || !role) {
-      return NextResponse.json({ message: "Vui lòng nhập đầy đủ thông tin", status: 400 });
-    }
+    const { email, password, selectedRole, employee_name, employee_code, birthday, phone_number, citizen_id } = await req.json();
 
     const existingUser = await db.get("SELECT * FROM account WHERE employee_work_email = ?", email)
     if (existingUser) {
-      return NextResponse.json({ message: "Email đã tồn tại", status: 400 });
+      return NextResponse.json({ message: "Email đã tồn tại!", status: 400 });
     }
 
-    const roleRow = await db.get(`SELECT id FROM role WHERE role_name = ?`, role);
-
-    if (!roleRow) {
-      return NextResponse.json({ message: "Role không hợp lệ", status: 400 });
-    }
+    const roleRow = await db.get(`SELECT id FROM role WHERE role_name = ?`, selectedRole);
 
     const role_id = roleRow.id;
 
-    await db.run("INSERT INTO account (employee_work_email,employee_work_password,role_id) VALUES (?,?,?)", [email, password, role_id]);
+    await db.run(`
+      INSERT INTO account (employee_work_email, employee_work_password, employee_name, employee_code, employee_birthday, employee_phone_number, employee_citizen_identification, role_id) VALUES (?,?,?,?,?,?,?,?)`, 
+      [email, password, employee_name, employee_code, birthday, phone_number, citizen_id, role_id]
+    );
 
     await db.close();
 
-    return NextResponse.json({ message: "Đăng ký thành công", status: 201 });
+    return NextResponse.json({ message: "Tạo tài khoản thành công!", status: 201 });
   } catch (error) {
-    console.error("Lỗi server khi đăng ký:", error);
+    console.error("Lỗi khi tạo tài khoản: ", error);
   }
 }

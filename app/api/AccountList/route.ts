@@ -14,10 +14,9 @@ export async function GET() {
 
     const formattedRole = role.map((row) => ({ value: row.role_name, label: row.role_name }));
 
-    return NextResponse.json({ account: account, role: formattedRole });
+    return NextResponse.json({ account, formattedRole });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }
 
@@ -38,6 +37,5 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ message: "Cập nhật thành công!", status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }

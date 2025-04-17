@@ -1,39 +1,34 @@
 "use client";
 
 import useAuthGuard from "@/app/hooks/useAuthGuard";
-import { Button, Input, notification, Select } from "antd";
+import { notification } from "antd";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
+import AccountCreateForm from "@/app/components/AccountCreate/AccountCreateForm";
 
 export default function CreateAccount() {
   const router = useRouter();
   const [options, setOptions] = useState<{ value: string; label: string }[]>([]);
   const [selectedRole, setSelectedRole] = useState<string>();
+  const [formValues, setFormValues] = useState({
+    phone_number: "",
+    citizen_id: "",
+  });
   const [api, contextHolder] = notification.useNotification();
   const [disabled, setDisabled] = useState(false);
 
-  const openNotification = (msg: string, stt: number) =>
-    stt === 201
-      ? api.success({
-          message: msg,
-          placement: "topRight",
-          duration: 2,
-          style: {
-            width: 400,
-            borderRadius: 10,
-          },
-        })
-      : api.error({
-          message: msg,
-          placement: "topRight",
-          duration: 2,
-          style: {
-            width: 400,
-            borderRadius: 10,
-          },
-        });
+  const openNotification = (msg: string) =>
+    api.info({
+      message: msg,
+      placement: "topRight",
+      duration: 2,
+      style: {
+        width: 350,
+        borderRadius: 10,
+      },
+    });
 
   useAuthGuard(["Admin"]);
 
@@ -55,12 +50,38 @@ export default function CreateAccount() {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const email = formData.get("email");
-    const password = formData.get("password");
+    const getValue = (key: string) => formData.get(key)?.toString() || "";
+
+    const email = getValue("email");
+    const password = getValue("password");
+    const employee_name = getValue("employee_name");
+    const birthday = getValue("birthday");
+    const phone_number = getValue("phone_number");
+    const citizen_id = getValue("citizen_id");
+
+    const employee_code = email.replace(/@vikmail\.com$/, "") + citizen_id?.slice(-3);
+
+    if (![email, password, selectedRole, employee_name, birthday, phone_number, citizen_id].every(Boolean)) {
+      return openNotification("Hãy nhập đầy đủ thông tin!");
+    }
+
+    if (email.slice(-12) !== "@vikmail.com") {
+      return openNotification("Email không hợp lệ!");
+    }
+
+    if (citizen_id.length < 12) {
+      return openNotification("Căn cước không hợp lệ!");
+    }
+
+    if (phone_number.length < 10) {
+      return openNotification("Số điện thoại không hợp lệ!");
+    }
+
+    const data = { email, password, selectedRole, employee_name, employee_code, birthday, phone_number, citizen_id };
 
     try {
-      const res = await axios.post("/api/AccountCreate", { email, password, role: selectedRole });
-      openNotification(res.data.message, res.data.status);
+      const res = await axios.post("/api/AccountCreate", data);
+      openNotification(res.data.message);
 
       if (res.data.status === 201) {
         setDisabled(true);
@@ -73,34 +94,28 @@ export default function CreateAccount() {
     }
   }
 
+  const handleNumberTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.target;
+
+    const onlyNumbers = value.replace(/[^0-9]/g, "");
+    setFormValues((prev) => ({
+      ...prev,
+      [name]: onlyNumbers,
+    }));
+  };
+
   return (
     <>
       {contextHolder}
-      <form className="w-130 my-10 mx-auto rounded bg-white p-5 shadow-lg w-[400px]" onSubmit={handleSubmit}>
-        <h2 className="text-center text-xl font-semibold mb-5">Register New Account</h2>
-        <div className="flex flex-col gap-y-4">
-          <label className="block text-left" htmlFor="email">
-            Account
-          </label>
-          <Input style={{ padding: 10 }} placeholder="Enter email" type="email" name="email" disabled={disabled} />
-          <label className="block text-left" htmlFor="password">
-            Password
-          </label>
-          <Input style={{ padding: 10 }} placeholder="Enter password" type="password" name="password" disabled={disabled} />
-          <label className="block text-left" htmlFor="role">
-            Select Role
-          </label>
-          <Select
-            options={options}
-            placeholder="Select role"
-            style={{ height: 43 }}
-            onChange={(selected) => setSelectedRole(selected)}
-            disabled={disabled}
-          />
-          <Button className="w-30 py-2 mx-auto" type="primary" htmlType="submit" disabled={disabled}>
-            Register
-          </Button>
-        </div>
+      <form className="w-[700px] my-10 mx-auto rounded bg-white p-5 shadow-lg" onSubmit={handleSubmit}>
+        <h2 className="text-center text-xl font-semibold mb-5">Tạo tài khoản mới</h2>
+        <AccountCreateForm
+          options={options}
+          formValues={formValues}
+          disabled={disabled}
+          handleNumberTypeChange={handleNumberTypeChange}
+          setSelectedRole={setSelectedRole}
+        />
       </form>
     </>
   );

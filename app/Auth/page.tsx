@@ -11,28 +11,17 @@ export default function LoginForm() {
   const [api, contextHolder] = notification.useNotification();
   const [disabled, setDisabled] = useState(false);
 
-  const openNotification = (msg: string, des: string, stt: number) =>
-    stt === 200
-      ? api.success({
-          message: msg,
-          description: des,
-          placement: "topRight",
-          duration: 2,
-          style: {
-            width: 400,
-            borderRadius: 10,
-          },
-        })
-      : api.error({
-          message: msg,
-          description: des,
-          placement: "topRight",
-          duration: 2,
-          style: {
-            width: 400,
-            borderRadius: 10,
-          },
-        });
+  const openNotification = (msg: string, des: string) =>
+    api.info({
+      message: msg,
+      description: des,
+      placement: "topRight",
+      duration: 2,
+      style: {
+        width: 400,
+        borderRadius: 10,
+      },
+    });
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -44,7 +33,7 @@ export default function LoginForm() {
     try {
       const res = await axios.post("/api/Auth", { email, password });
       const data = res.data;
-      openNotification(data.message, data.description, data.status);
+      openNotification(data.message, data.description);
 
       if (data.status === 200) {
         setDisabled(true);

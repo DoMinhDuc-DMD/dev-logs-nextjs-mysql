@@ -55,7 +55,7 @@ export default function AccountList() {
 
       setAccounts(data.account);
       setOriginalData(data.account);
-      setOptions(data.role);
+      setOptions(data.formattedRole);
     } catch (error) {
       console.log("Lỗi lấy danh sách tài khoản: ", error);
     }

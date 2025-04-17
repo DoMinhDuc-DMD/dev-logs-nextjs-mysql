@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { DatePicker, Button, Checkbox, CheckboxChangeEvent, InputNumber, Select, notification } from "antd";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
@@ -28,26 +28,16 @@ export default function Form() {
   const isButtonDisabled = !formData.date || !formData.hours || !formData.project || !formData.task;
   const [disabled, setDisabled] = useState(false);
   const [api, contextHolder] = notification.useNotification();
-  const openNotification = (msg: string, stt: number) =>
-    stt === 201
-      ? api.success({
-          message: msg,
-          placement: "topRight",
-          duration: 2,
-          style: {
-            width: 400,
-            borderRadius: 10,
-          },
-        })
-      : api.error({
-          message: msg,
-          placement: "topRight",
-          duration: 2,
-          style: {
-            width: 400,
-            borderRadius: 10,
-          },
-        });
+  const openNotification = (msg: string) =>
+    api.info({
+      message: msg,
+      placement: "topRight",
+      duration: 2,
+      style: {
+        width: 400,
+        borderRadius: 10,
+      },
+    });
 
   useAuthGuard(["Leader", "Developer"]);
 
@@ -79,22 +69,16 @@ export default function Form() {
     }
   };
 
-  const handleSelectProject = (selectedOption: number) => {
-    setSelectedProject(selectedOption);
-    const filtered = task.filter((t: { projectId: number }) => t.projectId === selectedOption);
-
-    setFilteredTask(filtered);
+  const handleSelectChange = (fields: "project" | "task", selectedOption: number) => {
+    if (fields === "project") {
+      setSelectedProject(selectedOption);
+      const filtered = task.filter((t: { projectId: number }) => t.projectId === selectedOption);
+      setFilteredTask(filtered);
+    }
 
     setFormData((prev) => ({
       ...prev,
-      project: selectedOption,
-    }));
-  };
-
-  const handleSelectTask = (selectedOption: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      task: selectedOption,
+      [fields]: selectedOption,
     }));
   };
 
@@ -105,7 +89,7 @@ export default function Form() {
     }));
   };
 
-  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleTextAreaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setFormData((prev) => ({
       ...prev,
       note: e.target.value,
@@ -121,7 +105,7 @@ export default function Form() {
     const userId = sessionStorage.getItem("userId");
     const res = await axios.post("/api/DevlogInput", { ...formData, userId });
 
-    openNotification(res.data.message, res.data.status);
+    openNotification(res.data.message);
 
     setDisabled(true);
     setTimeout(() => {
@@ -137,21 +121,17 @@ export default function Form() {
           <div className="rounded-lg bg-white p-5">
             <div className="flex justify-between items-center my-5">
               <Select
-                showSearch
                 style={{ width: "30%" }}
-                placeholder="Select project"
                 optionFilterProp="label"
                 options={project}
-                onChange={handleSelectProject}
+                onChange={(value) => handleSelectChange("project", value)}
                 disabled={disabled}
               />
               <Select
-                showSearch
                 style={{ width: "30%" }}
-                placeholder="Select task"
                 optionFilterProp="label"
                 options={filteredTask}
-                onChange={handleSelectTask}
+                onChange={(value) => handleSelectChange("task", value)}
                 disabled={!selectedProject || disabled}
               />
               <div className="flex items-center gap-x-6">

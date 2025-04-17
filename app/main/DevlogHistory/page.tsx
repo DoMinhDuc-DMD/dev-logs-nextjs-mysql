@@ -1,4 +1,5 @@
 "use client";
+
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -6,8 +7,10 @@ import "@ant-design/v5-patch-for-react-19";
 import { DatePicker } from "antd";
 import axios from "axios";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
+import DevlogHistorySums from "@/app/components/DevlogHistory/DevlogHistorySums";
+import DevlogHistoryDaily from "@/app/components/DevlogHistory/DevlogHistoryDaily";
 
-interface DevlogHistory {
+export interface DevlogHistory {
   account_id: number;
   date: Date;
   hours: number;
@@ -16,9 +19,8 @@ interface DevlogHistory {
 
 export default function DevlogHistory() {
   const router = useRouter();
-  const [DevlogList, setDevlogList] = useState<DevlogHistory[]>([]);
+  const [devlogList, setDevlogList] = useState<DevlogHistory[]>([]);
 
-  const currentDate = new Date();
   const currentMonth = dayjs().month() + 1;
   const currentYear = dayjs().year();
   const [selectedMonth, setSelectedMonth] = useState(dayjs(`${currentYear}-${currentMonth}`).format("YYYY-MM"));
@@ -58,14 +60,6 @@ export default function DevlogHistory() {
     fetchDevlog();
   }, [router]);
 
-  const gridCols =
-    {
-      28: "grid-cols-28",
-      29: "grid-cols-29",
-      30: "grid-cols-30",
-      31: "grid-cols-31",
-    }[daysInMonth] || "grid-cols-31";
-
   return (
     <div className="p-5">
       <div className="w-full h-[80vh] p-5 rounded bg-white">
@@ -82,73 +76,8 @@ export default function DevlogHistory() {
             <div className="flex border px-5 items-center bg-gray-200">Task 6</div>
             <div className="flex border px-5 items-center bg-gray-400">Tổng</div>
           </div>
-          <div className={`grid ${gridCols}`}>
-            {daysArray.map((day: { date: string; dayOfWeek: string }, index: number) => {
-              const dailyLogs = DevlogList.filter((devlog: DevlogHistory) => dayjs(devlog.date).format("DD/MM/YYYY") === day.date).sort(
-                (a: DevlogHistory, b: DevlogHistory) => a.task_name_index - b.task_name_index
-              );
-
-              return (
-                <div key={index} className="grid grid-rows-9">
-                  <div
-                    className={`flex border items-center justify-center font-semibold ${
-                      (day.date.slice(0, 5) === dayjs(currentDate).format("DD/MM") && "bg-blue-300") ||
-                      ((day.dayOfWeek === "T7" || day.dayOfWeek === "CN") && `bg-gray-200`)
-                    }`}
-                  >
-                    {day.date.slice(0, 5)}
-                  </div>
-                  <div
-                    className={`flex border items-center justify-center font-semibold ${
-                      (day.date.slice(0, 5) === dayjs(currentDate).format("DD/MM") && "bg-blue-300") ||
-                      ((day.dayOfWeek === "T7" || day.dayOfWeek === "CN") && `bg-gray-200`)
-                    }`}
-                  >
-                    {day.dayOfWeek}
-                  </div>
-                  {[...Array(6)].map((_, taskIndex: number) => {
-                    const totalHoursForTask = dailyLogs
-                      .filter((log: DevlogHistory) => log.task_name_index === taskIndex + 1)
-                      .reduce((sum: number, log: DevlogHistory) => sum + log.hours, 0);
-                    return (
-                      <div
-                        key={taskIndex}
-                        className={`flex border items-center justify-center ${
-                          (day.date.slice(0, 5) === dayjs(currentDate).format("DD/MM") && "bg-blue-300") ||
-                          ((day.dayOfWeek === "T7" || day.dayOfWeek === "CN") && `bg-gray-200`)
-                        }`}
-                      >
-                        {totalHoursForTask > 0 ? totalHoursForTask : ""}
-                      </div>
-                    );
-                  })}
-                  <div className="flex border items-center justify-center bg-gray-400">
-                    {dailyLogs.reduce((sum: number, log: DevlogHistory) => sum + log.hours, 0)}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div className="grid grid-rows-9 bg-gray-400" style={{ position: "sticky", right: 0, zIndex: 10 }}>
-            <div className="flex border items-center justify-center font-semibold">Tổng</div>
-            {[...Array(7)].map((_, taskIndex) => {
-              const totalHoursForTask = DevlogList.filter((log: DevlogHistory) => dayjs(log.date).format("YYYY-MM") === `${selectedMonth}`)
-                .filter((log: DevlogHistory) => log.task_name_index === taskIndex)
-                .reduce((sum, log: DevlogHistory) => sum + log.hours, 0);
-
-              return (
-                <div key={taskIndex} className="flex border items-center justify-center">
-                  {totalHoursForTask > 0 ? totalHoursForTask : ""}
-                </div>
-              );
-            })}
-            <div className="flex border items-center justify-center">
-              {DevlogList.filter((log: DevlogHistory) => dayjs(log.date).format("YYYY-MM") === `${selectedMonth}`).reduce(
-                (sum, log: DevlogHistory) => sum + log.hours,
-                0
-              )}
-            </div>
-          </div>
+          <DevlogHistoryDaily daysArray={daysArray} devlogList={devlogList} selectedMonth={selectedMonth} />
+          <DevlogHistorySums devlogList={devlogList} selectedMonth={selectedMonth} />
         </div>
       </div>
     </div>
