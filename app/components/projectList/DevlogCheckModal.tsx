@@ -5,7 +5,7 @@ import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
 import { useState } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
-import { Member, ProjectList } from "@/main/ProjectList/page";
+import { Member, ProjectList } from "@/app/main/ProjectList/page";
 
 interface DevlogCheckModalProps {
   project: ProjectList;

@@ -5,7 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
-import { Dev } from "@/main/ProjectAdd/page";
+import { Dev } from "@/app/main/ProjectAdd/page";
 
 interface ProjectAdd {
   devs: Dev[];

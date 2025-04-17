@@ -1,6 +1,6 @@
 "use client";
 
-import { DevlogList } from "@/main/DevlogList/page";
+import { DevlogList } from "@/app/main/DevlogList/page";
 import { Modal } from "antd";
 
 interface DevlogListModalProps {

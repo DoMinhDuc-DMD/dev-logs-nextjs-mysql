@@ -5,9 +5,9 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import { notification } from "antd";
-import useAuthGuard from "@/hooks/useAuthGuard";
-import AccountListSearch from "@/components/AccountList/AccountListSearch";
-import AccountListTable from "@/components/AccountList/AccountListTable";
+import useAuthGuard from "@/app/hooks/useAuthGuard";
+import AccountListSearch from "../../components/AccountList/AccountListSearch";
+import AccountListTable from "../../components/AccountList/AccountListTable";
 
 export interface Account {
   id: number;

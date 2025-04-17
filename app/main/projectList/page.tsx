@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import ProjectListComponent from "../../components/ProjectList/ProjectList";
-import useAuthGuard from "../../hooks/useAuthGuard";
+import useAuthGuard from "@/app/hooks/useAuthGuard";
 
 export interface ProjectList {
   id: number;
