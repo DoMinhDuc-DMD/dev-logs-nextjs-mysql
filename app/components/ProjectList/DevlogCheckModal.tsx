@@ -27,7 +27,7 @@ export default function DevlogCheckModal({
   const [api, contextHolder] = notification.useNotification();
 
   const openNotification = (msg: string, memberName: string) => {
-    api.success({
+    api.info({
       message: "Thông báo thành công",
       description: `${msg} tới ${memberName}`,
       placement: "topRight",

@@ -21,26 +21,16 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
   const [defaultTask, setDefaultTask] = useState<Task[]>([]);
   const [api, contextHolder] = notification.useNotification();
 
-  const openNotification = (msg: string, stt: number) =>
-    stt === 201
-      ? api.success({
-          message: msg,
-          placement: "topRight",
-          duration: 2,
-          style: {
-            width: 400,
-            borderRadius: 10,
-          },
-        })
-      : api.error({
-          message: msg,
-          placement: "topRight",
-          duration: 2,
-          style: {
-            width: 400,
-            borderRadius: 10,
-          },
-        });
+  const openNotification = (msg: string) =>
+    api.info({
+      message: msg,
+      placement: "topRight",
+      duration: 2,
+      style: {
+        width: 400,
+        borderRadius: 10,
+      },
+    });
 
   useEffect(() => {
     setTask(tasks);
@@ -88,13 +78,13 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
 
     const hasEmptyTask = [...updatedTasks, ...newProjectTasks].some((t) => t.task_name.trim() == "");
     if (hasEmptyTask) {
-      openNotification("Tên task không được để trống", 400);
+      openNotification("Tên task không được để trống");
       return;
     }
 
     try {
       const res = await axios.post("/api/ProjectList", { action: "updateTasks", updatedTasks, newProjectTasks });
-      openNotification(res.data.message, res.data.status);
+      openNotification(res.data.message);
 
       setNewTask([]);
       handleCloseModal(projectId);

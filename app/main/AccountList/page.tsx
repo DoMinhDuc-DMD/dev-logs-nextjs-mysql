@@ -37,7 +37,7 @@ export default function AccountList() {
   const [api, contextHolder] = notification.useNotification();
 
   const openNotification = (msg: string) => {
-    api.success({
+    api.info({
       message: msg,
       placement: "topRight",
       duration: 2,
