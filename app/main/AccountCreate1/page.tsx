@@ -1,6 +1,6 @@
 "use client";
 
-import useAuthGuard from "@/app/hooks/useAuthGuard";
+import UseAuthGuard from "@/app/hooks/UseAuthGuard";
 import { Button, Input, notification, Select } from "antd";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -35,7 +35,7 @@ export default function CreateAccount() {
           },
         });
 
-  useAuthGuard(["Admin"]);
+  UseAuthGuard(["Admin"]);
 
   useEffect(() => {
     async function fetchRoles() {

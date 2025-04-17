@@ -1,6 +1,6 @@
 "use client";
 
-import { Account, Option } from "@/app/main/AccountList/page";
+import { Account, Option } from "@/app/main/AccountList1/page";
 import { Button, Input, Table, Select } from "antd";
 import { useRouter } from "next/navigation";
 import { ChangeEvent } from "react";

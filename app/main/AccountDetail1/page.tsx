@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
-import useAuthGuard from "@/app/hooks/useAuthGuard";
+import UseAuthGuard from "@/app/hooks/UseAuthGuard";
 
 export default function AccountDetail() {
   const router = useRouter();
@@ -24,7 +24,7 @@ export default function AccountDetail() {
     role: "",
   });
 
-  useAuthGuard(["Admin", "HR"]);
+  UseAuthGuard(["Admin", "HR"]);
 
   useEffect(() => {
     const userId = new URLSearchParams(window.location.search).get("id");

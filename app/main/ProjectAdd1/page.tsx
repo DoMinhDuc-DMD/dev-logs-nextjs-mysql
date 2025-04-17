@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import ProjectAdd from "../../components/ProjectAdd/ProjectAdd";
-import useAuthGuard from "@/app/hooks/useAuthGuard";
+import UseAuthGuard from "@/app/hooks/UseAuthGuard";
 
 export interface Dev {
   id: number;
@@ -24,7 +24,7 @@ export default function AddProject() {
     members: [] as number[],
   });
 
-  useAuthGuard(["Leader"]);
+  UseAuthGuard(["Leader"]);
 
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
