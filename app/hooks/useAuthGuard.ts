@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-function UseAuthGuard(allowedRoles: Array<string>) {
+function useAuthGuard(allowedRoles: Array<string>) {
   const router = useRouter();
 
   useEffect(() => {
@@ -21,4 +21,4 @@ function UseAuthGuard(allowedRoles: Array<string>) {
   }, [allowedRoles, router]);
 }
 
-export default UseAuthGuard;
+export default useAuthGuard;

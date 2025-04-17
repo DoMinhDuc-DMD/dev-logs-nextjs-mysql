@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
-import UseAuthGuard from "@/app/hooks/UseAuthGuard";
+import useAuthGuard from "@/app/hooks/useAuthGuard";
 
 export default function Form() {
   const router = useRouter();
@@ -49,7 +49,7 @@ export default function Form() {
           },
         });
 
-  UseAuthGuard(["Leader", "Developer"]);
+  useAuthGuard(["Leader", "Developer"]);
 
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");

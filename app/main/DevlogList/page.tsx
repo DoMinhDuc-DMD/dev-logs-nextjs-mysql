@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
-import UseAuthGuard from "@/app/hooks/UseAuthGuard";
+import useAuthGuard from "@/app/hooks/useAuthGuard";
 import DevlogListModal from "../../components/DevlogList/DevlogListModal";
 import DevlogListTable from "../../components/DevlogList/DevlogListTable";
 import DevlogListSearch from "../../components/DevlogList/DevlogListSearch";
@@ -40,7 +40,7 @@ export default function DevlogList() {
     setSelectedDevlog(null);
   };
 
-  UseAuthGuard(["Admin", "HR", "Leader"]);
+  useAuthGuard(["Admin", "HR", "Leader"]);
 
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");

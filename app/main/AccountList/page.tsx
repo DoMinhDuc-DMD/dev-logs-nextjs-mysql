@@ -5,7 +5,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import { notification } from "antd";
-import UseAuthGuard from "@/app/hooks/UseAuthGuard";
+import useAuthGuard from "@/app/hooks/useAuthGuard";
 import AccountListSearch from "../../components/AccountList/AccountListSearch";
 import AccountListTable from "../../components/AccountList/AccountListTable";
 
@@ -61,7 +61,7 @@ export default function AccountList() {
     }
   };
 
-  UseAuthGuard(["Admin", "HR"]);
+  useAuthGuard(["Admin", "HR"]);
 
   useEffect(() => {
     fetchAccount();

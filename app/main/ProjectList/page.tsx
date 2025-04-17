@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import ProjectListComponent from "../../components/ProjectList/ProjectList";
-import UseAuthGuard from "@/app/hooks/UseAuthGuard";
+import useAuthGuard from "@/app/hooks/useAuthGuard";
 
 export interface ProjectList {
   id: number;
@@ -40,7 +40,7 @@ export default function ProjectList() {
   const [memberRole, setMemberRole] = useState("");
   const [userId, setUserId] = useState("");
 
-  UseAuthGuard(["Leader", "Developer"]);
+  useAuthGuard(["Leader", "Developer"]);
 
   const fetchData = useCallback(async (currentUserId: string) => {
     try {
