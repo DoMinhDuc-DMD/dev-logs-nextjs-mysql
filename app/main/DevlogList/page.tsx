@@ -3,19 +3,26 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
-import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
 import DevlogListModal from "../../components/DevlogList/DevlogListModal";
 import DevlogListTable from "../../components/DevlogList/DevlogListTable";
 import DevlogListSearch from "../../components/DevlogList/DevlogListSearch";
 
-export interface DevlogList {
+export interface Account {
   id: number;
-  account_id: number;
-  date: string;
   employee_code: string;
   employee_work_email: string;
+  employee_name: string;
+}
+
+export interface AccountDevlog {
+  id: number;
+  account_id: number;
+  employee_name: string;
+  employee_code: string;
+  employee_work_email: string;
+  date: string;
   hours: number;
   note: string;
   overtime: boolean;
@@ -27,76 +34,67 @@ export interface DevlogList {
 
 export default function DevlogList() {
   const router = useRouter();
-  const [data, setData] = useState<DevlogList[]>([]);
-  const [originalData, setOriginalData] = useState([]);
-  const [selectedDevlog, setSelectedDevlog] = useState<DevlogList | null>(null);
   const [searchInput, setSearchInput] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState(dayjs(new Date()).format("YYYY-MM-DD"));
 
-  const openModal = (devlog: DevlogList) => {
+  const [account, setAccount] = useState<Account[]>([]);
+  const [originalAccount, setOriginalAccount] = useState<Account[]>([]);
+
+  const [accountDevlog, setAccountDevlog] = useState<AccountDevlog[]>([]);
+
+  const [selectedDevlog, setSelectedDevlog] = useState<AccountDevlog[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (devlog: AccountDevlog[]) => {
     setSelectedDevlog(devlog);
+    setIsModalOpen(true);
   };
   const closeModal = () => {
-    setSelectedDevlog(null);
+    setSelectedDevlog([]);
+    setIsModalOpen(false);
   };
 
   useAuthGuard(["Admin", "HR", "Leader"]);
 
   useEffect(() => {
-    const userId = sessionStorage.getItem("userId");
-
     const fetchData = async () => {
       try {
         const res = await axios.get("/api/DevlogList");
         const data = await res.data;
 
-        const filteredDevlogs = data.devlogs.filter(
-          (item: DevlogList) =>
-            dayjs(item.date).format("YYYY-MM-DD") === selectedDate &&
-            data.leaderProjects.some(
-              (project: DevlogList) => project.account_id === Number(userId) && project.project_id === item.project_id
-            )
-        );
+        setAccount(data.account);
+        setOriginalAccount(data.account);
 
-        setData(filteredDevlogs);
-        setOriginalData(filteredDevlogs);
+        setAccountDevlog(data.accountDevlog);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
-  }, [router, selectedDate]);
-
-  const handleSelectDate = (date: dayjs.Dayjs | null) => {
-    setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
-    setSearchInput("");
-  };
+  }, [router]);
 
   const handleSearch = (value: string) => {
     if (!value) {
-      setData(originalData);
+      setAccount(originalAccount);
     } else {
       setSearchInput(value);
       const searchTerm = value.toLowerCase();
 
-      const filteredDevlogs = originalData.filter(
-        (devlog: DevlogList) =>
-          devlog.employee_work_email.includes(searchTerm) ||
-          devlog.employee_code.includes(searchTerm) ||
-          devlog.project_name.includes(searchTerm) ||
-          devlog.task_name.includes(searchTerm)
+      const filteredAccount = originalAccount.filter(
+        (acc: Account) => acc.employee_work_email.includes(searchTerm)
+        // || acc.employee_code.includes(searchTerm)
       );
 
-      setData(filteredDevlogs);
+      setAccount(filteredAccount);
     }
   };
+
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
+
   const handleReset = () => {
     setSearchInput("");
-    setSelectedDate(dayjs(new Date()).format("YYYY-MM-DD"));
-    setData(originalData);
+    setAccount(originalAccount);
   };
 
   return (
@@ -104,14 +102,12 @@ export default function DevlogList() {
       <div className="w-full rounded px-5 bg-white">
         <DevlogListSearch
           searchInput={searchInput}
-          selectedDate={selectedDate}
-          handleSelectDate={handleSelectDate}
           handleSearch={handleSearch}
           handleSearchChange={handleSearchChange}
           handleReset={handleReset}
         />
-        <DevlogListTable data={data} openModal={openModal} />
-        <DevlogListModal selectedDevlog={selectedDevlog} closeModal={closeModal} />
+        <DevlogListTable accountData={account} data={accountDevlog} openModal={openModal} />
+        <DevlogListModal data={selectedDevlog} closeModal={closeModal} isModalOpen={isModalOpen} />
       </div>
     </div>
   );

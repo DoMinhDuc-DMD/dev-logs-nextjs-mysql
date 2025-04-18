@@ -1,4 +1,4 @@
-import { openDB } from "./sqlitedb"
+import { openDB } from "./sqlitedb";
 
 
 async function setup(){
@@ -62,7 +62,7 @@ async function setup(){
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             hours INTEGER,
             overtime BOOLEAN,
-            date DATE,
+            date DATETIME,
             note TEXT,
             account_id INTEGER,
             project_id INTEGER,
