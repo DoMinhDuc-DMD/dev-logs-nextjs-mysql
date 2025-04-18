@@ -2,7 +2,6 @@
 
 import { AccountDevlog } from "@/app/main/DevlogList/page";
 import { Modal, Table } from "antd";
-import Search from "antd/es/input/Search";
 
 interface DevlogListModalProps {
   data: AccountDevlog[];
@@ -56,11 +55,12 @@ export default function DevlogListModal({ data, isModalOpen, closeModal }: Devlo
       align: "center" as const,
     },
   ];
+
   return (
     <Modal
       width={"70%"}
       className="text-center"
-      title={`Lịch sử nhập devlog của`}
+      title={`Lịch sử nhập devlog của `}
       open={isModalOpen}
       onOk={closeModal}
       onCancel={closeModal}

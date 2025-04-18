@@ -7,13 +7,14 @@ import "@ant-design/v5-patch-for-react-19";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
 import DevlogListModal from "../../components/DevlogList/DevlogListModal";
 import DevlogListTable from "../../components/DevlogList/DevlogListTable";
-import DevlogListSearch from "../../components/DevlogList/DevlogListSearch";
 
 export interface Account {
   id: number;
   employee_code: string;
   employee_work_email: string;
   employee_name: string;
+  role: string;
+  role_id: number;
 }
 
 export interface AccountDevlog {
@@ -42,6 +43,7 @@ export default function DevlogList() {
   const [accountDevlog, setAccountDevlog] = useState<AccountDevlog[]>([]);
 
   const [selectedDevlog, setSelectedDevlog] = useState<AccountDevlog[]>([]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = (devlog: AccountDevlog[]) => {
@@ -58,11 +60,16 @@ export default function DevlogList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const userRole = sessionStorage.getItem("userRole");
         const res = await axios.get("/api/DevlogList");
         const data = await res.data;
 
-        setAccount(data.account);
-        setOriginalAccount(data.account);
+        const userRoleId = [...new Set(data.account.filter((acc: Account) => acc.role === userRole).map((acc: Account) => acc.role_id))];
+
+        const accountList = data.account.filter((acc: Account) => acc.role_id > Number(userRoleId));
+
+        setAccount(accountList);
+        setOriginalAccount(accountList);
 
         setAccountDevlog(data.accountDevlog);
       } catch (error) {
@@ -72,7 +79,7 @@ export default function DevlogList() {
     fetchData();
   }, [router]);
 
-  const handleSearch = (value: string) => {
+  const handleSearchAccount = (value: string) => {
     if (!value) {
       setAccount(originalAccount);
     } else {
@@ -100,13 +107,15 @@ export default function DevlogList() {
   return (
     <div className="p-5">
       <div className="w-full rounded px-5 bg-white">
-        <DevlogListSearch
+        <DevlogListTable
+          accountData={account}
+          accountDevlogData={accountDevlog}
           searchInput={searchInput}
-          handleSearch={handleSearch}
+          handleSearchAccount={handleSearchAccount}
           handleSearchChange={handleSearchChange}
           handleReset={handleReset}
+          openModal={openModal}
         />
-        <DevlogListTable accountData={account} data={accountDevlog} openModal={openModal} />
         <DevlogListModal data={selectedDevlog} closeModal={closeModal} isModalOpen={isModalOpen} />
       </div>
     </div>
