@@ -41,8 +41,9 @@ export default function DevlogList() {
   const [originalAccount, setOriginalAccount] = useState<Account[]>([]);
 
   const [accountDevlog, setAccountDevlog] = useState<AccountDevlog[]>([]);
-
   const [selectedDevlog, setSelectedDevlog] = useState<AccountDevlog[]>([]);
+
+  const [userRole, setUserRole] = useState<string | null>("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -65,8 +66,9 @@ export default function DevlogList() {
         const data = await res.data;
 
         const userRoleId = [...new Set(data.account.filter((acc: Account) => acc.role === userRole).map((acc: Account) => acc.role_id))];
-
         const accountList = data.account.filter((acc: Account) => acc.role_id > Number(userRoleId));
+
+        setUserRole(userRole);
 
         setAccount(accountList);
         setOriginalAccount(accountList);
@@ -108,6 +110,7 @@ export default function DevlogList() {
     <div className="p-5">
       <div className="w-full rounded px-5 bg-white">
         <DevlogListTable
+          userRole={userRole}
           accountData={account}
           accountDevlogData={accountDevlog}
           searchInput={searchInput}

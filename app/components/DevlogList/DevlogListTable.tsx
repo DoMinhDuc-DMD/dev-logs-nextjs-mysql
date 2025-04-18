@@ -10,6 +10,7 @@ import Search from "antd/es/input/Search";
 import { ChangeEvent } from "react";
 
 interface DevlogListTableProps {
+  userRole: string | null;
   accountDevlogData: AccountDevlog[];
   accountData: Account[];
   searchInput: string;
@@ -20,6 +21,7 @@ interface DevlogListTableProps {
 }
 
 export default function DevlogListTable({
+  userRole,
   accountDevlogData,
   accountData,
   searchInput,
@@ -29,7 +31,7 @@ export default function DevlogListTable({
   handleReset,
 }: DevlogListTableProps) {
   const [selectedAccount, setSelectedAccount] = useState<Account[]>([]);
-  const csvCondition = sessionStorage.getItem("userRole") === "Admin" || sessionStorage.getItem("userRole") === "HR";
+  const csvCondition = userRole === "Admin" || userRole === "HR";
 
   const columns = [
     {
