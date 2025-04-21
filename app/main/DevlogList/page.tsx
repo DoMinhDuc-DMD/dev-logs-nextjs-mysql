@@ -7,6 +7,7 @@ import "@ant-design/v5-patch-for-react-19";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
 import DevlogListModal from "../../components/DevlogList/DevlogListModal";
 import DevlogListTable from "../../components/DevlogList/DevlogListTable";
+import { notification } from "antd";
 
 export interface Account {
   id: number;
@@ -35,24 +36,46 @@ export interface AccountDevlog {
 
 export default function DevlogList() {
   const router = useRouter();
-  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchAccountInput, setSearchAccountInput] = useState<string>("");
+  const [searchDevlogInput, setSearchDevlogInput] = useState<string>("");
 
   const [account, setAccount] = useState<Account[]>([]);
   const [originalAccount, setOriginalAccount] = useState<Account[]>([]);
 
   const [accountDevlog, setAccountDevlog] = useState<AccountDevlog[]>([]);
+
+  const [originalSelectedDevlog, setOriginalSelectedDevlog] = useState<AccountDevlog[]>([]);
   const [selectedDevlog, setSelectedDevlog] = useState<AccountDevlog[]>([]);
 
   const [userRole, setUserRole] = useState<string | null>("");
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (msg: string) => {
+    api.info({
+      message: msg,
+      placement: "topRight",
+      duration: 2,
+      style: {
+        width: 400,
+        borderRadius: 10,
+      },
+    });
+  };
+
   const openModal = (devlog: AccountDevlog[]) => {
+    if (devlog.length === 0) {
+      openNotification("Nhân viên này chưa có dữ liệu nhập!");
+      return;
+    }
     setSelectedDevlog(devlog);
+    setOriginalSelectedDevlog(devlog);
     setIsModalOpen(true);
   };
   const closeModal = () => {
     setSelectedDevlog([]);
+    setOriginalSelectedDevlog([]);
     setIsModalOpen(false);
   };
 
@@ -85,11 +108,11 @@ export default function DevlogList() {
     if (!value) {
       setAccount(originalAccount);
     } else {
-      setSearchInput(value);
+      setSearchAccountInput(value);
       const searchTerm = value.toLowerCase();
 
       const filteredAccount = originalAccount.filter(
-        (acc: Account) => acc.employee_work_email.includes(searchTerm)
+        (acc: Account) => acc.employee_work_email.includes(searchTerm) || acc.employee_name.includes(searchTerm)
         // || acc.employee_code.includes(searchTerm)
       );
 
@@ -97,30 +120,65 @@ export default function DevlogList() {
     }
   };
 
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(e.target.value);
+  const handleSearchAccountChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchAccountInput(e.target.value);
   };
 
-  const handleReset = () => {
-    setSearchInput("");
+  const handleSearchDevlog = (value: string) => {
+    if (!value) {
+      setSelectedDevlog(originalSelectedDevlog);
+    } else {
+      setSearchDevlogInput(value);
+      const searchTerm = value.toLowerCase();
+
+      const filteredSelectedDevlog = originalSelectedDevlog.filter((devlog: AccountDevlog) =>
+        devlog.project_name.toLowerCase().includes(searchTerm)
+      );
+
+      setSelectedDevlog(filteredSelectedDevlog);
+    }
+  };
+
+  const handleSearchDevlogChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchDevlogInput(e.target.value);
+  };
+
+  const handleResetAccount = () => {
+    setSearchAccountInput("");
     setAccount(originalAccount);
   };
 
+  const handleResetSelectedDevlog = () => {
+    setSearchDevlogInput("");
+    setSelectedDevlog(originalSelectedDevlog);
+  };
+
   return (
-    <div className="p-5">
-      <div className="w-full rounded px-5 bg-white">
-        <DevlogListTable
-          userRole={userRole}
-          accountData={account}
-          accountDevlogData={accountDevlog}
-          searchInput={searchInput}
-          handleSearchAccount={handleSearchAccount}
-          handleSearchChange={handleSearchChange}
-          handleReset={handleReset}
-          openModal={openModal}
-        />
-        <DevlogListModal data={selectedDevlog} closeModal={closeModal} isModalOpen={isModalOpen} />
+    <>
+      {contextHolder}
+      <div className="p-5">
+        <div className="w-full rounded px-5 bg-white">
+          <DevlogListTable
+            userRole={userRole}
+            accountData={account}
+            accountDevlogData={accountDevlog}
+            searchAccountInput={searchAccountInput}
+            handleSearchAccount={handleSearchAccount}
+            handleSearchAccountChange={handleSearchAccountChange}
+            handleResetAccount={handleResetAccount}
+            openModal={openModal}
+          />
+          <DevlogListModal
+            data={selectedDevlog}
+            searchDevlogInput={searchDevlogInput}
+            closeModal={closeModal}
+            handleSearchDevlog={handleSearchDevlog}
+            handleSearchDevlogChange={handleSearchDevlogChange}
+            handleResetSelectedDevlog={handleResetSelectedDevlog}
+            isModalOpen={isModalOpen}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

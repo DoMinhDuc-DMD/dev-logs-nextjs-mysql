@@ -33,10 +33,16 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const [notification, setNotification] = useState<Notification[]>([]);
 
   const handleToggle = () => {
-    const sidebar = document.querySelector(".sidebar");
-    const content = document.querySelector(".content");
-    sidebar?.classList.toggle("hidden");
-    content?.classList.toggle("w-[100%]");
+    const content = document.querySelector(".content") as HTMLElement;
+    const isFullWidth = content.classList.contains("w-full");
+
+    if (isFullWidth) {
+      content.classList.remove("w-full");
+      content.classList.add("ml-[15%]", "w-[85%]");
+    } else {
+      content.classList.remove("ml-[15%]", "w-[85%]");
+      content.classList.add("w-full");
+    }
   };
 
   useEffect(() => {
@@ -62,9 +68,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     fetchData();
   }, [router]);
 
-  const filteredAccount = userName
-    .filter((acc: UserName) => acc.id === Number(userId))
-    .map((acc: UserName) => acc.employee_name || acc.employee_work_email);
+  const filteredAccount = userName.filter((acc: UserName) => acc.id === Number(userId)).map((acc: UserName) => acc.employee_name);
 
   const filteredNotice = notification.filter((item) => item.employee_id === Number(userId));
 
@@ -84,7 +88,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="flex">
-      <div className="sidebar w-[15%] h-[100vh] bg-white">
+      <div className="sidebar w-[15%] h-[100vh] bg-white transition-all duration-300 overflow-hidden">
         <div className="pt-50">
           <ul>
             <Link href="/main">
@@ -134,7 +138,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           </ul>
         </div>
       </div>
-      <div className="content w-[85%] h-[100vh] bg-gray-200">
+      <div className="content fixed ml-[15%] w-[85%] h-[100vh] bg-gray-200 transition-all duration-300">
         <div className="flex justify-between items-center w-[100%] h-12 bg-blue-300 px-6">
           <div className="flex gap-x-5 items-center">
             <div className="p-3 hover:bg-gray-400 cursor-pointer" onClick={handleToggle}>

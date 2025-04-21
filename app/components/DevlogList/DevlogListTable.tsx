@@ -13,22 +13,22 @@ interface DevlogListTableProps {
   userRole: string | null;
   accountDevlogData: AccountDevlog[];
   accountData: Account[];
-  searchInput: string;
+  searchAccountInput: string;
   openModal: (devlog: AccountDevlog[]) => void;
   handleSearchAccount: (value: string) => void;
-  handleSearchChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleReset: () => void;
+  handleSearchAccountChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleResetAccount: () => void;
 }
 
 export default function DevlogListTable({
   userRole,
   accountDevlogData,
   accountData,
-  searchInput,
+  searchAccountInput,
   openModal,
   handleSearchAccount,
-  handleSearchChange,
-  handleReset,
+  handleSearchAccountChange,
+  handleResetAccount,
 }: DevlogListTableProps) {
   const [selectedAccount, setSelectedAccount] = useState<Account[]>([]);
   const csvCondition = userRole === "Admin" || userRole === "HR";
@@ -84,7 +84,12 @@ export default function DevlogListTable({
             width: "5%",
             align: "center" as const,
             render: (record: Account) => {
-              return <Checkbox onChange={() => handleCheckBoxChange(record)} />;
+              return (
+                <Checkbox
+                  onChange={() => handleCheckBoxChange(record)}
+                  disabled={accountDevlogData.filter((dev) => dev.account_id === record.id).length === 0}
+                />
+              );
             },
           },
         ]
@@ -92,6 +97,12 @@ export default function DevlogListTable({
   ];
 
   const handleCheckBoxChange = (account: Account) => {
+    const devlogs = accountDevlogData.filter((dev) => dev.account_id === account.id);
+
+    if (devlogs.length === 0) {
+      return;
+    }
+
     setSelectedAccount((prev) => {
       const isAccountSelected = prev.find((acc: Account) => acc.id === account.id);
 
@@ -126,18 +137,18 @@ export default function DevlogListTable({
       <div className="flex justify-end">
         <div className="flex gap-x-5 py-5">
           {csvCondition && selectedAccount.length > 0 && (
-            <CSVLink data={csvData}>
+            <CSVLink data={csvData} filename="employee_devlog_data">
               <Button type="primary">
                 CSV Download <DownloadIcon />
               </Button>
             </CSVLink>
           )}
-          <Button icon={<RestoreIcon />} onClick={handleReset}></Button>
+          <Button icon={<RestoreIcon />} onClick={handleResetAccount}></Button>
           <Search
             placeholder="Nhập từ khóa"
-            value={searchInput}
-            onChange={handleSearchChange}
-            onSearch={() => handleSearchAccount(searchInput)}
+            value={searchAccountInput}
+            onChange={handleSearchAccountChange}
+            onSearch={() => handleSearchAccount(searchAccountInput)}
             enterButton
           />
         </div>

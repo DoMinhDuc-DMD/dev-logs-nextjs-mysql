@@ -1,15 +1,30 @@
 "use client";
 
 import { AccountDevlog } from "@/app/main/DevlogList/page";
-import { Modal, Table } from "antd";
+import { Button, Modal, Table } from "antd";
+import Search from "antd/es/input/Search";
+import { ChangeEvent } from "react";
+import RestoreIcon from "@mui/icons-material/Restore";
 
 interface DevlogListModalProps {
   data: AccountDevlog[];
   isModalOpen: boolean;
+  searchDevlogInput: string;
+  handleSearchDevlog: (value: string) => void;
+  handleSearchDevlogChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleResetSelectedDevlog: () => void;
   closeModal: () => void;
 }
 
-export default function DevlogListModal({ data, isModalOpen, closeModal }: DevlogListModalProps) {
+export default function DevlogListModal({
+  data,
+  isModalOpen,
+  searchDevlogInput,
+  handleSearchDevlog,
+  handleSearchDevlogChange,
+  handleResetSelectedDevlog,
+  closeModal,
+}: DevlogListModalProps) {
   const columns = [
     {
       title: "STT",
@@ -58,13 +73,25 @@ export default function DevlogListModal({ data, isModalOpen, closeModal }: Devlo
 
   return (
     <Modal
-      width={"70%"}
+      width={"80%"}
       className="text-center"
-      title={`Lịch sử nhập devlog của `}
+      title={`Lịch sử nhập devlog của ${data[0]?.employee_work_email}`}
       open={isModalOpen}
       onOk={closeModal}
       onCancel={closeModal}
     >
+      <div className="flex justify-end">
+        <div className="flex gap-x-5 mb-3">
+          <Button icon={<RestoreIcon />} onClick={handleResetSelectedDevlog}></Button>
+          <Search
+            placeholder="Nhập từ khóa"
+            value={searchDevlogInput}
+            onChange={handleSearchDevlogChange}
+            onSearch={() => handleSearchDevlog(searchDevlogInput)}
+            enterButton
+          />
+        </div>
+      </div>
       <Table rowKey="id" columns={columns} dataSource={data} size="small" pagination={{ pageSize: 10 }} />
     </Modal>
   );
