@@ -28,7 +28,6 @@ export async function GET() {
     return NextResponse.json({ formattedProject, formattedTask });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
   }
 }
 
@@ -50,6 +49,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Thêm devlog thành công!", status: 201 });
   } catch (error) {
-    console.error("Lỗi khi lưu dữ liệu:", error);
+    console.error(error);
   }
 }

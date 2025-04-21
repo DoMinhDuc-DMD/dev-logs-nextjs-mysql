@@ -36,11 +36,10 @@ export default function CreateAccount() {
     async function fetchRoles() {
       try {
         const res = await axios.get("/api/AccountCreate");
-        const data = res.data;
 
-        setOptions(data.roles);
+        setOptions(res.data.roles);
       } catch (error) {
-        console.error("Lỗi lấy danh sách role: ", error);
+        console.error(error);
       }
     }
     fetchRoles();
@@ -90,7 +89,7 @@ export default function CreateAccount() {
         }, 1000);
       }
     } catch (error) {
-      console.error("Lỗi tạo tài khoản: ", error);
+      console.error(error);
     }
   }
 

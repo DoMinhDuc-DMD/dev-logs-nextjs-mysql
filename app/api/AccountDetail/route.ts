@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     await db.close();
 
     if (!account) {
-      return NextResponse.json({ message: "Không tìm thấy tài khoản" }, { status: 404 });
+      return NextResponse.json({ message: "Không tìm thấy tài khoản!" }, { status: 404 });
     }
 
     return NextResponse.json(account);

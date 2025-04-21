@@ -41,12 +41,20 @@ export default function AccountListTable({
       render: (_: unknown, __: unknown, index: number) => index + 1,
     },
     {
+      title: "Họ tên nhân viên",
+      dataIndex: "employee_name",
+      key: "employee_name",
+      width: "20%",
+      align: "center" as const,
+      onCell: () => ({ style: { textAlign: "left" as const, paddingLeft: "30px" } }),
+    },
+    {
       title: "Email",
       dataIndex: "employee_work_email",
       key: "employee_work_email",
-      width: "25%",
+      width: "20%",
       align: "center" as const,
-      onCell: () => ({ style: { textAlign: "left" as const, padding: " 10px" } }),
+      onCell: () => ({ style: { textAlign: "left" as const } }),
       render: (text: string, record: Account) =>
         editingId === record.id ? (
           <Input name="employee_work_email" type="email" value={editedData?.employee_work_email || ""} onChange={handleChange} />
@@ -55,21 +63,21 @@ export default function AccountListTable({
         ),
     },
     {
-      title: "Password",
+      title: "Mật khẩu",
       dataIndex: "employee_work_password",
       key: "employee_work_password",
-      width: "25%",
+      width: "20%",
       align: "center" as const,
       render: (_: unknown, record: Account) =>
         editingId === record.id ? (
           <Input name="employee_work_password" value={editedData?.employee_work_password || ""} onChange={handleChange} />
         ) : (
-          "******"
+          "********"
         ),
     },
     {
-      title: "Role",
-      width: "20%",
+      title: "Chức vụ",
+      width: "15%",
       align: "center" as const,
       render: (record: Account) =>
         editingId === record.id ? (
@@ -79,8 +87,8 @@ export default function AccountListTable({
         ),
     },
     {
-      title: "Actions",
-      width: "20%",
+      title: "Hành động",
+      width: "15%",
       align: "center" as const,
       render: (record: Account) =>
         editingId === record.id ? (
@@ -90,10 +98,10 @@ export default function AccountListTable({
         ) : (
           <div className="flex gap-x-2 justify-center">
             <Button onClick={() => router.push(`/main/AccountDetail?id=${record.id}`)} type="primary">
-              Detail
+              Chi tiết
             </Button>
             <Button onClick={() => handleAdjust(record)} variant="solid" color="cyan">
-              Adjust
+              Sửa
             </Button>
           </div>
         ),

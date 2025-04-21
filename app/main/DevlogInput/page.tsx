@@ -54,7 +54,7 @@ export default function Form() {
         setProject(filteredProject);
         setTask(data.formattedTask);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error(error);
       }
     }
     fetchProjectTask();
@@ -143,7 +143,7 @@ export default function Form() {
             </div>
             <TextArea name="note" rows={4} placeholder="Ghi chú" onChange={handleTextAreaChange} disabled={disabled} />
             <Button onClick={handleSubmit} type="primary" className="mt-5" disabled={isButtonDisabled || disabled}>
-              Add devlog
+              Lưu devlog
             </Button>
           </div>
         </div>

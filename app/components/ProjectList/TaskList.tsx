@@ -78,7 +78,7 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
 
     const hasEmptyTask = [...updatedTasks, ...newProjectTasks].some((t) => t.task_name.trim() == "");
     if (hasEmptyTask) {
-      openNotification("Tên task không được để trống");
+      openNotification("Tên task không được để trống!");
       return;
     }
 
@@ -90,7 +90,7 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
       handleCloseModal(projectId);
       fetchData();
     } catch (error) {
-      console.error("Lỗi cập nhật dự án:", error);
+      console.error(error);
     }
   };
 

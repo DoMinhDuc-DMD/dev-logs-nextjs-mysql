@@ -28,6 +28,7 @@ export default function ProjectModal({
   return (
     <Modal
       width={"50%"}
+      style={{ textAlign: "center" }}
       title="Điều chỉnh dự án"
       open={isOpenProjectModal[projectId] || false}
       onOk={() => handleCloseModal(projectId)}

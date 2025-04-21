@@ -47,7 +47,7 @@ export default function AddProject() {
         const res = await axios.get<Dev[]>("/api/ProjectAdd");
         setDev(Array.isArray(res.data) ? res.data : []);
       } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu:", error);
+        console.error(error);
       }
     }
     fetchData();
@@ -67,7 +67,7 @@ export default function AddProject() {
         window.location.reload();
       }, 2000);
     } catch (error) {
-      console.error("Lỗi thêm dự án:", error);
+      console.error(error);
     }
   };
 

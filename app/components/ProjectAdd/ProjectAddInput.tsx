@@ -52,8 +52,8 @@ export default function ProjectAddInput({
               <Select
                 optionFilterProp="label"
                 listHeight={200}
-                style={{ width: "50%", height: 40 }}
-                placeholder="Select member"
+                style={{ width: "60%", height: 40 }}
+                placeholder="Chọn thành viên"
                 mode="multiple"
                 options={devs.map((devs) => ({ value: devs.id, label: devs.employee_name }))}
                 onChange={handleSelectChange}
@@ -66,6 +66,7 @@ export default function ProjectAddInput({
             <label htmlFor="start_date">Thời gian bắt đầu:</label>
             <DatePicker
               style={{ width: "50%", padding: "8px" }}
+              placeholder="Chọn ngày bắt đầu"
               onChange={(date) => handleDateChange("start_date", date)}
               disabled={disabled}
             />
@@ -74,6 +75,7 @@ export default function ProjectAddInput({
             <label htmlFor="end_date">Thời gian kết thúc (dự kiến):</label>
             <DatePicker
               style={{ width: "50%", padding: "8px" }}
+              placeholder="Chọn ngày kết thúc"
               onChange={(date) => handleDateChange("end_date", date)}
               disabled={disabled}
             />

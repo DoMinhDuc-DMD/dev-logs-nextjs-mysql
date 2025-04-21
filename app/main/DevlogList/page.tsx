@@ -98,7 +98,7 @@ export default function DevlogList() {
 
         setAccountDevlog(data.accountDevlog);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error(error);
       }
     };
     fetchData();

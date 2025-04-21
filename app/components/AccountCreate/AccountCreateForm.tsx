@@ -37,6 +37,7 @@ export default function AccountCreateForm({
             Phân loại vị trí:
           </label>
           <Select options={options} onChange={(selected) => setSelectedRole(selected)} disabled={disabled} />
+          {/* Upload avatar image */}
         </div>
         <div className="flex flex-col gap-y-2">
           <label className="block text-left" htmlFor="employee_name">
@@ -46,7 +47,7 @@ export default function AccountCreateForm({
           <label className="block text-left" htmlFor="birthday">
             Ngày sinh:
           </label>
-          <DatePicker name="birthday" disabled={disabled} />
+          <DatePicker name="birthday" placeholder="Chọn ngày" disabled={disabled} />
           <label className="block text-left" htmlFor="phone_number">
             Số điện thoại:
           </label>
@@ -58,7 +59,7 @@ export default function AccountCreateForm({
         </div>
       </div>
       <div className="w-30 pt-10 mx-auto">
-        <Button className="w-full  mx-auto" type="primary" htmlType="submit" disabled={disabled}>
+        <Button className="w-full mx-auto" type="primary" htmlType="submit" disabled={disabled}>
           Tạo tài khoản
         </Button>
       </div>

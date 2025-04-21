@@ -17,7 +17,7 @@ export default function AccountListSearch({ searchInput, handleReset, handleSear
     <div className="flex py-5 gap-x-5 justify-end">
       <Button icon={<RestoreIcon />} onClick={handleReset}></Button>
       <Search
-        placeholder="Input search text"
+        placeholder="Nhập từ khóa"
         value={searchInput}
         style={{ width: "25%" }}
         onChange={handleSearchChange}

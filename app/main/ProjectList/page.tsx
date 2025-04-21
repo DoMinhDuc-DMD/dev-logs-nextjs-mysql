@@ -56,7 +56,7 @@ export default function ProjectList() {
       setDefaultTask(data.tasks ?? []);
       setMember(data.members ?? []);
     } catch (error) {
-      console.log("Lỗi khi lấy dữ liệu: ", error);
+      console.error(error);
     }
   }, []);
 

@@ -1,12 +1,13 @@
 "use client";
 
-import { Button, Input } from "antd";
+import { Avatar, Button, Input } from "antd";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
+import { UserOutlined } from "@ant-design/icons";
 
 export default function AccountDetail() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function AccountDetail() {
 
         setInfo(res.data);
       } catch (error) {
-        console.log("Lỗi lấy thông tin tài khoản: ", error);
+        console.error(error);
       }
     }
     fetchInfo();
@@ -43,10 +44,10 @@ export default function AccountDetail() {
 
   return (
     <div className="p-5">
-      <div className="rounded bg-white text-center py-5">
-        <p>Account Detail of {info.employee_name || info.employee_work_email}</p>
-        <div className="w-[60%] mx-auto grid grid-cols-2 p-5 text-left gap-10">
-          <div>
+      <div className="h-[90vh] rounded bg-white text-center py-5">
+        <Avatar size={150} icon={<UserOutlined />} className="mt-5" />
+        <div className="justify-center flex flex-cols-2 p-5 text-left gap-15">
+          <div className="w-[25%] flex flex-col gap-y-2">
             <label htmlFor="employee_id">Mã nhân viên:</label>
             <Input name="employee_id" value={info?.employee_code || ""} readOnly />
             <label htmlFor="role">Chức vụ/Vị trí:</label>
@@ -64,7 +65,7 @@ export default function AccountDetail() {
             <label htmlFor="employee_private_email">Email cá nhân:</label>
             <Input name="employee_private_email" value={info?.employee_private_email || ""} readOnly />
           </div>
-          <div>
+          <div className="w-[25%] flex flex-col gap-y-2">
             <label htmlFor="employee_phone_number">Số điện thoại:</label>
             <Input name="employee_phone_number" value={info?.employee_phone_number || ""} readOnly />
             <label htmlFor="employee_citizen_identification">CCCD/CMND:</label>
@@ -78,7 +79,7 @@ export default function AccountDetail() {
           </div>
         </div>
         <Button onClick={() => history.back()} variant="solid" color="danger">
-          Return
+          Quay lại
         </Button>
       </div>
     </div>

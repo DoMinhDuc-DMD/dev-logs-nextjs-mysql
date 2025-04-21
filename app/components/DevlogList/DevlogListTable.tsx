@@ -137,9 +137,9 @@ export default function DevlogListTable({
       <div className="flex justify-end">
         <div className="flex gap-x-5 py-5">
           {csvCondition && selectedAccount.length > 0 && (
-            <CSVLink data={csvData} filename="employee_devlog_data">
+            <CSVLink className="" data={csvData} filename="employee_devlog_data">
               <Button type="primary">
-                CSV Download <DownloadIcon />
+                Download CSV <DownloadIcon />
               </Button>
             </CSVLink>
           )}

@@ -20,7 +20,7 @@ export async function GET() {
       return NextResponse.json({ roles: formattedRoles, account });
     } 
     catch (error) {
-        console.error("Lỗi lấy danh sách role: ", error);
+      console.error(error);
     }
 }
 
@@ -47,6 +47,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Tạo tài khoản thành công!", status: 201 });
   } catch (error) {
-    console.error("Lỗi khi tạo tài khoản: ", error);
+    console.error(error);
   }
 }

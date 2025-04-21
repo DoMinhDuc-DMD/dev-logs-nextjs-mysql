@@ -7,8 +7,8 @@ export async function GET() {
   try {
     const db = await openDB();
 
-    const account = await db.all("SELECT account.*, role.role_name as role FROM account, role WHERE role_name != 'Admin' AND role.id = account.role_id");
-    const role = await db.all("SELECT * FROM role WHERE role_name != 'Admin'");
+    const account = await db.all("SELECT account.*, role.role_name as role FROM account, role WHERE role.id = account.role_id");
+    const role = await db.all("SELECT * FROM role");
 
     await db.close();
 

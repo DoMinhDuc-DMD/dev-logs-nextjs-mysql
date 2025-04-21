@@ -85,7 +85,7 @@ export default function Main() {
         const filteredData = data.filter((devlog: { account_id: number }) => devlog.account_id === Number(userId));
         setDevlogList(filteredData);
       } catch (error) {
-        console.log("Lỗi lấy dữ liệu: ", error);
+        console.error(error);
       }
     }
     fetchDevlog();

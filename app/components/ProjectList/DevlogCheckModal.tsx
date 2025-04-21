@@ -44,7 +44,7 @@ export default function DevlogCheckModal({
       const res = await axios.post("/api/ProjectList", { action: "noticeDevlog", userId, accountId, projectId: project.id, date });
       openNotification(res.data.message, memberName);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
 
     setDisabled((prev) => ({ ...prev, [accountId]: true }));
@@ -104,6 +104,7 @@ export default function DevlogCheckModal({
       {contextHolder}
       <Modal
         title="Theo dõi devlog nhân viên"
+        style={{ textAlign: "center" }}
         width={"50%"}
         open={isOpenDevlogCheckModal[project.id] || false}
         onOk={() => handleCloseModal(project.id)}

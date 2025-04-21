@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { 
           message: "Email hoặc mật khẩu không đúng!", 
-          description: "Vui lòng kiểm tra lại", 
+          description: "Vui lòng kiểm tra lại!", 
           status: 401 
         }
       );
@@ -25,14 +25,15 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        message: "Đăng nhập thành công",
-        description: "Đăng nhập hệ thống Devlog Manage",
+        message: "Đăng nhập thành công1",
+        description: "Đăng nhập hệ thống Devlog Manage!",
         userId: user.id,
         userRole: user.role,
+        userName: user.employee_name,
         status: 200
       }
     );
   } catch (error) {
-    console.error("Lỗi server:", error);
+    console.error(error);
   }
 }

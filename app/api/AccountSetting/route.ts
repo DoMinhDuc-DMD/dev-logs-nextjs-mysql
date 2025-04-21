@@ -39,6 +39,6 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json({ message: "Cập nhật thành công!" }, { status: 200 });
   } catch (error) {
-    console.error("Lỗi cập nhật tài khoản:", error);
+    console.error(error);
   }
 }

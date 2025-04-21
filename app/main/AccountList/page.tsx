@@ -57,7 +57,7 @@ export default function AccountList() {
       setOriginalData(data.account);
       setOptions(data.formattedRole);
     } catch (error) {
-      console.log("Lỗi lấy danh sách tài khoản: ", error);
+      console.error(error);
     }
   };
 
@@ -115,7 +115,7 @@ export default function AccountList() {
       setEditingId(null);
       setEditedData(null);
     } catch (error) {
-      console.log("Lỗi lưu thông tin tài khoản: ", error);
+      console.error(error);
     }
   };
 

@@ -49,6 +49,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Thêm dự án thành công!", status: 201 });
   } catch (error) {
-    console.error("Lỗi khi lưu dữ liệu:", error);
+    console.error(error);
   }
 }

@@ -1,11 +1,12 @@
 "use client";
 
-import { Button, DatePicker, Input, notification } from "antd";
+import { Avatar, Button, DatePicker, Input, notification } from "antd";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
+import { UserOutlined } from "@ant-design/icons";
 
 export default function AccountSetting() {
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function AccountSetting() {
         setInfo(data[0]);
         setOriginalInfo(data[0]);
       } catch (error) {
-        console.log("Lỗi lấy thông tin tài khoản: ", error);
+        console.error(error);
       }
     }
     fetchInfo();
@@ -83,7 +84,7 @@ export default function AccountSetting() {
         window.location.reload();
       }, 1000);
     } catch (error) {
-      console.log("Lỗi cập nhật thông tin tài khoản: ", error);
+      console.error(error);
     }
   };
 
@@ -100,10 +101,10 @@ export default function AccountSetting() {
     <>
       {contextHolder}
       <div className="p-5">
-        <div className="rounded bg-white text-center py-5">
-          <p>Account Setting</p>
-          <div className="w-[60%] mx-auto grid grid-cols-2 p-5 text-left gap-10">
-            <div>
+        <div className="h-[90vh] rounded bg-white text-center py-5">
+          <Avatar size={150} icon={<UserOutlined />} className="mt-5" />
+          <div className="justify-center flex flex-cols-2 p-5 text-left gap-15">
+            <div className="w-[25%] flex flex-col gap-y-2">
               <label htmlFor="employee_id">Mã nhân viên:</label>
               <Input name="employee_id" value={info?.employee_code || ""} readOnly />
               <label htmlFor="employee_name">Họ và tên:</label>
@@ -121,7 +122,7 @@ export default function AccountSetting() {
               <label htmlFor="employee_private_email">Email cá nhân:</label>
               <Input name="employee_private_email" value={info?.employee_private_email || ""} onChange={handleChange} />
             </div>
-            <div>
+            <div className="w-[25%] flex flex-col gap-y-2">
               <label htmlFor="employee_phone_number">Số điện thoại:</label>
               <Input name="employee_phone_number" value={info?.employee_phone_number || ""} onChange={handleChange} />
               <label htmlFor="employee_citizen_identification">CCCD/CMND:</label>
@@ -132,12 +133,13 @@ export default function AccountSetting() {
               <Input name="employee_license_plate" value={info?.employee_license_plate || ""} onChange={handleChange} />
             </div>
           </div>
+
           <div className="flex gap-x-3 justify-center w-full">
             <Button onClick={handleUpdate} type="primary" disabled={!isInfoChanged}>
-              Update
+              Cập nhật
             </Button>
             <Button onClick={handleLogout} color="danger" variant="solid">
-              Logout
+              Đăng xuất
             </Button>
           </div>
         </div>

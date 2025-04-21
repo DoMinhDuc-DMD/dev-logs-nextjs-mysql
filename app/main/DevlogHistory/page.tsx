@@ -19,6 +19,7 @@ export interface DevlogHistory {
 
 export default function DevlogHistory() {
   const router = useRouter();
+  const [userName, setUserName] = useState("");
   const [devlogList, setDevlogList] = useState<DevlogHistory[]>([]);
 
   const currentMonth = dayjs().month() + 1;
@@ -45,6 +46,8 @@ export default function DevlogHistory() {
 
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
+    const userName = sessionStorage.getItem("userName");
+    setUserName(userName || "");
 
     async function fetchDevlog() {
       try {
@@ -54,7 +57,7 @@ export default function DevlogHistory() {
 
         setDevlogList(filteredData);
       } catch (error) {
-        console.log("Lỗi lấy dữ liệu: ", error);
+        console.error(error);
       }
     }
     fetchDevlog();
@@ -63,10 +66,10 @@ export default function DevlogHistory() {
   return (
     <div className="p-5">
       <div className="w-full h-[80vh] p-5 rounded bg-white">
-        <DatePicker picker="month" onChange={handleSelectDate} />
+        <DatePicker picker="month" placeholder="Chọn tháng" onChange={handleSelectDate} />
         <div className="h-[90%] mt-5 grid grid-cols-[20%_120%_5%] overflow-x-auto">
           <div className="grid grid-rows-9" style={{ position: "sticky", left: 0, zIndex: 10 }}>
-            <div className="flex border px-5 items-center justify-center bg-blue-300">Name</div>
+            <div className="flex border px-5 items-center justify-center bg-blue-300">{userName}</div>
             <div className="flex border px-5 items-center justify-center bg-blue-200 font-bold">Tên task</div>
             <div className="flex border px-5 items-center bg-gray-200">Task 1</div>
             <div className="flex border px-5 items-center bg-gray-200">Task 2</div>

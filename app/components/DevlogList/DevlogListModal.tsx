@@ -56,7 +56,7 @@ export default function DevlogListModal({
       align: "center" as const,
     },
     {
-      title: "Thời gian nhập devlog",
+      title: "Ngày nhập devlog",
       dataIndex: "date",
       key: "date",
       width: "15%",
