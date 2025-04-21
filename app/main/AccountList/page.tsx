@@ -11,6 +11,7 @@ import AccountListTable from "../../components/AccountList/AccountListTable";
 
 export interface Account {
   id: number;
+  employee_name: string;
   employee_work_email: string;
   employee_work_password: string;
   role: string;
@@ -127,7 +128,7 @@ export default function AccountList() {
       const searchTerm = value.toLowerCase();
 
       const filteredAccounts = originalData.filter(
-        (account) => account.employee_work_email.includes(searchTerm) || account.role.toLowerCase().includes(searchTerm)
+        (account) => account.employee_work_email.includes(searchTerm) || account.employee_name.toLowerCase().includes(searchTerm)
       );
 
       setAccounts(filteredAccounts);
