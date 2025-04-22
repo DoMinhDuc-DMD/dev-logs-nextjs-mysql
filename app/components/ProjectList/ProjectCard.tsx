@@ -21,17 +21,25 @@ export default function ProjectCard({
   openDevlogCheckModal,
 }: ProjectCardProps) {
   return (
-    <div key={project.id} className={`flex flex-col items-center bg-blue-200 border rounded m-3 py-6 px-3`}>
+    <div key={project.id} className="flex flex-col items-center bg-blue-200 border rounded m-3 p-3">
       <div className="w-full flex justify-between items-center">
         <div>
-          <div className="font-semibold">Tên dự án: {project.project_name}</div>
-          <div>Số lượng thành viên: {memberProject.length} người</div>
-          <div>Số lượng task: {projectTask.length} task</div>
-          <div>Mô tả dự án: {project.description}</div>
+          <div>
+            <strong>Tên dự án:</strong> {project.project_name}
+          </div>
+          <div>
+            <strong>Số lượng thành viên:</strong> {memberProject.length} người
+          </div>
+          <div>
+            <strong>Số lượng tác vụ:</strong> {projectTask.length} tác vụ
+          </div>
+          <div>
+            <strong>Mô tả dự án:</strong> {project.description}
+          </div>
         </div>
         <div className="flex flex-col gap-y-3">
           <Button type="primary" onClick={() => openProjectModal(project.id)}>
-            Điều chỉnh dự án
+            Sửa tác vụ
           </Button>
           {memberRole === "Leader" && (
             <Button type="primary" onClick={() => openDevlogCheckModal(project.id)}>

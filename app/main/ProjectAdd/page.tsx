@@ -118,8 +118,8 @@ export default function AddProject() {
     <>
       {contextHolder}
       <div className="p-5">
-        <div className="w-full text-center rounded-lg bg-white p-5">
-          <h1 className="text-2xl font-bold">Thêm dự án</h1>
+        <div className="w-full rounded-lg bg-white p-5">
+          <h1 className="text-xl text-center font-bold">Tạo dự án mới</h1>
           <ProjectAddButton
             tasks={tasks}
             disabled={disabled}

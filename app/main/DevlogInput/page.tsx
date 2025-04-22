@@ -147,7 +147,7 @@ export default function Form() {
             </Button>
           </div>
         </div>
-        <DatePicker onChange={handleDateChange} className="w-[30%] h-10" />
+        <DatePicker onChange={handleDateChange} placeholder="Chọn ngày" className="w-[30%] h-10" />
       </div>
     </>
   );

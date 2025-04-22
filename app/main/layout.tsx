@@ -76,11 +76,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     key: item.id,
     label: (
       <Link href={"/main/DevlogInput"}>
-        <div className="w-[300px]">
-          <div>{dayjs(new Date(item.date)).format("HH:mm, DD/MM/YYYY")}</div>
-          <div className="text-red-500">
-            Leader báo nhập devlog cho dự án {item.project_name} lần thứ {item.notice_count}!
-          </div>
+        <div>{dayjs(new Date(item.date)).format("HH:mm, DD/MM/YYYY")}</div>
+        <div className="text-red-500">
+          Leader báo nhập devlog cho dự án {item.project_name} lần thứ {item.notice_count}!
         </div>
       </Link>
     ),
@@ -140,7 +138,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       </div>
       <div className="content fixed ml-[15%] w-[85%] h-[100vh] bg-gray-200 transition-all duration-300">
         <div className="flex justify-between items-center w-[100%] h-12 bg-blue-300 px-6">
-          <div className="flex gap-x-5 items-center">
+          <div className="flex gap-x-2 items-center">
             <div className="p-3 hover:bg-gray-400 cursor-pointer" onClick={handleToggle}>
               <MenuTwoToneIcon fontSize="small" />
             </div>
@@ -148,14 +146,20 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               Trang chủ
             </Link>
           </div>
-          <div className="flex gap-x-5 items-center">
-            <Dropdown menu={{ items }} trigger={["click"]} placement="bottomRight" arrow={filteredNotice.length > 0}>
+          <div className="flex gap-x-2 items-center">
+            <Dropdown
+              menu={{ items, className: "custom-notification-menu" }}
+              trigger={["click"]}
+              placement="bottom"
+              arrow={filteredNotice.length > 0}
+            >
               <div className="p-3 hover:bg-gray-400 cursor-pointer">
                 <Badge count={filteredNotice.length} size="small">
                   <BellFilled style={{ fontSize: 20 }} />
                 </Badge>
               </div>
             </Dropdown>
+
             <Link href="/main/AccountSetting" className="w-[150px] text-center p-3 cursor-pointer hover:bg-gray-400">
               {filteredAccount}
             </Link>

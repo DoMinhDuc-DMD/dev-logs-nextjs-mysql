@@ -3,7 +3,7 @@
 import { Avatar, Button, DatePicker, Input, notification } from "antd";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import { UserOutlined } from "@ant-design/icons";
@@ -22,7 +22,7 @@ export default function AccountSetting() {
     employee_citizen_identification: "",
     employee_license_plate: "",
   });
-  const [originalInfo, setOriginalInfo] = useState<typeof info | null>(null);
+  const [originalInfo, setOriginalInfo] = useState<typeof info>();
   const [api, contextHolder] = notification.useNotification();
 
   const openNotification = (msg: string) => {
@@ -70,6 +70,16 @@ export default function AccountSetting() {
     }));
   };
 
+  const handleNumberTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.target;
+
+    const onlyNumbers = value.replace(/[^0-9]/g, "");
+    setInfo((prev) => ({
+      ...prev,
+      [name]: onlyNumbers,
+    }));
+  };
+
   const handleUpdate = async () => {
     try {
       const userId = sessionStorage.getItem("userId");
@@ -92,6 +102,7 @@ export default function AccountSetting() {
     sessionStorage.removeItem("userId");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("isLogin");
+    sessionStorage.removeItem("userName");
     router.replace("/Auth");
   };
 
@@ -113,20 +124,25 @@ export default function AccountSetting() {
               <DatePicker
                 name="employee_birthday"
                 format="YYYY-MM-DD"
+                placeholder="Chọn ngày sinh"
                 value={info?.employee_birthday ? dayjs(info.employee_birthday) : null}
                 onChange={handleDateChange}
                 className="w-full"
               />
               <label htmlFor="employee_bank_account">Số tài khoản TCB:</label>
-              <Input name="employee_bank_account" value={info?.employee_bank_account || ""} onChange={handleChange} />
+              <Input name="employee_bank_account" value={info?.employee_bank_account || ""} onChange={handleNumberTypeChange} />
               <label htmlFor="employee_private_email">Email cá nhân:</label>
               <Input name="employee_private_email" value={info?.employee_private_email || ""} onChange={handleChange} />
             </div>
             <div className="w-[25%] flex flex-col gap-y-2">
               <label htmlFor="employee_phone_number">Số điện thoại:</label>
-              <Input name="employee_phone_number" value={info?.employee_phone_number || ""} onChange={handleChange} />
+              <Input name="employee_phone_number" value={info?.employee_phone_number || ""} onChange={handleNumberTypeChange} />
               <label htmlFor="employee_citizen_identification">CCCD/CMND:</label>
-              <Input name="employee_citizen_identification" value={info?.employee_citizen_identification || ""} onChange={handleChange} />
+              <Input
+                name="employee_citizen_identification"
+                value={info?.employee_citizen_identification || ""}
+                onChange={handleNumberTypeChange}
+              />
               <label htmlFor="employee_work_email">Email:</label>
               <Input name="employee_work_email" value={info?.employee_work_email || ""} onChange={handleChange} />
               <label htmlFor="employee_license_plate">Biển số xe:</label>

@@ -58,15 +58,15 @@ export default function LoginForm() {
         <h2 className="text-center text-xl font-semibold mb-5">Đăng nhập hệ thống</h2>
         <div className="flex flex-col gap-y-4">
           <label className="block text-left" htmlFor="email">
-            Tài khoản vikmail
+            Tài khoản vikmail:
           </label>
           <Input style={{ padding: 10 }} placeholder="Nhập tài khoản vikmail" type="email" name="email" disabled={disabled} />
           <label className="block text-left" htmlFor="password">
-            Mật khẩu
+            Mật khẩu:
           </label>
           <Input.Password style={{ padding: 10 }} placeholder="Nhập mật khẩu" type="password" name="password" disabled={disabled} />
           <Button className="w-30 py-2 mx-auto" type="primary" htmlType="submit" disabled={disabled}>
-            Login
+            Đăng nhập
           </Button>
         </div>
       </form>

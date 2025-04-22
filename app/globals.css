@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+/* styles/globals.css hoặc file CSS bạn dùng */
+.custom-notification-menu {
+    max-height: 400px;
+    overflow-y: auto;
+    width: 350px;
+  }
+  

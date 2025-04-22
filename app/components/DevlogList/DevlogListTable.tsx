@@ -134,8 +134,9 @@ export default function DevlogListTable({
 
   return (
     <>
-      <div className="flex justify-end">
-        <div className="flex gap-x-5 py-5">
+      <div className="py-5">
+        <h1 className="text-center text-xl font-bold">Danh sách nhân viên nhập devlog</h1>
+        <div className="flex justify-end gap-x-5">
           {csvCondition && selectedAccount.length > 0 && (
             <CSVLink className="" data={csvData} filename="employee_devlog_data">
               <Button type="primary">
@@ -147,6 +148,7 @@ export default function DevlogListTable({
           <Search
             placeholder="Nhập từ khóa"
             value={searchAccountInput}
+            style={{ width: "25%" }}
             onChange={handleSearchAccountChange}
             onSearch={() => handleSearchAccount(searchAccountInput)}
             enterButton

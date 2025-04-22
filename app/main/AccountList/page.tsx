@@ -15,6 +15,7 @@ export interface Account {
   employee_work_email: string;
   employee_work_password: string;
   role: string;
+  role_id: number;
 }
 
 export interface Option {
@@ -51,11 +52,15 @@ export default function AccountList() {
 
   const fetchAccount = async () => {
     try {
+      const userRole = sessionStorage.getItem("userRole");
       const res = await axios.get("/api/AccountList");
       const data = res.data;
 
-      setAccounts(data.account);
-      setOriginalData(data.account);
+      const userRoleId = [...new Set(data.account.filter((acc: Account) => acc.role === userRole).map((acc: Account) => acc.role_id))];
+      const accountList = data.account.filter((acc: Account) => acc.role_id > Number(userRoleId));
+
+      setAccounts(accountList);
+      setOriginalData(accountList);
       setOptions(data.formattedRole);
     } catch (error) {
       console.error(error);
@@ -128,7 +133,10 @@ export default function AccountList() {
       const searchTerm = value.toLowerCase();
 
       const filteredAccounts = originalData.filter(
-        (account) => account.employee_work_email.includes(searchTerm) || account.employee_name.toLowerCase().includes(searchTerm)
+        (account) =>
+          account.employee_work_email.includes(searchTerm) ||
+          account.employee_name.toLowerCase().includes(searchTerm) ||
+          account.role.toLowerCase().includes(searchTerm)
       );
 
       setAccounts(filteredAccounts);

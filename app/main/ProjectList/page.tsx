@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
-import ProjectListComponent from "../../components/ProjectList/ProjectList";
+import ProjectListComponent from "../../components/ProjectList/ProjectListComponent";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
 
 export interface ProjectList {
@@ -71,9 +71,9 @@ export default function ProjectList() {
 
   return (
     <div className="p-5">
-      <div className="w-full h-[85vh] p-5 rounded bg-white">
-        <div className="text-center mb-3">Danh sách các dự án</div>
-        <div className="h-[95%] border rounded overflow-y-auto">
+      <div className="w-full h-[90vh] p-5 rounded bg-white">
+        <h1 className="text-xl pb-5 text-center font-bold">Danh sách dự án</h1>
+        <div className="h-[93%] border rounded overflow-y-auto">
           <ProjectListComponent
             projects={project}
             tasks={task}

@@ -70,13 +70,13 @@ export default function DevlogHistory() {
         <div className="h-[90%] mt-5 grid grid-cols-[20%_120%_5%] overflow-x-auto">
           <div className="grid grid-rows-9" style={{ position: "sticky", left: 0, zIndex: 10 }}>
             <div className="flex border px-5 items-center justify-center bg-blue-300">{userName}</div>
-            <div className="flex border px-5 items-center justify-center bg-blue-200 font-bold">Tên task</div>
-            <div className="flex border px-5 items-center bg-gray-200">Task 1</div>
-            <div className="flex border px-5 items-center bg-gray-200">Task 2</div>
-            <div className="flex border px-5 items-center bg-gray-200">Task 3</div>
-            <div className="flex border px-5 items-center bg-gray-200">Task 4</div>
-            <div className="flex border px-5 items-center bg-gray-200">Task 5</div>
-            <div className="flex border px-5 items-center bg-gray-200">Task 6</div>
+            <div className="flex border px-5 items-center justify-center bg-blue-200 font-bold">Tác vụ</div>
+            <div className="flex border px-5 items-center bg-gray-200">Tác vụ 1</div>
+            <div className="flex border px-5 items-center bg-gray-200">Tác vụ 2</div>
+            <div className="flex border px-5 items-center bg-gray-200">Tác vụ 3</div>
+            <div className="flex border px-5 items-center bg-gray-200">Tác vụ 4</div>
+            <div className="flex border px-5 items-center bg-gray-200">Tác vụ 5</div>
+            <div className="flex border px-5 items-center bg-gray-200">Tác vụ 6</div>
             <div className="flex border px-5 items-center bg-gray-400">Tổng</div>
           </div>
           <DevlogHistoryDaily daysArray={daysArray} devlogList={devlogList} selectedMonth={selectedMonth} />

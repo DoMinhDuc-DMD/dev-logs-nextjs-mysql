@@ -15,7 +15,6 @@ export interface Account {
   employee_work_email: string;
   employee_name: string;
   role: string;
-  role_id: number;
 }
 
 export interface AccountDevlog {
@@ -88,13 +87,10 @@ export default function DevlogList() {
         const res = await axios.get("/api/DevlogList");
         const data = await res.data;
 
-        const userRoleId = [...new Set(data.account.filter((acc: Account) => acc.role === userRole).map((acc: Account) => acc.role_id))];
-        const accountList = data.account.filter((acc: Account) => acc.role_id > Number(userRoleId));
-
         setUserRole(userRole);
 
-        setAccount(accountList);
-        setOriginalAccount(accountList);
+        setAccount(data.account);
+        setOriginalAccount(data.account);
 
         setAccountDevlog(data.accountDevlog);
       } catch (error) {

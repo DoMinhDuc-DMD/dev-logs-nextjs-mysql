@@ -10,6 +10,7 @@ export async function GET() {
     const account = await db.all(`
       SELECT account.id, account.employee_code, account.employee_work_email, account.employee_name, account.role_id, role.role_name AS role FROM account
       INNER JOIN role ON account.role_id = role.id
+      WHERE role.role_name != 'Admin' AND role.role_name != 'HR'
       ORDER BY role_id ASC`
     );
     const accountDevlog =  await db.all(`

@@ -4,6 +4,7 @@ import { AccountDevlog } from "@/app/main/DevlogList/page";
 import { Button, Modal, Table } from "antd";
 import Search from "antd/es/input/Search";
 import { ChangeEvent } from "react";
+import dayjs from "dayjs";
 import RestoreIcon from "@mui/icons-material/Restore";
 
 interface DevlogListModalProps {
@@ -37,14 +38,14 @@ export default function DevlogListModal({
       title: "Tên dự án",
       dataIndex: "project_name",
       key: "project_name",
-      width: "20%",
+      width: "25%",
       align: "center" as const,
     },
     {
       title: "Tên tác vụ",
       dataIndex: "task_name",
       key: "task_name",
-      width: "20%",
+      width: "25%",
       align: "center" as const,
     },
 
@@ -52,7 +53,7 @@ export default function DevlogListModal({
       title: "Số giờ",
       dataIndex: "hours",
       key: "hours",
-      width: "10%",
+      width: "5%",
       align: "center" as const,
     },
     {
@@ -61,12 +62,13 @@ export default function DevlogListModal({
       key: "date",
       width: "15%",
       align: "center" as const,
+      render: (date: string) => dayjs(date).format("DD/MM/YYYY"),
     },
     {
       title: "Ghi chú",
       dataIndex: "note",
       key: "note",
-      width: "20%",
+      width: "25%",
       align: "center" as const,
     },
   ];
@@ -92,7 +94,7 @@ export default function DevlogListModal({
           />
         </div>
       </div>
-      <Table rowKey="id" columns={columns} dataSource={data} size="small" pagination={{ pageSize: 10 }} />
+      <Table rowKey="id" columns={columns} dataSource={data} size="small" pagination={{ pageSize: 8 }} />
     </Modal>
   );
 }
