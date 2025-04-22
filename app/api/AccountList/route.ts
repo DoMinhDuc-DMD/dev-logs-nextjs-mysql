@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openDB } from "../sqlite/sqlitedb";
+import { openDB } from "../sqlite/db";
 
 export const dynamic = "force-dynamic";
 
@@ -7,7 +7,7 @@ export async function GET() {
   try {
     const db = await openDB();
 
-    const account = await db.all("SELECT account.*, role.role_name as role FROM account, role WHERE role.id = account.role_id");
+    const account = await db.all("SELECT account.*, role.role_name as role FROM account, role WHERE role.id = account.role_id ORDER BY role_id, employee_name ASC");
     const role = await db.all("SELECT * FROM role");
 
     await db.close();

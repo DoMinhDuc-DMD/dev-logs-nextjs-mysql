@@ -93,7 +93,7 @@ export default function AccountListTable({
       render: (record: Account) =>
         editingId === record.id ? (
           <Button onClick={handleSave} type="primary">
-            Save
+            Lưu
           </Button>
         ) : (
           <div className="flex gap-x-2 justify-center">

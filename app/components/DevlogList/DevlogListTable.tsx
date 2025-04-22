@@ -135,7 +135,7 @@ export default function DevlogListTable({
   return (
     <>
       <div className="py-5">
-        <h1 className="text-center text-xl font-bold">Danh sách nhân viên nhập devlog</h1>
+        <h1 className="text-center text-xl pb-3 font-bold">Danh sách nhân viên nhập devlog</h1>
         <div className="flex justify-end gap-x-5">
           {csvCondition && selectedAccount.length > 0 && (
             <CSVLink className="" data={csvData} filename="employee_devlog_data">

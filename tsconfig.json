@@ -53,8 +53,8 @@
     "next.config.js",
     "dist/types/**/*.ts",
     "app/api/Dashboard/route.ts",
-    "app/api/sqlite/sqliteseed.ts",
-    "app/api/sqlite/sqlitedb.ts",
+    "app/api/sqlite/seed.ts",
+    "app/api/sqlite/db.ts",
   ],
   "exclude": [
     "node_modules"

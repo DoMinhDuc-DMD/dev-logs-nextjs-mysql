@@ -38,7 +38,7 @@ export default function DevlogHistory() {
     };
   });
 
-  const handleSelectDate = (date: dayjs.Dayjs) => {
+  const handleSelectMonth = (date: dayjs.Dayjs) => {
     setSelectedMonth(date ? date.format("YYYY-MM") : dayjs(`${currentYear}-${currentMonth}`).format("YYYY-MM"));
   };
 
@@ -66,7 +66,7 @@ export default function DevlogHistory() {
   return (
     <div className="p-5">
       <div className="w-full h-[80vh] p-5 rounded bg-white">
-        <DatePicker picker="month" placeholder="Chọn tháng" onChange={handleSelectDate} />
+        <DatePicker picker="month" placeholder="Chọn tháng" onChange={handleSelectMonth} />
         <div className="h-[90%] mt-5 grid grid-cols-[20%_120%_5%] overflow-x-auto">
           <div className="grid grid-rows-9" style={{ position: "sticky", left: 0, zIndex: 10 }}>
             <div className="flex border px-5 items-center justify-center bg-blue-300">{userName}</div>

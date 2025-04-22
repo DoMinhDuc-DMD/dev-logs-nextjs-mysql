@@ -15,7 +15,7 @@ interface AccountListSearchProps {
 export default function AccountListSearch({ searchInput, handleReset, handleSearch, handleSearchChange }: AccountListSearchProps) {
   return (
     <div className="py-5">
-      <h1 className="text-center text-xl font-bold">Danh sách nhân viên công ty</h1>
+      <h1 className="text-center text-xl pb-3 font-bold">Danh sách nhân viên công ty</h1>
       <div className="flex gap-x-5 justify-end">
         <Button icon={<RestoreIcon />} onClick={handleReset}></Button>
         <Search

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openDB } from "../sqlite/sqlitedb";
+import { openDB } from "../sqlite/db";
 
 export const dynamic = "force-dynamic";
 
@@ -8,7 +8,7 @@ export async function GET() {
       const db = await openDB();
 
       const roles = await db.all("SELECT role_name FROM role");
-      const account = await db.all("SELECT * FROM account");
+      const account = await db.all("SELECT employee_work_email FROM account");
 
       await db.close();
 
@@ -39,8 +39,9 @@ export async function POST(req: NextRequest) {
     const role_id = roleRow.id;
 
     await db.run(`
-      INSERT INTO account (employee_work_email, employee_work_password, employee_name, employee_code, employee_birthday, employee_phone_number, employee_citizen_identification, role_id) VALUES (?,?,?,?,?,?,?,?)`, 
-      [email, password, employee_name, employee_code, birthday, phone_number, citizen_id, role_id]
+      INSERT INTO account 
+      (employee_work_email, employee_work_password, employee_name, employee_code, employee_birthday, employee_phone_number, employee_citizen_identification, employee_bank_account, employee_license_plate, role_id) VALUES (?,?,?,?,?,?,?,?,?,?)`, 
+      [email, password, employee_name, employee_code, birthday, phone_number, citizen_id, 0, 0, role_id]
     );
 
     await db.close();

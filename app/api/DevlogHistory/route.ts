@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { openDB } from "../sqlite/sqlitedb";
+import { openDB } from "../sqlite/db";
 
 export const dynamic = "force-dynamic";
 

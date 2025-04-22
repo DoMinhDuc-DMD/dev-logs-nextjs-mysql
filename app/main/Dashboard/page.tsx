@@ -28,7 +28,7 @@ interface DevlogList {
 
 export default function Main() {
   const router = useRouter();
-  const [DevlogList, setDevlogList] = useState<DevlogList[]>([]);
+  const [devlogList, setDevlogList] = useState<DevlogList[]>([]);
 
   const currentMonth = dayjs().month() + 1;
   const currentYear = dayjs().year();
@@ -40,7 +40,7 @@ export default function Main() {
   });
 
   const dataHour = Array(daysInMonth).fill(0);
-  DevlogList.forEach((data: DevlogList) => {
+  devlogList.forEach((data: DevlogList) => {
     const formattedDate = dayjs(data.date).format("DD/MM");
     const index = daysArray.indexOf(formattedDate);
 

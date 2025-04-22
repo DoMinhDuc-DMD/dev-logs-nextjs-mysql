@@ -10,6 +10,7 @@ import AccountCreateForm from "@/app/components/AccountCreate/AccountCreateForm"
 
 export default function CreateAccount() {
   const router = useRouter();
+  const [existedEmail, setExistedEmail] = useState<{ employee_work_email: string }[]>([]);
   const [options, setOptions] = useState<{ value: string; label: string }[]>([]);
   const [selectedRole, setSelectedRole] = useState<string>();
   const [formValues, setFormValues] = useState({
@@ -37,6 +38,7 @@ export default function CreateAccount() {
       try {
         const res = await axios.get("/api/AccountCreate");
 
+        setExistedEmail(res.data.account);
         setOptions(res.data.roles);
       } catch (error) {
         console.error(error);
@@ -64,16 +66,20 @@ export default function CreateAccount() {
       return openNotification("Hãy nhập đầy đủ thông tin!");
     }
 
-    if (email.slice(-12) !== "@vikmail.com") {
-      return openNotification("Email không hợp lệ!");
+    if (existedEmail.some((existed) => existed.employee_work_email == email)) {
+      return openNotification("Email đã tồn tại!");
     }
 
-    if (citizen_id.length < 12) {
-      return openNotification("Căn cước không hợp lệ!");
+    if (!email.endsWith("@vikmail.com")) {
+      return openNotification("Email không hợp lệ!");
     }
 
     if (phone_number.length < 10) {
       return openNotification("Số điện thoại không hợp lệ!");
+    }
+
+    if (citizen_id.length < 12) {
+      return openNotification("Căn cước không hợp lệ!");
     }
 
     const data = { email, password, selectedRole, employee_name, employee_code, birthday, phone_number, citizen_id };

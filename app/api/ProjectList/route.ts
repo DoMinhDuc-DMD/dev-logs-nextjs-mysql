@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
-import { openDB } from "../sqlite/sqlitedb";
+import { openDB } from "../sqlite/db";
 
 export const dynamic = "force-dynamic";
 

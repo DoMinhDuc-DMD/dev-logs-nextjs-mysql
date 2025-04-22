@@ -96,8 +96,8 @@ export default function Form() {
     }));
   };
 
-  const handleDateChange = (date: dayjs.Dayjs | null) => {
-    setFormData((prev) => ({ ...prev, date: date ? date.format("YYYY-MM-DD") : "" }));
+  const handleDateChange = (date: dayjs.Dayjs | "") => {
+    setFormData((prev) => ({ ...prev, date: dayjs(date).format("YYYY-MM-DD HH:mm") }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -135,7 +135,7 @@ export default function Form() {
                 disabled={!selectedProject || disabled}
               />
               <div className="flex items-center gap-x-6">
-                <label htmlFor="hours">Số giờ</label>
+                <label htmlFor="hours">Số giờ:</label>
                 <InputNumber value={formData.hours} min={1} max={24} onChange={handleInputNumberChange} type="number" disabled={disabled} />
                 <label htmlFor="overtime">OT</label>
                 <Checkbox name="overtime" id="overtime" onChange={handleCheckBoxChange} disabled={disabled}></Checkbox>
@@ -147,7 +147,14 @@ export default function Form() {
             </Button>
           </div>
         </div>
-        <DatePicker onChange={handleDateChange} placeholder="Chọn ngày" className="w-[30%] h-10" />
+        <DatePicker
+          format="YYYY-MM-DD HH:mm"
+          showTime={{ defaultValue: dayjs("00:00", "HH:mm") }}
+          onChange={handleDateChange}
+          placeholder="Chọn ngày"
+          className="w-[400px] h-10"
+          disabled={disabled}
+        />
       </div>
     </>
   );

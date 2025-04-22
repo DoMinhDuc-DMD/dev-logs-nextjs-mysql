@@ -29,7 +29,7 @@ export default function ProjectAddButton({
           Giảm task
         </Button>
       </div>
-      <Button type="primary" onClick={handleAddProject} disabled={isDisabled}>
+      <Button type="primary" onClick={handleAddProject} disabled={isDisabled || disabled}>
         Tạo dự án
       </Button>
     </div>

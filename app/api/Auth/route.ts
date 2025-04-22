@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openDB } from "../sqlite/sqlitedb";
+import { openDB } from "../sqlite/db";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        message: "Đăng nhập thành công1",
+        message: "Đăng nhập thành công!",
         description: "Đăng nhập hệ thống Devlog Manage!",
         userId: user.id,
         userRole: user.role,

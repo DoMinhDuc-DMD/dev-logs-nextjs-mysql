@@ -39,7 +39,7 @@ export default function ProjectCard({
         </div>
         <div className="flex flex-col gap-y-3">
           <Button type="primary" onClick={() => openProjectModal(project.id)}>
-            Sửa tác vụ
+            Điều chỉnh tác vụ
           </Button>
           {memberRole === "Leader" && (
             <Button type="primary" onClick={() => openDevlogCheckModal(project.id)}>

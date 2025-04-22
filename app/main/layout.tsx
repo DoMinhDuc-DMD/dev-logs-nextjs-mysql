@@ -159,8 +159,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 </Badge>
               </div>
             </Dropdown>
-
-            <Link href="/main/AccountSetting" className="w-[150px] text-center p-3 cursor-pointer hover:bg-gray-400">
+            <Link href="/main/AccountSetting" className="w-[200px] text-center p-3 cursor-pointer hover:bg-gray-400">
               {filteredAccount}
             </Link>
           </div>
