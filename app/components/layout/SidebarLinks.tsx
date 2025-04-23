@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 interface SidebarLinkProps {
   href: string;
-  label: string;
+  label: React.ReactNode;
   exact?: boolean;
 }
 
@@ -16,8 +16,8 @@ export default function SidebarLinks({ href, label, exact = true }: SidebarLinkP
   return (
     <Link href={href}>
       <li
-        className={`mr-2 py-2 pl-3 cursor-pointer hover:text-white hover:bg-blue-400 rounded-r-2xl ${
-          isActive ? "text-white bg-blue-400 rounded-r-2xl" : ""
+        className={`mr-1 py-2 pl-3 cursor-pointer hover:text-white hover:bg-blue-400 rounded-r-3xl ${
+          isActive ? "text-white bg-blue-400 rounded-r-3xl" : ""
         }`}
       >
         {label}

@@ -1,10 +1,11 @@
 "use client";
 
 import { Badge, Dropdown, MenuProps } from "antd";
-import { BellFilled, MenuOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { Notification } from "@/app/main/layout";
+import MenuIcon from "@mui/icons-material/Menu";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 interface HeaderBarProps {
   filteredNotice: Notification[];
@@ -27,10 +28,10 @@ export default function HeaderBar({ filteredNotice, filteredAccount, handleToggl
   return (
     <div className="flex justify-between items-center w-[100%] h-12 bg-blue-300 px-6">
       <div className="flex gap-x-2 items-center">
-        <div className="p-3 hover:bg-gray-400 cursor-pointer" onClick={handleToggle}>
-          <MenuOutlined />
+        <div className="h-[48px] w-[48px] flex justify-center items-center hover:bg-gray-400 cursor-pointer" onClick={handleToggle}>
+          <MenuIcon />
         </div>
-        <Link href="/main" className="p-3 cursor-pointer hover:bg-gray-400">
+        <Link href="/main" className="p-3 font-semibold cursor-pointer hover:bg-gray-400">
           Trang chủ
         </Link>
       </div>
@@ -41,13 +42,13 @@ export default function HeaderBar({ filteredNotice, filteredAccount, handleToggl
           placement="bottom"
           arrow={filteredNotice.length > 0}
         >
-          <div className="p-3 hover:bg-gray-400 cursor-pointer">
+          <div className="h-[48px] w-[48px] flex justify-center items-center hover:bg-gray-400 cursor-pointer">
             <Badge count={filteredNotice.length} size="small">
-              <BellFilled style={{ fontSize: 20 }} />
+              <NotificationsIcon fontSize="medium" />
             </Badge>
           </div>
         </Dropdown>
-        <Link href="/main/AccountSetting" className="w-[200px] text-center p-3 cursor-pointer hover:bg-gray-400">
+        <Link href="/main/AccountSetting" className="w-[200px] font-semibold text-center p-3 cursor-pointer hover:bg-gray-400">
           {filteredAccount}
         </Link>
       </div>

@@ -1,11 +1,12 @@
 "use client";
 
 import { Button, Modal, notification, Table } from "antd";
-import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
 import { useState } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
 import { Member, ProjectList } from "@/app/main/ProjectList/page";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
 interface DevlogCheckModalProps {
   project: ProjectList;
@@ -74,9 +75,9 @@ export default function DevlogCheckModal({
       align: "center" as const,
       render: (record: Member) =>
         dayjs(record.devlog_date).format("DD/MM/YYYY") === dayjs(new Date()).format("DD/MM/YYYY") ? (
-          <CheckCircleTwoTone twoToneColor="#4ec80c" />
+          <CheckCircleOutlineIcon color="success" />
         ) : (
-          <CloseCircleTwoTone twoToneColor="#dc2d2d" />
+          <HighlightOffIcon color="error" />
         ),
     },
     {
