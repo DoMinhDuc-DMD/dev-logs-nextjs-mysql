@@ -1,14 +1,22 @@
 "use client";
 
-import { DatePicker, Input, Select } from "antd";
+import { Input, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { Dev } from "@/app/main/ProjectAdd/page";
 import dayjs from "dayjs";
+import ProjectAddDatePicker from "./ProjectAddDatePicker";
 
 interface ProjectAddInput {
   devs: Dev[];
+  project: {
+    project_name: string;
+    start_date: string;
+    end_date: string;
+    description: string;
+    members: number[];
+  };
   tasks: { task_name: string; task_name_index: number }[];
-  disabled: boolean;
+  submitted: boolean;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleDateChange: (name: string, date: dayjs.Dayjs | null) => void;
   handleTasksChange: (index: number, value: string) => void;
@@ -17,8 +25,9 @@ interface ProjectAddInput {
 
 export default function ProjectAddInput({
   devs,
+  project,
   tasks,
-  disabled,
+  submitted,
   handleChange,
   handleDateChange,
   handleTasksChange,
@@ -30,7 +39,7 @@ export default function ProjectAddInput({
         <div>
           <div className="flex items-center justify-between py-1">
             <label htmlFor="project_name">Tên dự án:</label>
-            <Input name="project_name" style={{ width: "70%", padding: "8px" }} onChange={handleChange} disabled={disabled} />
+            <Input name="project_name" style={{ width: "70%", padding: "8px" }} onChange={handleChange} disabled={submitted} />
           </div>
           {tasks.map((t, index) => (
             <div key={index} className="flex items-center justify-between my-2">
@@ -40,7 +49,7 @@ export default function ProjectAddInput({
                 style={{ width: "70%", padding: "8px" }}
                 value={t.task_name}
                 onChange={(e) => handleTasksChange(index, e.target.value)}
-                disabled={disabled}
+                disabled={submitted}
               />
             </div>
           ))}
@@ -52,36 +61,20 @@ export default function ProjectAddInput({
               <Select
                 optionFilterProp="label"
                 listHeight={200}
-                style={{ width: "60%", height: 40 }}
+                style={{ width: "60%", height: 40, margin: "4px 0" }}
                 placeholder="Chọn thành viên"
                 mode="multiple"
                 options={devs.map((devs) => ({ value: devs.id, label: devs.employee_name }))}
                 onChange={handleSelectChange}
-                disabled={disabled}
+                disabled={submitted}
                 maxTagCount={"responsive"}
               />
             )}
           </div>
-          <div className="flex items-center justify-between my-2">
-            <label htmlFor="start_date">Thời gian bắt đầu:</label>
-            <DatePicker
-              style={{ width: "50%", padding: "8px" }}
-              placeholder="Chọn ngày bắt đầu"
-              onChange={(date) => handleDateChange("start_date", date)}
-              disabled={disabled}
-            />
-          </div>
-          <div className="flex items-center justify-between my-2">
-            <label htmlFor="end_date">Thời gian kết thúc (dự kiến):</label>
-            <DatePicker
-              style={{ width: "50%", padding: "8px" }}
-              placeholder="Chọn ngày kết thúc"
-              onChange={(date) => handleDateChange("end_date", date)}
-              disabled={disabled}
-            />
-          </div>
+          <ProjectAddDatePicker name="start_date" project={project} submitted={submitted} handleDateChange={handleDateChange} />
+          <ProjectAddDatePicker name="end_date" project={project} submitted={submitted} handleDateChange={handleDateChange} />
           <label htmlFor="description">Mô tả dự án:</label>
-          <TextArea rows={8} name="description" placeholder="Nhập mô tả dự án..." onChange={handleChange} disabled={disabled} />
+          <TextArea rows={8} name="description" placeholder="Nhập mô tả dự án..." onChange={handleChange} disabled={submitted} />
         </div>
       </div>
     </>

@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { Notification } from "@/app/main/layout";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import { FAMILIAR_DATE_TIME_FORMAT } from "@/app/constant/dateFormat";
 
 interface HeaderBarProps {
   filteredNotice: Notification[];
@@ -18,7 +19,7 @@ export default function HeaderBar({ filteredNotice, filteredAccount, handleToggl
     key: item.id,
     label: (
       <Link href={"/main/DevlogInput"}>
-        <div>{dayjs(new Date(item.date)).format("HH:mm, DD/MM/YYYY")}</div>
+        <div>{dayjs(new Date(item.date)).format(FAMILIAR_DATE_TIME_FORMAT)}</div>
         <div className="text-red-500">
           Leader báo nhập devlog cho dự án {item.project_name} lần thứ {item.notice_count}!
         </div>

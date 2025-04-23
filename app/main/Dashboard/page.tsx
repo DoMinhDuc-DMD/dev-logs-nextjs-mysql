@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import axios from "axios";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
+import { FAMILIAR_DAY_MONTH_FORMAT } from "@/app/constant/dateFormat";
+import { UserRole } from "@/app/constant/roleAuth";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -30,18 +32,37 @@ export default function Main() {
   const router = useRouter();
   const [devlogList, setDevlogList] = useState<DevlogList[]>([]);
 
+  useAuthGuard([UserRole.Leader, UserRole.Developer]);
+
+  useEffect(() => {
+    const userId = sessionStorage.getItem("userId");
+
+    async function fetchDevlog() {
+      try {
+        const res = await axios.get("/api/Dashboard");
+
+        const data = await res.data;
+        const filteredData = data.filter((devlog: { account_id: number }) => devlog.account_id === Number(userId));
+        setDevlogList(filteredData);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchDevlog();
+  }, [router]);
+
   const currentMonth = dayjs().month() + 1;
   const currentYear = dayjs().year();
   const daysInMonth = dayjs(`${currentYear}-${currentMonth}`).daysInMonth();
 
   const daysArray = Array.from({ length: daysInMonth }, (_, i) => {
-    const date = dayjs(`${currentYear}-${currentMonth}-${i + 1}`).format("DD/MM");
+    const date = dayjs(`${currentYear}-${currentMonth}-${i + 1}`).format(FAMILIAR_DAY_MONTH_FORMAT);
     return date;
   });
 
   const dataHour = Array(daysInMonth).fill(0);
   devlogList.forEach((data: DevlogList) => {
-    const formattedDate = dayjs(data.date).format("DD/MM");
+    const formattedDate = dayjs(data.date).format(FAMILIAR_DAY_MONTH_FORMAT);
     const index = daysArray.indexOf(formattedDate);
 
     if (index !== -1) {
@@ -71,25 +92,6 @@ export default function Main() {
       },
     },
   };
-
-  useAuthGuard(["Leader", "Developer"]);
-
-  useEffect(() => {
-    const userId = sessionStorage.getItem("userId");
-
-    async function fetchDevlog() {
-      try {
-        const res = await axios.get("/api/Dashboard");
-
-        const data = await res.data;
-        const filteredData = data.filter((devlog: { account_id: number }) => devlog.account_id === Number(userId));
-        setDevlogList(filteredData);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchDevlog();
-  }, [router]);
 
   return (
     <div className="p-5 flex justify-center">

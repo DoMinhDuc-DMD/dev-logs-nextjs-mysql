@@ -8,6 +8,7 @@ import { notification } from "antd";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
 import AccountListSearch from "../../components/AccountList/AccountListSearch";
 import AccountListTable from "../../components/AccountList/AccountListTable";
+import { UserRole } from "@/app/constant/roleAuth";
 
 export interface Account {
   id: number;
@@ -67,7 +68,7 @@ export default function AccountList() {
     }
   };
 
-  useAuthGuard(["Admin", "HR"]);
+  useAuthGuard([UserRole.Admin, UserRole.HR]);
 
   useEffect(() => {
     fetchAccount();

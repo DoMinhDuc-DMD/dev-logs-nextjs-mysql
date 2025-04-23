@@ -6,6 +6,7 @@ import Search from "antd/es/input/Search";
 import { ChangeEvent } from "react";
 import dayjs from "dayjs";
 import RestoreIcon from "@mui/icons-material/Restore";
+import { FAMILIAR_DATE_TIME_FORMAT } from "@/app/constant/dateFormat";
 
 interface DevlogListModalProps {
   data: AccountDevlog[];
@@ -62,7 +63,7 @@ export default function DevlogListModal({
       key: "date",
       width: "15%",
       align: "center" as const,
-      render: (date: string) => dayjs(date).format("HH:mm, DD/MM/YYYY"),
+      render: (date: string) => dayjs(date).format(FAMILIAR_DATE_TIME_FORMAT),
     },
     {
       title: "Ghi chú",

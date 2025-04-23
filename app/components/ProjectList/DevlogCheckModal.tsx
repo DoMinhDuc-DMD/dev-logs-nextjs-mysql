@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import { Member, ProjectList } from "@/app/main/ProjectList/page";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import { FAMILIAR_DATE_FORMAT, GET_DATE_TIME_FORMAT } from "@/app/constant/dateFormat";
 
 interface DevlogCheckModalProps {
   project: ProjectList;
@@ -24,7 +25,7 @@ export default function DevlogCheckModal({
   handleCloseModal,
 }: DevlogCheckModalProps) {
   const [disabled, setDisabled] = useState<{ [key: number]: boolean }>({});
-  const date = dayjs(new Date().toLocaleString()).format("YYYY-MM-DD HH:mm:ss");
+  const date = dayjs(new Date().toLocaleString()).format(GET_DATE_TIME_FORMAT);
   const [api, contextHolder] = notification.useNotification();
 
   const openNotification = (msg: string, memberName: string) => {
@@ -74,7 +75,7 @@ export default function DevlogCheckModal({
       width: "25%",
       align: "center" as const,
       render: (record: Member) =>
-        dayjs(record.devlog_date).format("DD/MM/YYYY") === dayjs(new Date()).format("DD/MM/YYYY") ? (
+        dayjs(record.devlog_date).format(FAMILIAR_DATE_FORMAT) === dayjs(new Date()).format(FAMILIAR_DATE_FORMAT) ? (
           <CheckCircleOutlineIcon color="success" />
         ) : (
           <HighlightOffIcon color="error" />
@@ -116,7 +117,7 @@ export default function DevlogCheckModal({
             <strong>Tên dự án:</strong> {project.project_name}
           </div>
           <div>
-            <strong>Ngày:</strong> {dayjs(date).format("DD-MM-YYYY")}
+            <strong>Ngày:</strong> {dayjs(date).format(FAMILIAR_DATE_FORMAT)}
           </div>
         </div>
         <Table

@@ -6,6 +6,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import EqualizerIcon from "@mui/icons-material/Equalizer";
 import ScheduleIcon from "@mui/icons-material/Schedule";
+import { UserRole } from "@/app/constant/roleAuth";
 
 export default function Sidebar({ role }: { role: string | null }) {
   return (
@@ -21,7 +22,7 @@ export default function Sidebar({ role }: { role: string | null }) {
               </span>
             }
           />
-          {role === "Admin" && (
+          {role === UserRole.Admin && (
             <SidebarLinks
               href="/main/AccountCreate"
               label={
@@ -32,7 +33,7 @@ export default function Sidebar({ role }: { role: string | null }) {
               }
             />
           )}
-          {(role === "Admin" || role === "HR") && (
+          {(role === UserRole.Admin || role === UserRole.HR) && (
             <SidebarLinks
               href="/main/AccountList"
               label={
@@ -43,7 +44,7 @@ export default function Sidebar({ role }: { role: string | null }) {
               }
             />
           )}
-          {role !== "Developer" && (
+          {role !== UserRole.Developer && (
             <SidebarLinks
               href="/main/DevlogList"
               label={
@@ -54,7 +55,7 @@ export default function Sidebar({ role }: { role: string | null }) {
               }
             />
           )}
-          {role === "Leader" && (
+          {role === UserRole.Leader && (
             <SidebarLinks
               href="/main/ProjectAdd"
               label={
@@ -65,7 +66,7 @@ export default function Sidebar({ role }: { role: string | null }) {
               }
             />
           )}
-          {(role === "Leader" || role === "Developer") && (
+          {(role === UserRole.Leader || role === UserRole.Developer) && (
             <>
               <SidebarLinks
                 href="/main/ProjectList"

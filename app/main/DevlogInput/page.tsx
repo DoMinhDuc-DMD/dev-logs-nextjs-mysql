@@ -2,12 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
-import { DatePicker, Button, Checkbox, CheckboxChangeEvent, InputNumber, Select, notification } from "antd";
+import { DatePicker, Button, Checkbox, CheckboxChangeEvent, InputNumber, notification } from "antd";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
+import DevlogInputSelect from "@/app/components/DevlogInput/DevlogInputSelect";
+import { UserRole } from "@/app/constant/roleAuth";
+import { GET_DATE_MINUTE_FORMAT } from "@/app/constant/dateFormat";
 
 export default function Form() {
   const router = useRouter();
@@ -26,8 +29,9 @@ export default function Form() {
     task: 0,
   });
   const isButtonDisabled = !formData.date || !formData.hours || !formData.project || !formData.task;
-  const [disabled, setDisabled] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [api, contextHolder] = notification.useNotification();
+
   const openNotification = (msg: string) =>
     api.info({
       message: msg,
@@ -39,7 +43,7 @@ export default function Form() {
       },
     });
 
-  useAuthGuard(["Leader", "Developer"]);
+  useAuthGuard([UserRole.Leader, UserRole.Developer]);
 
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
@@ -97,7 +101,7 @@ export default function Form() {
   };
 
   const handleDateChange = (date: dayjs.Dayjs | "") => {
-    setFormData((prev) => ({ ...prev, date: dayjs(date).format("YYYY-MM-DD HH:mm") }));
+    setFormData((prev) => ({ ...prev, date: dayjs(date).format(GET_DATE_MINUTE_FORMAT) }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -107,7 +111,7 @@ export default function Form() {
 
     openNotification(res.data.message);
 
-    setDisabled(true);
+    setSubmitted(true);
     setTimeout(() => {
       window.location.reload();
     }, 2000);
@@ -120,40 +124,40 @@ export default function Form() {
         <div className="w-full">
           <div className="rounded-lg bg-white p-5">
             <div className="flex justify-between items-center my-5">
-              <Select
-                style={{ width: "30%" }}
-                optionFilterProp="label"
-                options={project}
-                onChange={(value) => handleSelectChange("project", value)}
-                disabled={disabled}
-              />
-              <Select
-                style={{ width: "30%" }}
-                optionFilterProp="label"
+              <DevlogInputSelect name="project" options={project} submitted={submitted} handleSelectChange={handleSelectChange} />
+              <DevlogInputSelect
+                name="task"
                 options={filteredTask}
-                onChange={(value) => handleSelectChange("task", value)}
-                disabled={!selectedProject || disabled}
+                submitted={!selectedProject || submitted}
+                handleSelectChange={handleSelectChange}
               />
               <div className="flex items-center gap-x-6">
                 <label htmlFor="hours">Số giờ:</label>
-                <InputNumber value={formData.hours} min={1} max={24} onChange={handleInputNumberChange} type="number" disabled={disabled} />
+                <InputNumber
+                  value={formData.hours}
+                  min={1}
+                  max={24}
+                  onChange={handleInputNumberChange}
+                  type="number"
+                  disabled={submitted}
+                />
                 <label htmlFor="overtime">OT</label>
-                <Checkbox name="overtime" id="overtime" onChange={handleCheckBoxChange} disabled={disabled}></Checkbox>
+                <Checkbox name="overtime" id="overtime" onChange={handleCheckBoxChange} disabled={submitted}></Checkbox>
               </div>
             </div>
-            <TextArea name="note" rows={4} placeholder="Ghi chú" onChange={handleTextAreaChange} disabled={disabled} />
-            <Button onClick={handleSubmit} type="primary" className="mt-5" disabled={isButtonDisabled || disabled}>
+            <TextArea name="note" rows={4} placeholder="Ghi chú" onChange={handleTextAreaChange} disabled={submitted} />
+            <Button onClick={handleSubmit} type="primary" className="mt-5" disabled={isButtonDisabled || submitted}>
               Lưu devlog
             </Button>
           </div>
         </div>
         <DatePicker
-          format="YYYY-MM-DD HH:mm"
+          format={GET_DATE_MINUTE_FORMAT}
           showTime={{ defaultValue: dayjs("00:00", "HH:mm") }}
           onChange={handleDateChange}
           placeholder="Chọn ngày"
           className="w-[400px] h-10"
-          disabled={disabled}
+          disabled={submitted}
         />
       </div>
     </>

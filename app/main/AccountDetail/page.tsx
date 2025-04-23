@@ -1,13 +1,14 @@
 "use client";
 
-import { Avatar, Button, Input } from "antd";
+import { Avatar, Button } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import dayjs from "dayjs";
 import axios from "axios";
 import "@ant-design/v5-patch-for-react-19";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
 import { UserOutlined } from "@ant-design/icons";
+import AccountDetailInput from "@/app/components/AccountDetail/AccountDetailInput";
+import { UserRole } from "@/app/constant/roleAuth";
 
 export default function AccountDetail() {
   const router = useRouter();
@@ -25,7 +26,7 @@ export default function AccountDetail() {
     role: "",
   });
 
-  useAuthGuard(["Admin", "HR"]);
+  useAuthGuard([UserRole.Admin, UserRole.HR]);
 
   useEffect(() => {
     const userId = new URLSearchParams(window.location.search).get("id");
@@ -48,34 +49,19 @@ export default function AccountDetail() {
         <Avatar size={150} icon={<UserOutlined />} className="mt-5" />
         <div className="justify-center flex flex-cols-2 p-5 text-left gap-15">
           <div className="w-[25%] flex flex-col gap-y-2">
-            <label htmlFor="employee_id">Mã nhân viên:</label>
-            <Input name="employee_id" value={info?.employee_code || ""} readOnly />
-            <label htmlFor="role">Chức vụ/Vị trí:</label>
-            <Input name="role" value={info?.role || ""} readOnly />
-            <label htmlFor="employee_name">Họ và tên:</label>
-            <Input name="employee_name" value={info?.employee_name || ""} readOnly />
-            <label htmlFor="employee_birthday">Ngày sinh:</label>
-            <Input
-              name="employee_birthday"
-              value={info?.employee_birthday ? dayjs(info?.employee_birthday).format("DD/MM/YYYY") : ""}
-              readOnly
-            />
-            <label htmlFor="employee_bank_account">Số tài khoản TCB:</label>
-            <Input name="employee_bank_account" value={info?.employee_bank_account || ""} readOnly />
-            <label htmlFor="employee_private_email">Email cá nhân:</label>
-            <Input name="employee_private_email" value={info?.employee_private_email || ""} readOnly />
+            <AccountDetailInput label="Mã nhân viên" value={info.employee_code} />
+            <AccountDetailInput label="Chức vụ/Vị trí" value={info.role} />
+            <AccountDetailInput label="Họ và tên" value={info.employee_name} />
+            <AccountDetailInput label="Ngày sinh" value={info.employee_birthday} />
+            <AccountDetailInput label="Số tài khoản TCB" value={info.employee_bank_account} />
+            <AccountDetailInput label="Email cá nhân" value={info.employee_private_email} />
           </div>
           <div className="w-[25%] flex flex-col gap-y-2">
-            <label htmlFor="employee_phone_number">Số điện thoại:</label>
-            <Input name="employee_phone_number" value={info?.employee_phone_number || ""} readOnly />
-            <label htmlFor="employee_citizen_identification">CCCD/CMND:</label>
-            <Input name="employee_citizen_identification" value={info?.employee_citizen_identification || ""} readOnly />
-            <label htmlFor="employee_work_email">Email:</label>
-            <Input name="employee_work_email" value={info?.employee_work_email || ""} readOnly />
-            <label htmlFor="employee_work_password">Mật khẩu:</label>
-            <Input name="employee_work_password" value={info?.employee_work_password || ""} readOnly />
-            <label htmlFor="employee_license_plates">Biển số xe:</label>
-            <Input name="employee_license_plates" value={info?.employee_license_plate || ""} readOnly />
+            <AccountDetailInput label="Số điện thoại" value={info.employee_phone_number} />
+            <AccountDetailInput label="CCCD/CMND" value={info.employee_citizen_identification} />
+            <AccountDetailInput label="Email công ty" value={info.employee_work_email} />
+            <AccountDetailInput label="Mật khẩu" value={info.employee_work_password} />
+            <AccountDetailInput label="Biển số xe" value={info.employee_license_plate} />
           </div>
         </div>
         <Button onClick={() => history.back()} variant="solid" color="danger">

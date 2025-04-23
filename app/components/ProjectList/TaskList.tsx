@@ -1,5 +1,6 @@
 "use client";
 
+import { UserRole } from "@/app/constant/roleAuth";
 import { Task } from "@/app/main/ProjectList/page";
 import { Button, Input, notification } from "antd";
 import axios from "axios";
@@ -110,7 +111,7 @@ export default function TaskList({ projectId, tasks, newTasks, defaultTasks, mem
               key={task.id}
               value={task.task_name}
               onChange={(e) => handleTaskChange(task.id, e.target.value)}
-              readOnly={memberRole !== "Leader"}
+              readOnly={memberRole !== UserRole.Leader}
             />
           ))}
           {newProjectTask.map((task: Task) => (

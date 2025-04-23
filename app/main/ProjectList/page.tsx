@@ -6,6 +6,7 @@ import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import ProjectListComponent from "../../components/ProjectList/ProjectListComponent";
 import useAuthGuard from "@/app/hooks/useAuthGuard";
+import { UserRole } from "@/app/constant/roleAuth";
 
 export interface ProjectList {
   id: number;
@@ -40,7 +41,7 @@ export default function ProjectList() {
   const [memberRole, setMemberRole] = useState("");
   const [userId, setUserId] = useState("");
 
-  useAuthGuard(["Leader", "Developer"]);
+  useAuthGuard([UserRole.Leader, UserRole.Developer]);
 
   const fetchData = useCallback(async (currentUserId: string) => {
     try {

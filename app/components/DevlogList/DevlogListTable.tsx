@@ -8,6 +8,7 @@ import { ChangeEvent } from "react";
 import RestoreIcon from "@mui/icons-material/Restore";
 import DownloadIcon from "@mui/icons-material/Download";
 import Search from "antd/es/input/Search";
+import { UserRole } from "@/app/constant/roleAuth";
 
 interface DevlogListTableProps {
   userRole: string | null;
@@ -31,7 +32,7 @@ export default function DevlogListTable({
   handleResetAccount,
 }: DevlogListTableProps) {
   const [selectedAccount, setSelectedAccount] = useState<Account[]>([]);
-  const csvCondition = userRole === "Admin" || userRole === "HR";
+  const csvCondition = userRole === UserRole.Admin || userRole === UserRole.HR;
 
   const columns = [
     {

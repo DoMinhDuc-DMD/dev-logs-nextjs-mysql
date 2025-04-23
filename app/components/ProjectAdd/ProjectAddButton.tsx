@@ -4,32 +4,24 @@ import { Button } from "antd";
 
 interface ProjectAddButtonProps {
   tasks: { task_name: string; task_name_index: number }[];
-  handleAddTask: () => void;
-  handleRemoveTask: () => void;
+  handleNumberTasks: (name: string) => void;
   handleAddProject: () => void;
   isDisabled: boolean;
-  disabled: boolean;
+  submitted: boolean;
 }
 
-export default function ProjectAddButton({
-  tasks,
-  handleAddTask,
-  handleRemoveTask,
-  handleAddProject,
-  isDisabled,
-  disabled,
-}: ProjectAddButtonProps) {
+export default function ProjectAddButton({ tasks, handleNumberTasks, handleAddProject, isDisabled, submitted }: ProjectAddButtonProps) {
   return (
     <div className="flex justify-between items-center my-3">
       <div className="flex gap-x-3">
-        <Button type="primary" onClick={handleAddTask} disabled={tasks.length === 6 || disabled}>
+        <Button type="primary" onClick={() => handleNumberTasks("addTask")} disabled={tasks.length === 6 || submitted}>
           Thêm task
         </Button>
-        <Button color="danger" variant="solid" onClick={handleRemoveTask} disabled={tasks.length === 1 || disabled}>
+        <Button color="danger" variant="solid" onClick={() => handleNumberTasks("removeTask")} disabled={tasks.length === 1 || submitted}>
           Giảm task
         </Button>
       </div>
-      <Button type="primary" onClick={handleAddProject} disabled={isDisabled || disabled}>
+      <Button type="primary" onClick={handleAddProject} disabled={isDisabled || submitted}>
         Tạo dự án
       </Button>
     </div>

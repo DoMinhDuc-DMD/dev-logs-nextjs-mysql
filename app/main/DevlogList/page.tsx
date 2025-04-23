@@ -8,6 +8,7 @@ import useAuthGuard from "@/app/hooks/useAuthGuard";
 import DevlogListModal from "../../components/DevlogList/DevlogListModal";
 import DevlogListTable from "../../components/DevlogList/DevlogListTable";
 import { notification } from "antd";
+import { UserRole } from "@/app/constant/roleAuth";
 
 export interface Account {
   id: number;
@@ -63,6 +64,8 @@ export default function DevlogList() {
     });
   };
 
+  useAuthGuard([UserRole.Admin, UserRole.HR, UserRole.Leader]);
+
   const openModal = (devlog: AccountDevlog[]) => {
     if (devlog.length === 0) {
       openNotification("Nhân viên này chưa có dữ liệu nhập!");
@@ -77,8 +80,6 @@ export default function DevlogList() {
     setOriginalSelectedDevlog([]);
     setIsModalOpen(false);
   };
-
-  useAuthGuard(["Admin", "HR", "Leader"]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,8 +109,8 @@ export default function DevlogList() {
       const searchTerm = value.toLowerCase();
 
       const filteredAccount = originalAccount.filter(
-        (acc: Account) => acc.employee_work_email.includes(searchTerm) || acc.employee_name.includes(searchTerm)
-        // || acc.employee_code.includes(searchTerm)
+        (acc: Account) =>
+          acc.employee_work_email.includes(searchTerm) || acc.employee_name.includes(searchTerm) || acc.employee_code.includes(searchTerm)
       );
 
       setAccount(filteredAccount);

@@ -9,6 +9,8 @@ import useAuthGuard from "@/app/hooks/useAuthGuard";
 import { notification } from "antd";
 import ProjectAddInput from "../../components/ProjectAdd/ProjectAddInput";
 import ProjectAddButton from "@/app/components/ProjectAdd/ProjectAddButton";
+import { GET_DATE_FORMAT } from "@/app/constant/dateFormat";
+import { UserRole } from "@/app/constant/roleAuth";
 
 export interface Dev {
   id: number;
@@ -19,10 +21,16 @@ export interface Dev {
 export default function AddProject() {
   const router = useRouter();
   const [dev, setDev] = useState<Dev[]>([]);
-  const [project, setProject] = useState({ project_name: "", start_date: null, end_date: null, description: "", members: [] as number[] });
+  const [project, setProject] = useState<{
+    project_name: string;
+    start_date: string;
+    end_date: string;
+    description: string;
+    members: number[];
+  }>({ project_name: "", start_date: "", end_date: "", description: "", members: [] as number[] });
   const [tasks, setTasks] = useState<{ task_name: string; task_name_index: number }[]>([{ task_name: "", task_name_index: 0 }]);
   const [api, contextHolder] = notification.useNotification();
-  const [disabled, setDisabled] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const openNotification = (msg: string) =>
     api.info({
@@ -35,7 +43,7 @@ export default function AddProject() {
       },
     });
 
-  useAuthGuard(["Leader"]);
+  useAuthGuard([UserRole.Leader]);
 
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
@@ -62,7 +70,7 @@ export default function AddProject() {
 
       openNotification(res.data.message);
 
-      setDisabled(true);
+      setSubmitted(true);
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -75,17 +83,18 @@ export default function AddProject() {
     setProject((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleDateChange = (name: string, date: dayjs.Dayjs | null) => {
-    setProject((prev) => ({
-      ...prev,
-      [name]: date ? date.format("YYYY-MM-DD") : "",
-    }));
-  };
-
   const handleTasksChange = (index: number, value: string) => {
     const newTasks = [...tasks];
     newTasks[index] = { task_name: value, task_name_index: index + 1 };
     setTasks(newTasks);
+  };
+
+  const handleNumberTasks = (name: string) => {
+    if (name === "addTask" && tasks.length < 6) {
+      setTasks([...tasks, { task_name: "", task_name_index: tasks.length }]);
+    } else if (name === "removeTask" && tasks.length > 1) {
+      setTasks(tasks.slice(0, -1));
+    }
   };
 
   const handleSelectChange = (selectedDev: number[]) => {
@@ -94,25 +103,25 @@ export default function AddProject() {
     setProject((prev) => ({ ...prev, members: [Number(sessionStorage.getItem("userId")), ...selectedMembers] }));
   };
 
-  const handleAddTasks = () => {
-    if (tasks.length < 6) {
-      setTasks([...tasks, { task_name: "", task_name_index: tasks.length }]);
-    }
-  };
-
-  const handleRemoveTasks = () => {
-    if (tasks.length > 1) {
-      setTasks(tasks.slice(0, -1));
+  const handleDateChange = (name: string, date: dayjs.Dayjs | null) => {
+    if (name === "start_date") {
+      setProject((prev) => ({
+        ...prev,
+        start_date: date ? date.format(GET_DATE_FORMAT) : "",
+        end_date: "",
+      }));
+    } else {
+      setProject((prev) => ({
+        ...prev,
+        [name]: date ? date.format(GET_DATE_FORMAT) : "",
+      }));
     }
   };
 
   const isDisabled =
-    !project.project_name.trim() ||
-    tasks.every((t) => t.task_name.trim() === "") ||
-    !project.start_date ||
-    !project.end_date ||
+    ["project_name", "start_date", "end_date", "description"].some((key) => !project[key]?.trim?.()) ||
     project.members.length === 1 ||
-    !project.description.trim();
+    tasks.every((t) => t.task_name.trim() === "");
 
   return (
     <>
@@ -122,16 +131,16 @@ export default function AddProject() {
           <h1 className="text-xl text-center font-bold">Tạo dự án mới</h1>
           <ProjectAddButton
             tasks={tasks}
-            disabled={disabled}
+            submitted={submitted}
             isDisabled={isDisabled}
             handleAddProject={handleAddProject}
-            handleAddTask={handleAddTasks}
-            handleRemoveTask={handleRemoveTasks}
+            handleNumberTasks={handleNumberTasks}
           />
           <ProjectAddInput
             devs={dev}
+            project={project}
             tasks={tasks}
-            disabled={disabled}
+            submitted={submitted}
             handleChange={handleChange}
             handleDateChange={handleDateChange}
             handleSelectChange={handleSelectChange}

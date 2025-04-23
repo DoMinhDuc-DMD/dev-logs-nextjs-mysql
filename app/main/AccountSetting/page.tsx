@@ -1,12 +1,14 @@
 "use client";
 
-import { Avatar, Button, DatePicker, Input, notification } from "antd";
+import { Avatar, Button, notification } from "antd";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import axios from "axios";
 import { UserOutlined } from "@ant-design/icons";
+import AccountSettingInput from "@/app/components/AccountSetting/AccountSettingInput";
+import { GET_DATE_FORMAT } from "@/app/constant/dateFormat";
 
 export default function AccountSetting() {
   const router = useRouter();
@@ -66,7 +68,7 @@ export default function AccountSetting() {
   const handleDateChange = (date: dayjs.Dayjs) => {
     setInfo((prev) => ({
       ...prev,
-      employee_birthday: date ? date.format("YYYY-MM-DD") : "",
+      employee_birthday: date ? date.format(GET_DATE_FORMAT) : "",
     }));
   };
 
@@ -112,45 +114,61 @@ export default function AccountSetting() {
     <>
       {contextHolder}
       <div className="p-5">
-        <div className="h-[90vh] rounded bg-white text-center py-5">
+        <div className="h-[90vh] rounded bg-white text-center p-5">
           <Avatar size={150} icon={<UserOutlined />} className="mt-5" />
           <div className="justify-center flex flex-cols-2 p-5 text-left gap-15">
             <div className="w-[25%] flex flex-col gap-y-2">
-              <label htmlFor="employee_id">Mã nhân viên:</label>
-              <Input name="employee_id" value={info?.employee_code || ""} readOnly />
-              <label htmlFor="employee_name">Họ và tên:</label>
-              <Input name="employee_name" value={info?.employee_name || ""} onChange={handleChange} />
-              <label htmlFor="employee_birthday">Ngày sinh:</label>
-              <DatePicker
+              <AccountSettingInput label="Mã nhân viên" name="employee_code" valueInput={info.employee_code} readOnly />
+              <AccountSettingInput label="Họ và tên" name="employee_name" valueInput={info.employee_name} onChangeInput={handleChange} />
+              <AccountSettingInput
+                label="Ngày sinh"
+                valueDate={info?.employee_birthday ? dayjs(info.employee_birthday) : null}
                 name="employee_birthday"
-                format="YYYY-MM-DD"
+                format={GET_DATE_FORMAT}
                 placeholder="Chọn ngày sinh"
-                value={info?.employee_birthday ? dayjs(info.employee_birthday) : null}
-                onChange={handleDateChange}
-                className="w-full"
+                onChangeDate={handleDateChange}
               />
-              <label htmlFor="employee_bank_account">Số tài khoản TCB:</label>
-              <Input name="employee_bank_account" value={info?.employee_bank_account || ""} onChange={handleNumberTypeChange} />
-              <label htmlFor="employee_private_email">Email cá nhân:</label>
-              <Input name="employee_private_email" value={info?.employee_private_email || ""} onChange={handleChange} />
+              <AccountSettingInput
+                label="Số tài khoản TCB"
+                name="employee_bank_account"
+                valueInput={info.employee_bank_account}
+                onChangeInput={handleNumberTypeChange}
+              />
+              <AccountSettingInput
+                label="Email cá nhân"
+                name="employee_private_email"
+                valueInput={info.employee_private_email}
+                onChangeInput={handleChange}
+              />
             </div>
             <div className="w-[25%] flex flex-col gap-y-2">
-              <label htmlFor="employee_phone_number">Số điện thoại:</label>
-              <Input name="employee_phone_number" value={info?.employee_phone_number || ""} onChange={handleNumberTypeChange} />
-              <label htmlFor="employee_citizen_identification">CCCD/CMND:</label>
-              <Input
-                name="employee_citizen_identification"
-                value={info?.employee_citizen_identification || ""}
-                onChange={handleNumberTypeChange}
+              <AccountSettingInput
+                label="Số điện thoại"
+                name="employee_phone_number"
+                valueInput={info.employee_phone_number}
+                onChangeInput={handleNumberTypeChange}
               />
-              <label htmlFor="employee_work_email">Email:</label>
-              <Input name="employee_work_email" value={info?.employee_work_email || ""} onChange={handleChange} />
-              <label htmlFor="employee_license_plate">Biển số xe:</label>
-              <Input name="employee_license_plate" value={info?.employee_license_plate || ""} onChange={handleChange} />
+              <AccountSettingInput
+                label="CCCD/CMND"
+                name="employee_citizen_identification"
+                valueInput={info.employee_citizen_identification}
+                onChangeInput={handleNumberTypeChange}
+              />
+              <AccountSettingInput
+                label="Email"
+                name="employee_work_email"
+                valueInput={info.employee_work_email}
+                onChangeInput={handleChange}
+              />
+              <AccountSettingInput
+                label="Biển số xe"
+                name="employee_license_plate"
+                valueInput={info.employee_license_plate}
+                onChangeInput={handleChange}
+              />
             </div>
           </div>
-
-          <div className="flex gap-x-3 justify-center w-full">
+          <div className="flex gap-x-3 justify-center mt-3 w-full">
             <Button onClick={handleUpdate} type="primary" disabled={!isInfoChanged}>
               Cập nhật
             </Button>
