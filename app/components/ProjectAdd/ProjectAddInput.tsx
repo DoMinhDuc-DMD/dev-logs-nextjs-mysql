@@ -37,13 +37,13 @@ export default function ProjectAddInput({
     <>
       <div className="grid grid-cols-2 text-left gap-x-10">
         <div>
-          <div className="flex items-center justify-between py-1">
+          <div className="flex items-center justify-between">
             <label htmlFor="project_name">Tên dự án:</label>
             <Input name="project_name" style={{ width: "70%", padding: "8px" }} onChange={handleChange} disabled={submitted} />
           </div>
           {tasks.map((t, index) => (
-            <div key={index} className="flex items-center justify-between my-2">
-              <label htmlFor={`task_name_${index}`}>Tên task {index + 1}:</label>
+            <div key={index} className="flex items-center justify-between pt-3">
+              <label htmlFor={`task_name_${index}`}>Tên tác vụ {index + 1}:</label>
               <Input
                 name={`task_name_${index}`}
                 style={{ width: "70%", padding: "8px" }}
@@ -61,7 +61,7 @@ export default function ProjectAddInput({
               <Select
                 optionFilterProp="label"
                 listHeight={200}
-                style={{ width: "60%", height: 40, margin: "4px 0" }}
+                style={{ width: "60%", height: 40 }}
                 placeholder="Chọn thành viên"
                 mode="multiple"
                 options={devs.map((devs) => ({ value: devs.id, label: devs.employee_name }))}
@@ -73,8 +73,10 @@ export default function ProjectAddInput({
           </div>
           <ProjectAddDatePicker name="start_date" project={project} submitted={submitted} handleDateChange={handleDateChange} />
           <ProjectAddDatePicker name="end_date" project={project} submitted={submitted} handleDateChange={handleDateChange} />
-          <label htmlFor="description">Mô tả dự án:</label>
-          <TextArea rows={8} name="description" placeholder="Nhập mô tả dự án..." onChange={handleChange} disabled={submitted} />
+          <div className="flex flex-col gap-y-2 pt-3">
+            <label htmlFor="description">Mô tả dự án:</label>
+            <TextArea rows={8} name="description" placeholder="Nhập mô tả dự án..." onChange={handleChange} disabled={submitted} />
+          </div>
         </div>
       </div>
     </>

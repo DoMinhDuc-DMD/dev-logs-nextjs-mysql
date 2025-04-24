@@ -2,7 +2,7 @@
 
 import { Account, AccountDevlog } from "@/app/main/DevlogList/page";
 import { Button, Checkbox, Table } from "antd";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CSVLink } from "react-csv";
 import { ChangeEvent } from "react";
 import RestoreIcon from "@mui/icons-material/Restore";
@@ -33,6 +33,23 @@ export default function DevlogListTable({
 }: DevlogListTableProps) {
   const [selectedAccount, setSelectedAccount] = useState<Account[]>([]);
   const csvCondition = userRole === UserRole.Admin || userRole === UserRole.HR;
+
+  const accountWithDevlog = useMemo(
+    () => accountData.filter((acc) => accountDevlogData.some((accDev) => acc.id === accDev.account_id)),
+    [accountData, accountDevlogData]
+  );
+
+  const isAllSelected = selectedAccount.length === accountWithDevlog.length && accountWithDevlog.length > 0;
+
+  const handleSelectAll = () => {
+    setSelectedAccount(isAllSelected ? [] : accountWithDevlog);
+  };
+
+  const handleCheckBoxChange = (account: Account) => {
+    setSelectedAccount((prev) =>
+      prev.some((acc) => acc.id === account.id) ? prev.filter((acc) => acc.id !== account.id) : [...prev, account]
+    );
+  };
 
   const columns = [
     {
@@ -81,39 +98,21 @@ export default function DevlogListTable({
     ...(csvCondition
       ? [
           {
-            title: "Chọn",
+            title: (
+              <Checkbox checked={isAllSelected} indeterminate={selectedAccount.length > 0 && !isAllSelected} onChange={handleSelectAll} />
+            ),
             width: "5%",
             align: "center" as const,
             render: (record: Account) => {
-              return (
-                <Checkbox
-                  onChange={() => handleCheckBoxChange(record)}
-                  disabled={accountDevlogData.filter((dev) => dev.account_id === record.id).length === 0}
-                />
-              );
+              const isDisabled = accountDevlogData.filter((dev) => dev.account_id === record.id).length === 0;
+              const isChecked = selectedAccount.some((acc) => acc.id === record.id);
+
+              return <Checkbox checked={isChecked} onChange={() => handleCheckBoxChange(record)} disabled={isDisabled} />;
             },
           },
         ]
       : []),
   ];
-
-  const handleCheckBoxChange = (account: Account) => {
-    const devlogs = accountDevlogData.filter((dev) => dev.account_id === account.id);
-
-    if (devlogs.length === 0) {
-      return;
-    }
-
-    setSelectedAccount((prev) => {
-      const isAccountSelected = prev.find((acc: Account) => acc.id === account.id);
-
-      if (isAccountSelected) {
-        return prev.filter((acc: Account) => acc.id !== account.id);
-      } else {
-        return [...prev, account];
-      }
-    });
-  };
 
   const csvData = selectedAccount.flatMap((acc) => {
     const devlogs = accountDevlogData.filter((dev) => dev.account_id === acc.id);

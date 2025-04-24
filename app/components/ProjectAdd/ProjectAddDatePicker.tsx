@@ -12,7 +12,7 @@ interface ProjectAddDatePickerProps {
 
 export default function ProjectAddDatePicker({ name, project, submitted, handleDateChange }: ProjectAddDatePickerProps) {
   return (
-    <div className="flex items-center justify-between my-2">
+    <div className="flex items-center justify-between pt-3">
       <label htmlFor={name}>{name === "start_date" ? "Ngày bắt đầu:" : "Ngày kết thúc:"}</label>
       <DatePicker
         style={{ width: "50%", padding: "8px" }}

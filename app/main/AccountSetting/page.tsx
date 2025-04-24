@@ -9,6 +9,7 @@ import axios from "axios";
 import { UserOutlined } from "@ant-design/icons";
 import AccountSettingInput from "@/app/components/AccountSetting/AccountSettingInput";
 import { GET_DATE_FORMAT } from "@/app/constant/dateFormat";
+import { UserRole } from "@/app/constant/roleAuth";
 
 export default function AccountSetting() {
   const router = useRouter();
@@ -26,6 +27,7 @@ export default function AccountSetting() {
   });
   const [originalInfo, setOriginalInfo] = useState<typeof info>();
   const [api, contextHolder] = notification.useNotification();
+  const [currentRole, setCurrentRole] = useState<string | null>("");
 
   const openNotification = (msg: string) => {
     api.info({
@@ -43,6 +45,9 @@ export default function AccountSetting() {
     async function fetchInfo() {
       try {
         const userId = sessionStorage.getItem("userId");
+        const userRole = sessionStorage.getItem("userRole");
+        setCurrentRole(userRole);
+
         if (!userId) {
           router.replace("/Auth");
           return;
@@ -155,10 +160,11 @@ export default function AccountSetting() {
                 onChangeInput={handleNumberTypeChange}
               />
               <AccountSettingInput
-                label="Email"
+                label="Email công ty"
                 name="employee_work_email"
                 valueInput={info.employee_work_email}
                 onChangeInput={handleChange}
+                readOnly={currentRole !== UserRole.Admin}
               />
               <AccountSettingInput
                 label="Biển số xe"
